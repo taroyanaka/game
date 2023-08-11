@@ -447,6 +447,10 @@ onMount(async () => {
 </script>
 
 
+<div>
+	<span>Ver 0.0.0.1</span>
+</div>
+
 <!-- ERROR_MESSAGEを表示するdivタグ。クリックしたら非表示になる -->
 <div>
 	<!-- {ERROR_MESSAGE} -->
