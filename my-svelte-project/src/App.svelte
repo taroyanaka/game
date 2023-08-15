@@ -584,16 +584,17 @@ onMount(async () => {
 <!-- 上下左右のボタン(WASDに対応する) -->
 <div>
 	<button class='WASD_NULL'>◾️</button>
-	<button on:click={() => keypress_event({key: 'w'})} class='WASD'>⬆</button>
+	<button on:click={() => keypress_event({key: 'w'})} class='WASD'>W</button>
 	<button class='WASD_NULL'>◾️</button>
 </div>
-<button on:click={() => keypress_event({key: 'a'})} class='WASD'>⬅️</button>
-<button class='WASD_NULL'>◾️</button>
-<button on:click={() => keypress_event({key: 'd'})} class='WASD'>➡️</button>
-
+<div>
+	<button on:click={() => keypress_event({key: 'a'})} class='WASD'>A</button>
+	<button class='WASD_NULL'>◾️</button>
+	<button on:click={() => keypress_event({key: 'd'})} class='WASD'>D</button>
+</div>
 <div>
 	<button class='WASD_NULL'>◾️</button>
-	<button on:click={() => keypress_event({key: 's'})} class='WASD'>⬇️</button>
+	<button on:click={() => keypress_event({key: 's'})} class='WASD'>S</button>
 	<button class='WASD_NULL'>◾️</button>
 </div>
 
