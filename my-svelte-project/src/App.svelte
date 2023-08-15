@@ -6,6 +6,7 @@
 
 
 import { onMount } from 'svelte';
+    import { get } from 'svelte/store';
 // import { afterUpdate } from 'svelte';
 
 // $: if(true) console.log('hello');
@@ -36,10 +37,17 @@ let DEV_MODE = true;
 // unit2は{NAME: 'UNT', LFP: 2, ATK: 2};
 
 let USR_DATA_ARRAY = [{NAME: 'USR', LFP: 5, ATK: 1}];
-let	UNT_DATA_OBJ = {
-	UNT_NUM_0: {NAME: 'UNT_0', LFP: 3, ATK: 1},
-	UNT_NUM_1: {NAME: 'UNT_1', LFP: 2, ATK: 2},
+
+let UNT_DATA_OBJ = {
+	// UNT_NUM_0: {TYPE: 'UNT', NAME: 'UNT_0', LFP: 3, ATK: 1},
+	// UNT_NUM_1: {TYPE: 'UNT', NAME: 'UNT_1', LFP: 2, ATK: 2},
+	// UNT_NUM_2: {TYPE: 'UNT', NAME: 'UNT_2', LFP: 2, ATK: 3},
+	// UNT_NUM_3: {TYPE: 'UNT', NAME: 'UNT_3', LFP: 2, ATK: 4},
+	// UNT_NUM_4: {TYPE: 'UNT', NAME: 'UNT_4', LFP: 4, ATK: 1},
+	// UNT_NUM_5: {TYPE: 'UNT', NAME: 'UNT_5', LFP: 4, ATK: 2},
+	// UNT_NUM_6: {TYPE: 'UNT', NAME: 'UNT_6', LFP: 5, ATK: 1},
 };
+
 
 // let UNT_DATA_ARRAY = [
 // 	{UNT_NUM: 0, NAME: 'UNT', LFP: 3, ATK: 1},
@@ -215,6 +223,15 @@ function keypress_event(e) {
 		CURRENT_Y_AND_X = go_to_y_x;
 	}
 
+	UNT_ATTACK_OR_MOVE(0);
+	// UNT_ATTACK_OR_MOVE(1);
+	UNT_ATTACK_OR_MOVE(2);
+	UNT_ATTACK_OR_MOVE(3);
+	UNT_ATTACK_OR_MOVE(4);
+	UNT_ATTACK_OR_MOVE(5);
+	UNT_ATTACK_OR_MOVE(6);
+	
+
 	// console.log(
 	// 	keypress_position[e.key],
 	// 	CURRENT_Y_AND_X
@@ -234,17 +251,20 @@ const get_USR_position = () => {
 };
 // 指定したUNTの位置を取得する関数
 const get_UNT_position = (UNT_NUM=0) => {
-	const UNT_NUM_N = 'UNT_NUM_' + UNT_NUM.toString();
+	// https://stackoverflow.com/questions/38968598/what-happened-inside-of-1-tostring-and-1-tostring-in-javascript
+	const UNT_NUM_STR = (UNT_NUM).toString();
+	const UNT_NUM_N = 'UNT_NUM_' + (UNT_NUM).toString();
 	// UNTの位置を取得する
 	// filterで['TYPE']がUNTかつ['NAME']がUNT_0等のものを抽出する
 	const UNT_Y_AND_X = COLLECT_VALUE2
-		.map(V=>V.filter(V2=>V2[2]['TYPE']==='UNT' && V2[2]['NAME']===('UNT_'+UNT_NUM) ))
+		.map(V=>V.filter(V2=>V2[2]['TYPE']==='UNT' && V2[2]['NAME']===('UNT_'+UNT_NUM_STR) ))
 		.filter(V=>V.length>0)
 		[0][0]
 		// .map(V=>V.map(V2=> [ V2[2]['TYPE'], V2[2]['NAME'] ] ))
 		// .flat()
 		// .map(V=>V.slice(0, 2));
 		;
+		console.log(UNT_Y_AND_X);
 	const [Y, X] = [UNT_Y_AND_X[0], UNT_Y_AND_X[1]];
 	// console.log(UNT_Y_AND_X);
 	return [Y, X];
@@ -257,18 +277,19 @@ const get_UNT_position = (UNT_NUM=0) => {
 const UNT_ATTACK_OR_MOVE = (UNT_NUM=0) => {
 	const usr_position = get_USR_position();
 	const unt_position = get_UNT_position(UNT_NUM);
+	console.log(unt_position);
 
-	console.log(
-	'unt_position[0]', unt_position[0],
-	'unt_position[1]', unt_position[1],
-	'usr_position[0]', usr_position[0],
-	'usr_position[1]', usr_position[1],
+	// console.log(
+	// 'unt_position[0]', unt_position[0],
+	// 'unt_position[1]', unt_position[1],
+	// 'usr_position[0]', usr_position[0],
+	// 'usr_position[1]', usr_position[1],
 
-	'( (unt_position[1] === usr_position[1]) && (unt_position[0] === usr_position[0] - 1) )', ( (unt_position[1] === usr_position[1]) && (unt_position[0] === usr_position[0] - 1) ),
-	'( (unt_position[1] === usr_position[1]) && (unt_position[0] === usr_position[0] + 1) )', ( (unt_position[1] === usr_position[1]) && (unt_position[0] === usr_position[0] + 1) ),
-	'( (unt_position[1] === usr_position[0]) && (unt_position[0] === usr_position[1] + 1) )', ( (unt_position[1] === usr_position[0]) && (unt_position[0] === usr_position[1] + 1) ),
-	'( (unt_position[1] === usr_position[0]) && (unt_position[0] === usr_position[1] + 1) )', ( (unt_position[1] === usr_position[0]) && (unt_position[0] === usr_position[1] + 1) ),
-	);
+	// '( (unt_position[1] === usr_position[1]) && (unt_position[0] === usr_position[0] - 1) )', ( (unt_position[1] === usr_position[1]) && (unt_position[0] === usr_position[0] - 1) ),
+	// '( (unt_position[1] === usr_position[1]) && (unt_position[0] === usr_position[0] + 1) )', ( (unt_position[1] === usr_position[1]) && (unt_position[0] === usr_position[0] + 1) ),
+	// '( (unt_position[1] === usr_position[0]) && (unt_position[0] === usr_position[1] + 1) )', ( (unt_position[1] === usr_position[0]) && (unt_position[0] === usr_position[1] + 1) ),
+	// '( (unt_position[1] === usr_position[0]) && (unt_position[0] === usr_position[1] + 1) )', ( (unt_position[1] === usr_position[0]) && (unt_position[0] === usr_position[1] + 1) ),
+	// );
 
 	// 隣接しているマスにUSRがいたらアタックする
 	if (
@@ -328,7 +349,8 @@ const random_BLC_Y_AND_X = () => {
 // BLCの任意の分量(パーセント)をNONに変更する関数
 // :ja パーセント
 // :en percent
-const change_percent_BLC_to_NON = (Percent=30) => {
+// const change_percent_BLC_to_NON = (Percent=30) => {
+const change_percent_BLC_to_NON = (Percent=80) => {
 	// BLCの総量を取得する
 	const BLC_count = COLLECT_VALUE2
 		.map(V=>V.filter(V2=>V2[2]==='BLC'))
@@ -351,6 +373,34 @@ const change_percent_BLC_to_NON = (Percent=30) => {
 		}
 		change_BLC_to_NON(random_Y_AND_X[0], random_Y_AND_X[1]);
 	}
+};
+
+// 全てのUNTをNONに配置する関数
+const change_UNT_to_NON = () => {
+	// 'NON'のブロックを列挙する関数
+	const get_NON_Y_AND_X = () => {
+		const NON_Y_AND_X = COLLECT_VALUE2
+			.map(V=>V.filter(V2=>V2[2]==='NON'))
+			.flat()
+			.map(V=>V.slice(0, 2));
+		return NON_Y_AND_X;
+	};
+
+	const set_UNT = () =>{
+		const all_NON = get_NON_Y_AND_X();
+		// 以下のようにUNTを配置する
+		// COLLECT_VALUE2[6][4][3] = 'background-color: #00FF00';
+		// COLLECT_VALUE2[6][4][2] = UNT_DATA_OBJ['UNT_NUM_0'];
+		Object.entries(UNT_DATA_OBJ).forEach((V, I) => {
+			const UNT_NUM_N = 'UNT_NUM_' + (I).toString();
+			const random_Y_AND_X = shuffle(all_NON)[0];
+			COLLECT_VALUE2[random_Y_AND_X[0]][random_Y_AND_X[1]][2] = UNT_DATA_OBJ[UNT_NUM_N];
+			COLLECT_VALUE2[random_Y_AND_X[0]][random_Y_AND_X[1]][3] = 'background-color: #00FF00';
+			console.log(V);
+		});
+
+	}
+	set_UNT();
 };
 
 // マップを初期化してやり直す関数
@@ -380,13 +430,38 @@ const reset_or_init_map = ({when_mounted_time=true}) => {
 
 	DIED = '';
 	USR_DATA_ARRAY = [{NAME: 'USR', LFP: 5, ATK: 1}];
+	// UNT_DATA_OBJ = {
+	// 	UNT_NUM_0: {TYPE: 'UNT', NAME: 'UNT_0', LFP: 3, ATK: 1},
+	// 	UNT_NUM_1: {TYPE: 'UNT', NAME: 'UNT_1', LFP: 2, ATK: 2},
+	// };
+
 	UNT_DATA_OBJ = {
 		UNT_NUM_0: {TYPE: 'UNT', NAME: 'UNT_0', LFP: 3, ATK: 1},
 		UNT_NUM_1: {TYPE: 'UNT', NAME: 'UNT_1', LFP: 2, ATK: 2},
+		UNT_NUM_2: {TYPE: 'UNT', NAME: 'UNT_2', LFP: 2, ATK: 3},
+		UNT_NUM_3: {TYPE: 'UNT', NAME: 'UNT_3', LFP: 2, ATK: 4},
+		UNT_NUM_4: {TYPE: 'UNT', NAME: 'UNT_4', LFP: 4, ATK: 1},
+		UNT_NUM_5: {TYPE: 'UNT', NAME: 'UNT_5', LFP: 4, ATK: 2},
+		UNT_NUM_6: {TYPE: 'UNT', NAME: 'UNT_6', LFP: 5, ATK: 1},
+		UNT_NUM_7: {TYPE: 'UNT', NAME: 'UNT_7', LFP: 5, ATK: 2},
+		UNT_NUM_8: {TYPE: 'UNT', NAME: 'UNT_8', LFP: 5, ATK: 3},
+		UNT_NUM_9: {TYPE: 'UNT', NAME: 'UNT_9', LFP: 5, ATK: 4},
+		UNT_NUM_10: {TYPE: 'UNT', NAME: 'UNT_10', LFP: 6, ATK: 1},
+		UNT_NUM_11: {TYPE: 'UNT', NAME: 'UNT_11', LFP: 6, ATK: 2},
+		UNT_NUM_12: {TYPE: 'UNT', NAME: 'UNT_12', LFP: 6, ATK: 3},
+		UNT_NUM_13: {TYPE: 'UNT', NAME: 'UNT_13', LFP: 6, ATK: 4},
+		UNT_NUM_14: {TYPE: 'UNT', NAME: 'UNT_14', LFP: 1, ATK: 1},
+		UNT_NUM_15: {TYPE: 'UNT', NAME: 'UNT_15', LFP: 1, ATK: 2},
+		UNT_NUM_16: {TYPE: 'UNT', NAME: 'UNT_16', LFP: 1, ATK: 3},
 	};
+
 
 	// GOALを初期位置に戻す
 	change_BLC_to_GOL(0, 9);
+	change_BLC_to_GOL(9, 0);
+	// change_BLC_to_GOL(9, 9);
+	// change_BLC_to_GOL(0, 0);
+
 	// PICKELを初期化する
 	PICKEL = 0;
 	// GOALをfalseにする
@@ -410,19 +485,15 @@ const reset_or_init_map = ({when_mounted_time=true}) => {
 	COLLECT_VALUE2[7][5][2] = 'NON'; COLLECT_VALUE2[7][5][3] = 'background-color: #FFFFFF';
 
 	// UNTの配置
-	// COLLECT_VALUE2[6][4][2] = 'UNT'; 
-	COLLECT_VALUE2[6][4][3] = 'background-color: #00FF00';
-	COLLECT_VALUE2[6][4][2] = UNT_DATA_OBJ['UNT_NUM_0'];
-	// COLLECT_VALUE2[5][4][2] = 'UNT'; COLLECT_VALUE2[5][4][3] = 'background-color: #00FF00';
-	// COLLECT_VALUE2[5][4][4] = UNT_DATA_OBJ['UNT_NUM_0'];
-	// COLLECT_VALUE2[5][6][2] = 'UNT';
-	COLLECT_VALUE2[5][6][3] = 'background-color: #00FF00';
-	COLLECT_VALUE2[5][6][2] = UNT_DATA_OBJ['UNT_NUM_1'];
+	// COLLECT_VALUE2[6][4][3] = 'background-color: #00FF00';
+	// COLLECT_VALUE2[6][4][2] = UNT_DATA_OBJ['UNT_NUM_0'];
+	// COLLECT_VALUE2[5][6][3] = 'background-color: #00FF00';
+	// COLLECT_VALUE2[5][6][2] = UNT_DATA_OBJ['UNT_NUM_1'];
 
+	change_UNT_to_NON();
 	
 	document.addEventListener('keypress', keypress_event);
 };
-
 
 
 
@@ -445,11 +516,6 @@ onMount(async () => {
 	}
 });
 </script>
-
-
-<div>
-	<span>Ver 0.0.0.1</span>
-</div>
 
 <!-- ERROR_MESSAGEを表示するdivタグ。クリックしたら非表示になる -->
 <div>
@@ -491,6 +557,26 @@ onMount(async () => {
 <!-- リセットボタン。押したらreset_mapを実行する -->
 <!-- <button on:click={() => reset_or_init_map({when_mounted_time: false})}>reset_map</button> -->
 	
+<!-- <button on:click={() => get_USR_position()}>get_USR_position</button> -->
+<!-- <button on:click={() => get_UNT_position()}>get_UNT_position</button> -->
+<!-- <button on:click={() => UNT_ATTACK_OR_MOVE()}>UNT_ATTACK_OR_MOVE</button> -->
+
+
+<!-- 上下左右のボタン(WASDに対応する) -->
+<div>
+	<button class='WASD_NULL'>◾️</button>
+	<button on:click={() => keypress_event({key: 'w'})} class='WASD'>⬆</button>
+	<button class='WASD_NULL'>◾️</button>
+</div>
+<button on:click={() => keypress_event({key: 'a'})} class='WASD'>⬅️</button>
+<button class='WASD_NULL'>◾️</button>
+<button on:click={() => keypress_event({key: 'd'})} class='WASD'>➡️</button>
+
+<div>
+	<button class='WASD_NULL'>◾️</button>
+	<button on:click={() => keypress_event({key: 's'})} class='WASD'>⬇️</button>
+	<button class='WASD_NULL'>◾️</button>
+</div>
 
 <div>
 	<div>{USR_DATA_ARRAY[0].NAME} LFP: {USR_DATA_ARRAY[0].LFP} ATK: {USR_DATA_ARRAY[0].ATK}</div>
@@ -501,17 +587,18 @@ onMount(async () => {
 <!-- <input bind:value={NAME} type="text" placeholder="name"> -->
 </div>
 
-<!-- <button on:click={() => fetch_get_collect_value_for_test()}>fetch_get_collect_value_for_test</button> -->
-<button on:click={() => get_USR_position()}>get_USR_position</button>
-<button on:click={() => get_UNT_position()}>get_UNT_position</button>
-<button on:click={() => UNT_ATTACK_OR_MOVE()}>UNT_ATTACK_OR_MOVE</button>
 
-
+<div>Ver 0.0.0.2</div>
 
 
 
 
 
 <style>
-
+.WASD, .WASD_NULL{
+	font-size: 30px;
+}
+.WASD_NULL{
+	background-color: black;
+}
 </style>
