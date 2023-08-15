@@ -117,7 +117,7 @@ const attack_USR_to_UNT = (UNT_NUM, Go_to_Y, Go_to_X) => {
 
 // UNTがUSRにアタックする関数(USRのLFPをUNTのATK分減らす)(引数にはUNT_DATA_ARRAYのUNT_NUMを指定する)
 const attack_UNT_to_USR = (UNT_NUM) => {
-	const UNT_NUM_N = 'UNT_NUM_' + UNT_NUM.toString();
+	const UNT_NUM_N = 'UNT_NUM_' + (UNT_NUM).toString();
 	const UNT_ATK = UNT_DATA_OBJ[UNT_NUM_N].ATK;
 	// 指定したUNTのATKをUSRのLFP分減らす
 	USR_DATA_ARRAY[0]['LFP'] -= UNT_ATK;
@@ -216,7 +216,7 @@ function keypress_event(e) {
 		console.log(
 			// keypress_position[e.key],
 			// "COLLECT_VALUE2", COLLECT_VALUE2,
-			"COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]]", COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]],
+			// "COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]]", COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]],
 			// "CURRENT_Y_AND_X", CURRENT_Y_AND_X,
 		);
 
@@ -230,6 +230,16 @@ function keypress_event(e) {
 	UNT_ATTACK_OR_MOVE(4);
 	UNT_ATTACK_OR_MOVE(5);
 	UNT_ATTACK_OR_MOVE(6);
+	UNT_ATTACK_OR_MOVE(7);
+	UNT_ATTACK_OR_MOVE(8);
+	UNT_ATTACK_OR_MOVE(9);
+	UNT_ATTACK_OR_MOVE(10);
+	UNT_ATTACK_OR_MOVE(11);
+	UNT_ATTACK_OR_MOVE(12);
+	UNT_ATTACK_OR_MOVE(13);
+	UNT_ATTACK_OR_MOVE(14);
+	UNT_ATTACK_OR_MOVE(15);
+	UNT_ATTACK_OR_MOVE(16);
 	
 
 	// console.log(
@@ -251,6 +261,7 @@ const get_USR_position = () => {
 };
 // 指定したUNTの位置を取得する関数
 const get_UNT_position = (UNT_NUM=0) => {
+	try {
 	// https://stackoverflow.com/questions/38968598/what-happened-inside-of-1-tostring-and-1-tostring-in-javascript
 	const UNT_NUM_STR = (UNT_NUM).toString();
 	const UNT_NUM_N = 'UNT_NUM_' + (UNT_NUM).toString();
@@ -264,10 +275,14 @@ const get_UNT_position = (UNT_NUM=0) => {
 		// .flat()
 		// .map(V=>V.slice(0, 2));
 		;
-		console.log(UNT_Y_AND_X);
+		// console.log(UNT_Y_AND_X);
 	const [Y, X] = [UNT_Y_AND_X[0], UNT_Y_AND_X[1]];
 	// console.log(UNT_Y_AND_X);
 	return [Y, X];
+	} catch (error) {
+		console.log(UNT_NUM);
+		console.log(error);
+	}
 };
 
 // key_press関数を実行した後に、UNTの行動を実行する関数。
@@ -275,9 +290,10 @@ const get_UNT_position = (UNT_NUM=0) => {
 // USRが隣接していない場合はランダムに1マス移動する
 // UNTの移動順はATKの値が高いUNTから順番に行動する。ATKが同値の場合はUNT_NUMが小さい方から行動する。
 const UNT_ATTACK_OR_MOVE = (UNT_NUM=0) => {
+	try {
 	const usr_position = get_USR_position();
 	const unt_position = get_UNT_position(UNT_NUM);
-	console.log(unt_position);
+	// console.log(unt_position);
 
 	// console.log(
 	// 'unt_position[0]', unt_position[0],
@@ -331,6 +347,9 @@ const UNT_ATTACK_OR_MOVE = (UNT_NUM=0) => {
 			// 早期リターンする
 			shuffled_move_position = [];
 		}
+	}
+	} catch (error) {
+		console.log(error);	
 	}
 };
 
@@ -396,7 +415,7 @@ const change_UNT_to_NON = () => {
 			const random_Y_AND_X = shuffle(all_NON)[0];
 			COLLECT_VALUE2[random_Y_AND_X[0]][random_Y_AND_X[1]][2] = UNT_DATA_OBJ[UNT_NUM_N];
 			COLLECT_VALUE2[random_Y_AND_X[0]][random_Y_AND_X[1]][3] = 'background-color: #00FF00';
-			console.log(V);
+			// console.log(V);
 		});
 
 	}
@@ -458,7 +477,7 @@ const reset_or_init_map = ({when_mounted_time=true}) => {
 
 	// GOALを初期位置に戻す
 	change_BLC_to_GOL(0, 9);
-	change_BLC_to_GOL(9, 0);
+	// change_BLC_to_GOL(9, 0);
 	// change_BLC_to_GOL(9, 9);
 	// change_BLC_to_GOL(0, 0);
 
@@ -588,7 +607,7 @@ onMount(async () => {
 </div>
 
 
-<div>Ver 0.0.0.2</div>
+<div>Ver 0.0.0.3</div>
 
 
 
