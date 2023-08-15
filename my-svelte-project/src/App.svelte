@@ -608,7 +608,8 @@ onMount(async () => {
 </div>
 
 
-<div>Ver 0.0.0.3</div>
+<div>Ver 0.0.0.4</div>
+<a href="https://github.com/taroyanaka/game/">GitHub</a>
 
 
 
