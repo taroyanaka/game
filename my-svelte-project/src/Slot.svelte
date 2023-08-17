@@ -82,7 +82,7 @@ const slot_exe_once = (KAKUHEN=false) =>{
 
 
 
-<button on:click={slot_exe_once}>slot_exe_once</button>
+<!-- <button on:click={slot_exe_once}>slot_exe_once</button>
 <div>MINE</div>
 GOLD: {GOLD}
 KAKUHEN: {KAKUHEN}
@@ -126,7 +126,7 @@ KAKUHEN_COUNTER: {KAKUHEN_COUNTER}
 		{/if}
 	</li>
 	{/each}
-</ul>
+</ul> -->
 
 
 
