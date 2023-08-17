@@ -598,18 +598,18 @@ onMount(async () => {
 	<button class='WASD_NULL'>◾️</button>
 </div>
 
-<div>
+<!-- <div>
 	<div>{USR_DATA_ARRAY[0].NAME} LFP: {USR_DATA_ARRAY[0].LFP} ATK: {USR_DATA_ARRAY[0].ATK}</div>
-	<!-- svelte -->
 	{#each Object.keys(UNT_DATA_OBJ) as key}
 		<div>{UNT_DATA_OBJ[key].NAME} LFP: {UNT_DATA_OBJ[key].LFP} ATK: {UNT_DATA_OBJ[key].ATK}</div>
 	{/each}
-<!-- <input bind:value={NAME} type="text" placeholder="name"> -->
-</div>
-
+</div> -->
 
 <div>Ver 0.0.0.4</div>
 <a href="https://github.com/taroyanaka/game/">GitHub</a>
+
+
+
 
 
 
