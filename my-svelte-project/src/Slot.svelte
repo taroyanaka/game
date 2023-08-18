@@ -116,7 +116,7 @@ document.addEventListener('keypress', keypress_event_for_slot);
 
 
 
-
+<!-- 
 
 <button on:click={slot_exe_once}>slot_exe_once</button>
 <div>MINE</div>
@@ -173,4 +173,4 @@ KAKUHEN_COUNTER: {KAKUHEN_COUNTER}
 	width: 6.5rem;
 }
 </style>
-
+ -->
