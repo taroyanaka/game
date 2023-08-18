@@ -15,6 +15,6 @@ const slot = new Slot({	target: document.body, });
 
 
 
-// export { app, slot };
-export default app;
+export { app, slot };
+// export default app;
 // export default slot;

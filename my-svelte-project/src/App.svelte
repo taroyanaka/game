@@ -1,10 +1,4 @@
 <script>
-
-// !!!!!!!!!!!
-// you need ramda@0.28.0.js
-// !!!!!!!!!!!
-
-
 import { onMount } from 'svelte';
     import { get } from 'svelte/store';
 // import { afterUpdate } from 'svelte';
@@ -156,6 +150,7 @@ function keypress_event(e) {
 		'a': [0, -1],
 		's': [1, 0],
 		'd': [0, 1],
+		'g': slot_exe_once(),
 	};
 
 	if(e.key === 't')
