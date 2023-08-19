@@ -1,6 +1,46 @@
 <script>
+
+
+// import Gacha from './Gacha.svelte';
+// export let message; // 受け取る側でexport宣言を行う
+// export let message2; // 受け取る側でexport宣言を行う
+// export let message_hoge; // 受け取る側でexport宣言を行う
+
+
+
 import { onMount } from 'svelte';
-    import { get } from 'svelte/store';
+
+
+let GOLD = 1000;
+let MINE = [];
+
+let KAKUHEN = false;
+let KAKUHEN_COUNTER = 0;
+
+const KAKUHEN_COUNTER_LIMIT = 30;
+const RARITY_ZERO_VOLUME = 80;
+const PROBABILITY_CHANGE_THRESHOLD_0 = 2;
+const PROBABILITY_CHANGE_THRESHOLD_1 = 3;
+const DECREASE_PERCENT = 90;
+let SLOT = [
+{RARITY: 0, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 1, ATK_DEBUFF: 0},
+{RARITY: 1, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 2, ATK_DEBUFF: 0},
+{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 3, ATK_DEBUFF: 0},
+{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0},
+
+{RARITY: 90, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 10, ATK_DEBUFF: 0},
+
+// {RARITY: 0, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 1, ATK_DEBUFF: 0},
+// {RARITY: 1, LFP_BUFF: 2, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0},
+// {RARITY: 2, LFP_BUFF: 3, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0},
+// {RARITY: 3, LFP_BUFF: 4, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0},
+
+// {RARITY: 90, LFP_BUFF: 10, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0},
+];
+
+
+
+    // import { get } from 'svelte/store';
 // import { afterUpdate } from 'svelte';
 
 // $: if(true) console.log('hello');
@@ -12,6 +52,98 @@ let GOAL = false;
 let DIED = '';
 let ADJACENT_Y_AND_X = [];
 let COLLECT_VALUE2 = [];
+
+
+
+// SLOTのRARITYの合計の値が100になるように100個ランダムで選択する。
+// ただし、RARITYが90のものは1つだけ選択し、RARITYが0はRARITY_ZERO_VOLUME個選択する。
+let SLOT2 = SLOT.reduce((accumulator, currentValue) => {
+	const RARITY = currentValue.RARITY;
+	const RARITY_NUM = currentValue.RARITY === 90 ?
+						1 : currentValue.RARITY === 0 ?
+								RARITY_ZERO_VOLUME : currentValue.RARITY;
+	for (let i = 0; i < RARITY_NUM; i++) {
+		accumulator.push(currentValue);
+	}
+	return accumulator;
+}, []);
+// ATK_BUFFのみ
+// let SLOT3 = shuffle(SLOT2.slice(0, 100));
+let SLOT3 = shuffle(SLOT2);
+// LFP_BUFFのみ
+let SLOT4 = shuffle(SLOT2.slice(0, 100));
+
+
+// 任意のRARITYを任意のパーセンテージ減らす関数
+const decrease_any_rarity = (Rarity, Percent) => {
+	const res0 = SLOT3.filter(V=>V.RARITY === Rarity);
+	// res0の中身をPercentで減らす
+	const res1 = res0.slice(0, (res0.length - (res0.length * (Percent / 100))));;
+	const res2 = SLOT3.filter(V=>V.RARITY !== Rarity);
+	const res = res1.concat(res2);
+	const shuffle_res = shuffle(res);
+	return shuffle_res;
+};
+
+
+
+// ワロタ https://detail.chiebukuro.yahoo.co.jp/qa/question_detail/q14218518669
+// 関数。SLOT3からランダムで1つ選択してMINEに追加。GOLDが足りなかったら追加しない。GOLDが足りたらGOLDを減らす。
+// RARITYが1以上のものをPROBABILITY_CHANGE_THRESHOLD連続で追加できた場合、KAKUHENをtrueにする。
+// KAKUHEN true状態でKAKUHEN_COUNTER_LIMIT回選択した後にKAKUHENをfalseにする。
+const slot_exe_once = () =>{
+	// KAKUHENがtrueの時はSLOT3からRARITYが0のものを選択する確率が低下する
+	const SLOT3_KAKUHEN = KAKUHEN ? decrease_any_rarity(0, DECREASE_PERCENT) : SLOT3;
+	// SLOT3_KAKUHENからランダムで1つ選択する
+	const random_SLOT3_KAKUHEN = shuffle(SLOT3_KAKUHEN)[0];
+	console.log(random_SLOT3_KAKUHEN);
+	// GOLDが足りなかったら追加しない。GOLDが足りたらGOLDを減らす。
+	if (GOLD < 1) {
+		return;
+	}else{
+		GOLD -= 1;
+	}
+	// MINEに追加する
+	// MINE.push(random_SLOT3_KAKUHEN);
+
+	// ramda.jsでMINEに{RARITY: 1, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 2, ATK_DEBUFF: 0}を追加する
+	// MINE = R.append({RARITY: 1, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 2, ATK_DEBUFF: 0}, MINE);
+	MINE = R.append(random_SLOT3_KAKUHEN, MINE);
+
+	// RARITYが1以上のものをPROBABILITY_CHANGE_THRESHOLD(_0か_1のどちらかランダムの値)の値の回数連続で追加できた場合、KAKUHENをtrueにする。
+	// if (MINE.slice(-(PROBABILITY_CHANGE_THRESHOLD)).every(V=>V.RARITY >= 1)) {
+	if (MINE.slice(
+			-(shuffle([PROBABILITY_CHANGE_THRESHOLD_0, PROBABILITY_CHANGE_THRESHOLD_1])[0])
+		).every(V=>V.RARITY >= 1)) {
+		KAKUHEN = true;
+	}
+	// KAKUHEN時はRARITYが0のものを選択する確率が半分(50%。つまりRARITY0がSLOT3から一時的に90個から45個)になる。10回選択した後にKAKUHENをfalseにする。
+	if (KAKUHEN === true) {
+		KAKUHEN_COUNTER += 1;
+		KAKUHEN = KAKUHEN_COUNTER >= KAKUHEN_COUNTER_LIMIT ? false : true;
+		KAKUHEN_COUNTER = KAKUHEN_COUNTER >= KAKUHEN_COUNTER_LIMIT ? 0 : KAKUHEN_COUNTER;
+		// if (MINE.length >= 10) {
+		// 	KAKUHEN = false;
+		// }
+	}
+};
+
+
+
+function keypress_event_for_slot(e) {
+	const keypress_position = {
+		'g': slot_exe_once(),
+	};
+	keypress_position[e.key];
+};
+
+document.addEventListener('keypress', keypress_event_for_slot);
+
+
+
+
+
+
 
 // DEV_MODEではGOLの位置を固定する。USRの位置も固定する。UNTの位置も固定する。
 // 今後シードランダムを導入してNONの位置を固定する。
@@ -136,6 +268,7 @@ const attack_UNT_to_USR = (UNT_NUM) => {
 
 
 function keypress_event(e) {
+	// console.log('keypress_event');
 
 // // UNTの配置
 // COLLECT_VALUE2[5][4][2] = 'UNT'; COLLECT_VALUE2[5][4][3] = 'background-color: #00FF00';
@@ -150,7 +283,7 @@ function keypress_event(e) {
 		'a': [0, -1],
 		's': [1, 0],
 		'd': [0, 1],
-		'g': slot_exe_once(),
+		// 'g': slot_exe_once(),
 	};
 
 	if(e.key === 't')
@@ -531,81 +664,165 @@ onMount(async () => {
 });
 </script>
 
-<!-- ERROR_MESSAGEを表示するdivタグ。クリックしたら非表示になる -->
-<div>
-	<!-- {ERROR_MESSAGE} -->
-	{#if ERROR_MESSAGE}
-		<!-- <button on:click={remove_error_message}>remove_error_message</button> -->
-	{/if}
+
+
+<!-- fieldfieldfieldfieldfieldfield -->
+<div class="field">
+
+							<!-- ERROR_MESSAGEを表示するdivタグ。クリックしたら非表示になる -->
+							<div>
+								<!-- {ERROR_MESSAGE} -->
+								{#if ERROR_MESSAGE}
+									<!-- <button on:click={remove_error_message}>remove_error_message</button> -->
+								{/if}
+							</div>
+
+							<!-- GOALがtrueの場合はGOALと表示する -->
+							{#if GOAL}
+								<div>
+									GOAL
+								</div>
+							{/if}
+							<!-- DIEDがtruthyの場合はDIEDと表示する -->
+							{#if DIED}
+								<div>
+									{DIED}
+								</div>
+							{/if}
+
+							<!-- PICKELを表示するdivタグ -->
+							<div>
+								PICKEL: {PICKEL}
+							</div>
+
+							<ul>
+								<!-- 上記のobjを#eachでレンダリングする -->
+								{#each COLLECT_VALUE2 as item, Y}
+									<li class="CELL">
+										{#each item as item2, X}
+											<span style={item2[3]} on:keydown={()=>get_click_position(Y, X)} on:click={()=>get_click_position(Y, X)}>□</span>
+										{/each}
+									</li>
+								{/each}
+							</ul>
+
+							<!-- リセットボタン。押したらreset_mapを実行する -->
+							<!-- <button on:click={() => reset_or_init_map({when_mounted_time: false})}>reset_map</button> -->
+								
+							<!-- <button on:click={() => get_USR_position()}>get_USR_position</button> -->
+							<!-- <button on:click={() => get_UNT_position()}>get_UNT_position</button> -->
+							<!-- <button on:click={() => UNT_ATTACK_OR_MOVE()}>UNT_ATTACK_OR_MOVE</button> -->
+
+
+							<!-- 上下左右のボタン(WASDに対応する) -->
+							<div>
+								<button class='WASD_NULL'>◾️</button>
+								<button on:click={() => keypress_event({key: 'w'})} class='WASD'>W</button>
+								<button class='WASD_NULL'>◾️</button>
+							</div>
+							<div>
+								<button on:click={() => keypress_event({key: 'a'})} class='WASD'>A</button>
+								<button class='WASD_NULL'>◾️</button>
+								<button on:click={() => keypress_event({key: 'd'})} class='WASD'>D</button>
+							</div>
+							<div>
+								<button class='WASD_NULL'>◾️</button>
+								<button on:click={() => keypress_event({key: 's'})} class='WASD'>S</button>
+								<button class='WASD_NULL'>◾️</button>
+							</div>
+
+							<!-- <div>
+								<div>{USR_DATA_ARRAY[0].NAME} LFP: {USR_DATA_ARRAY[0].LFP} ATK: {USR_DATA_ARRAY[0].ATK}</div>
+								{#each Object.keys(UNT_DATA_OBJ) as key}
+									<div>{UNT_DATA_OBJ[key].NAME} LFP: {UNT_DATA_OBJ[key].LFP} ATK: {UNT_DATA_OBJ[key].ATK}</div>
+								{/each}
+							</div> -->
+
+							<div>Ver 0.0.0.4</div>
+							<a href="https://github.com/taroyanaka/game/">GitHub</a>
+
+
 </div>
+<!-- fieldfieldfieldfieldfieldfield -->
 
-<!-- GOALがtrueの場合はGOALと表示する -->
-{#if GOAL}
-	<div>
-		GOAL
-	</div>
-{/if}
-<!-- DIEDがtruthyの場合はDIEDと表示する -->
-{#if DIED}
-	<div>
-		{DIED}
-	</div>
-{/if}
 
-<!-- PICKELを表示するdivタグ -->
-<div>
-	PICKEL: {PICKEL}
-</div>
 
-<ul>
-	<!-- 上記のobjを#eachでレンダリングする -->
-	{#each COLLECT_VALUE2 as item, Y}
-		<li class="CELL">
-			{#each item as item2, X}
-				<span style={item2[3]} on:keydown={()=>get_click_position(Y, X)} on:click={()=>get_click_position(Y, X)}>□</span>
+
+
+<!-- gachagachagachagachagachagacha -->
+<div class="gacha">
+		<button on:click={slot_exe_once}>slot_exe_once</button>
+		<div>MINE</div>
+		GOLD: {GOLD}
+		KAKUHEN: {KAKUHEN}
+		KAKUHEN_COUNTER: {KAKUHEN_COUNTER}
+		<ul>
+			<li>
+				<span class="EQP_SPAN">RARITY</span>
+				<span class="EQP_SPAN">LFP_BUFF</span>
+				<span class="EQP_SPAN">LFP_DEBUFF</span>
+				<span class="EQP_SPAN">ATK_BUFF</span>
+				<span class="EQP_SPAN">ATK_DEBUFF</span>
+			</li>
+			{#each MINE as EQP, EQP_I}
+			<li>
+				{#if EQP}
+					<span class="EQP_SPAN">{EQP['RARITY']}</span>
+					<span class="EQP_SPAN">{EQP['LFP_BUFF']}</span>
+					<span class="EQP_SPAN">{EQP['LFP_DEBUFF']}</span>
+					<span class="EQP_SPAN">{EQP['ATK_BUFF']}</span>
+					<span class="EQP_SPAN">{EQP['ATK_DEBUFF']}</span>
+				{/if}
+			</li>
 			{/each}
-		</li>
-	{/each}
-</ul>
-
-<!-- リセットボタン。押したらreset_mapを実行する -->
-<!-- <button on:click={() => reset_or_init_map({when_mounted_time: false})}>reset_map</button> -->
-	
-<!-- <button on:click={() => get_USR_position()}>get_USR_position</button> -->
-<!-- <button on:click={() => get_UNT_position()}>get_UNT_position</button> -->
-<!-- <button on:click={() => UNT_ATTACK_OR_MOVE()}>UNT_ATTACK_OR_MOVE</button> -->
-
-
-<!-- 上下左右のボタン(WASDに対応する) -->
-<div>
-	<button class='WASD_NULL'>◾️</button>
-	<button on:click={() => keypress_event({key: 'w'})} class='WASD'>W</button>
-	<button class='WASD_NULL'>◾️</button>
+		</ul>
+		<ul>
+			<li>
+				<span class="EQP_SPAN">RARITY</span>
+				<span class="EQP_SPAN">LFP_BUFF</span>
+				<span class="EQP_SPAN">LFP_DEBUFF</span>
+				<span class="EQP_SPAN">ATK_BUFF</span>
+				<span class="EQP_SPAN">ATK_DEBUFF</span>
+			</li>
+			{#each SLOT3 as EQP, EQP_I}
+			<li>
+				{#if EQP}
+					<span class="EQP_SPAN">{EQP['RARITY']}</span>
+					<span class="EQP_SPAN">{EQP['LFP_BUFF']}</span>
+					<span class="EQP_SPAN">{EQP['LFP_DEBUFF']}</span>
+					<span class="EQP_SPAN">{EQP['ATK_BUFF']}</span>
+					<span class="EQP_SPAN">{EQP['ATK_DEBUFF']}</span>
+				{/if}
+			</li>
+			{/each}
+		</ul>
 </div>
-<div>
-	<button on:click={() => keypress_event({key: 'a'})} class='WASD'>A</button>
-	<button class='WASD_NULL'>◾️</button>
-	<button on:click={() => keypress_event({key: 'd'})} class='WASD'>D</button>
-</div>
-<div>
-	<button class='WASD_NULL'>◾️</button>
-	<button on:click={() => keypress_event({key: 's'})} class='WASD'>S</button>
-	<button class='WASD_NULL'>◾️</button>
-</div>
+<!-- gachagachagachagachagachagacha -->
 
-<!-- <div>
-	<div>{USR_DATA_ARRAY[0].NAME} LFP: {USR_DATA_ARRAY[0].LFP} ATK: {USR_DATA_ARRAY[0].ATK}</div>
-	{#each Object.keys(UNT_DATA_OBJ) as key}
-		<div>{UNT_DATA_OBJ[key].NAME} LFP: {UNT_DATA_OBJ[key].LFP} ATK: {UNT_DATA_OBJ[key].ATK}</div>
-	{/each}
+
+
+
+
+
+
+<!-- <Slot bind:message={message} /> -->
+<!-- <Slot on:message /> -->
+
+
+<!-- 
+<div>
+	{message}
 </div> -->
 
-<div>Ver 0.0.0.4</div>
-<a href="https://github.com/taroyanaka/game/">GitHub</a>
+<!-- <Gacha answer={42}><Gacha /> -->
+
+<!-- <Gacha on:answer /> -->
 
 
+<!-- <p>{message}</p> -->
+<!-- <p>{message2}</p> -->
 
-
+<!-- <p>{message2}</p> -->
 
 
 
@@ -616,5 +833,17 @@ onMount(async () => {
 }
 .WASD_NULL{
 	background-color: black;
+}
+.EQP_SPAN{
+	display: inline-block;
+	width: 6.5rem;
+}
+
+/* Gacha開発中はfieldをnoneをON/OFFして非表示にする */
+.field {
+	/* display: none; */
+}
+.gacha{
+	display: none;
 }
 </style>

@@ -1,6 +1,37 @@
-import App from './App.svelte';
+// import App from './App.svelte';
+// import Gacha from './Gacha.svelte';
 
-import Slot from './Slot.svelte';
+// const app = new App({
+// 	// target: document.body,
+// 	target: document.body,
+// 	// props: {
+// 	// 	name: 'Taro!!'
+// 	// }
+// });
+
+
+
+// const gacha = new Gacha({
+// 	target: document.body,
+// });
+
+
+
+// export { app, gacha };
+// // export default app;
+// // export default gacha;
+
+
+
+
+
+
+
+
+
+
+
+import App from './App.svelte';
 
 const app = new App({
 	target: document.body,
@@ -10,11 +41,4 @@ const app = new App({
 });
 
 
-
-const slot = new Slot({	target: document.body, });
-
-
-
-export { app, slot };
-// export default app;
-// export default slot;
+export default app;

@@ -1,6 +1,26 @@
+<!-- コンポーネント間の変数の受け渡しが解らん過ぎるからAppコンポーネントに全部書いて解決する -->
+<!-- そのうちコンポーネント分離するかもしれないし、しないかもしれない -->
+
+
 <script>
+//   import Slot from './Slot.svelte';
+
+// import App from './App.svelte';
+// let message = 'Hello world!';
+// export message;
+
+// import App from './App.svelte';
+// let message = 'Hello from Parent';
+// let message2 = 'Hello Hello Hello Hello Hello';
+
+// export let answer = 'a mystery';
+
+
+
 import { onMount } from 'svelte';
 // $: if(true) console.log('hello');
+
+// let message = 'Hello world!';
 
 let GOLD = 1000;
 let MINE = [];
@@ -48,16 +68,16 @@ let SLOT3 = shuffle(SLOT2);
 let SLOT4 = shuffle(SLOT2.slice(0, 100));
 
 
-	// 任意のRARITYを任意の割合減らす関数
-	const decrease_any_rarity = (Rarity, Percent) => {
-		const res0 = SLOT3.filter(V=>V.RARITY === Rarity);
-		// res0の中身をPercentで減らす
-		const res1 = res0.slice(0, (res0.length - (res0.length * (Percent / 100))));;
-		const res2 = SLOT3.filter(V=>V.RARITY !== Rarity);
-		const res = res1.concat(res2);
-		const shuffle_res = shuffle(res);
-		return shuffle_res;
-	};
+// 任意のRARITYを任意のパーセンテージ減らす関数
+const decrease_any_rarity = (Rarity, Percent) => {
+	const res0 = SLOT3.filter(V=>V.RARITY === Rarity);
+	// res0の中身をPercentで減らす
+	const res1 = res0.slice(0, (res0.length - (res0.length * (Percent / 100))));;
+	const res2 = SLOT3.filter(V=>V.RARITY !== Rarity);
+	const res = res1.concat(res2);
+	const shuffle_res = shuffle(res);
+	return shuffle_res;
+};
 
 
 
@@ -116,7 +136,9 @@ document.addEventListener('keypress', keypress_event_for_slot);
 
 
 
-<!-- 
+
+
+
 
 <button on:click={slot_exe_once}>slot_exe_once</button>
 <div>MINE</div>
@@ -173,4 +195,11 @@ KAKUHEN_COUNTER: {KAKUHEN_COUNTER}
 	width: 6.5rem;
 }
 </style>
- -->
+
+
+
+
+
+
+<!-- <App message="{message}" /> -->
+<!-- <App message2="{message2}" /> -->
