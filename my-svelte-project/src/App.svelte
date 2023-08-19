@@ -911,6 +911,6 @@ onMount(async () => {
 	/* display: none; */
 }
 .gacha{
-	/* display: none; */
+	display: none;
 }
 </style>
