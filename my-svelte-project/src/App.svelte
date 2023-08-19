@@ -11,6 +11,73 @@
 import { onMount } from 'svelte';
 
 
+// DEV_MODEではGOLの位置を固定する。USRの位置も固定する。UNTの位置も固定する。
+// 今後シードランダムを導入してNONの位置を固定する。
+let DEV_MODE = true;
+// DEV_MODEがtrueの時はシャッフルはseed値を固定する。falseの時はseed値をMath.randomで決める。
+// const shuffle = DEV_MODE ? require('shuffle-seed') : require('shuffle-array');
+
+
+
+// USRはlifepoint(LFP)とattack(ATK)を持つ
+// LFPが0になるとゲームオーバー
+// USRの初期値は{NAME: 'USR', LFP: 5, ATK: 1};
+
+// unit1(UNT)やunit2(UNT)が存在し、任意のLFPとATKを持つ
+// 例として、
+// unit1は{NAME: 'UNT', LFP: 3, ATK: 1};
+// unit2は{NAME: 'UNT', LFP: 2, ATK: 2};
+
+let USR_DATA_ARRAY = [
+	{
+	NAME: 'USR',
+	LFP: 5,
+	ATK: 1,
+	EQP: [
+{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0},
+	],
+}
+];
+
+
+// MINEから指定したUSR_DATA_ARRAYのNAMEのEQPにオブジェクトを追加する関数。
+// オブジェクトの数はLIMITという引数の数が上限となる
+const set_EQP = (NAME, EQP, LIMIT) =>{
+	console.log(NAME, EQP, LIMIT);
+	// MINEから指定したUSR_DATA_ARRAYのNAMEのEQPを取得する
+	// const USR_EQP = MINE.filter(V=>V.NAME === NAME)[0].EQP;
+	const USR_EQP = EQP;
+	// USR_EQPの長さがLIMITより大きかったら、USR_EQPをLIMITの数になるまでスライスする
+	// const USR_EQP_SLICE = USR_DATA_ARRAY[0].EQP.length >= LIMIT ? USR_EQP.slice(0, LIMIT) : USR_EQP;
+
+	if(USR_DATA_ARRAY[0].EQP.length >= LIMIT){
+		return;
+	}
+	// USR_DATA_ARRAY[0].EQPオブジェクトにEQPをramda.jsで追加する
+	USR_DATA_ARRAY[0].EQP = R.append(EQP, USR_DATA_ARRAY[0].EQP);
+
+
+	// MINEから指定したUSR_DATA_ARRAYのNAMEのEQPをUSR_EQP_SLICE_PUSHに更新する
+	// MINE.filter(V=>V.NAME === NAME)[0].EQP = USR_EQP_SLICE_PUSH;
+};
+	
+let UNT_DATA_OBJ = {
+	// UNT_NUM_0: {TYPE: 'UNT', NAME: 'UNT_0', LFP: 3, ATK: 1},
+	// UNT_NUM_1: {TYPE: 'UNT', NAME: 'UNT_1', LFP: 2, ATK: 2},
+	// UNT_NUM_2: {TYPE: 'UNT', NAME: 'UNT_2', LFP: 2, ATK: 3},
+	// UNT_NUM_3: {TYPE: 'UNT', NAME: 'UNT_3', LFP: 2, ATK: 4},
+	// UNT_NUM_4: {TYPE: 'UNT', NAME: 'UNT_4', LFP: 4, ATK: 1},
+	// UNT_NUM_5: {TYPE: 'UNT', NAME: 'UNT_5', LFP: 4, ATK: 2},
+	// UNT_NUM_6: {TYPE: 'UNT', NAME: 'UNT_6', LFP: 5, ATK: 1},
+};
+
+
+// let UNT_DATA_ARRAY = [
+// 	{UNT_NUM: 0, NAME: 'UNT', LFP: 3, ATK: 1},
+// 	{UNT_NUM: 1, NAME: 'UNT', LFP: 2, ATK: 2},
+// ];
+
+
 let GOLD = 1000;
 let MINE = [];
 
@@ -145,40 +212,6 @@ document.addEventListener('keypress', keypress_event_for_slot);
 
 
 
-// DEV_MODEではGOLの位置を固定する。USRの位置も固定する。UNTの位置も固定する。
-// 今後シードランダムを導入してNONの位置を固定する。
-let DEV_MODE = true;
-// DEV_MODEがtrueの時はシャッフルはseed値を固定する。falseの時はseed値をMath.randomで決める。
-// const shuffle = DEV_MODE ? require('shuffle-seed') : require('shuffle-array');
-
-
-
-// USRはlifepoint(LFP)とattack(ATK)を持つ
-// LFPが0になるとゲームオーバー
-// USRの初期値は{NAME: 'USR', LFP: 5, ATK: 1};
-
-// unit1(UNT)やunit2(UNT)が存在し、任意のLFPとATKを持つ
-// 例として、
-// unit1は{NAME: 'UNT', LFP: 3, ATK: 1};
-// unit2は{NAME: 'UNT', LFP: 2, ATK: 2};
-
-let USR_DATA_ARRAY = [{NAME: 'USR', LFP: 5, ATK: 1}];
-
-let UNT_DATA_OBJ = {
-	// UNT_NUM_0: {TYPE: 'UNT', NAME: 'UNT_0', LFP: 3, ATK: 1},
-	// UNT_NUM_1: {TYPE: 'UNT', NAME: 'UNT_1', LFP: 2, ATK: 2},
-	// UNT_NUM_2: {TYPE: 'UNT', NAME: 'UNT_2', LFP: 2, ATK: 3},
-	// UNT_NUM_3: {TYPE: 'UNT', NAME: 'UNT_3', LFP: 2, ATK: 4},
-	// UNT_NUM_4: {TYPE: 'UNT', NAME: 'UNT_4', LFP: 4, ATK: 1},
-	// UNT_NUM_5: {TYPE: 'UNT', NAME: 'UNT_5', LFP: 4, ATK: 2},
-	// UNT_NUM_6: {TYPE: 'UNT', NAME: 'UNT_6', LFP: 5, ATK: 1},
-};
-
-
-// let UNT_DATA_ARRAY = [
-// 	{UNT_NUM: 0, NAME: 'UNT', LFP: 3, ATK: 1},
-// 	{UNT_NUM: 1, NAME: 'UNT', LFP: 2, ATK: 2},
-// ];
 
 
 
@@ -576,7 +609,18 @@ const reset_or_init_map = ({when_mounted_time=true}) => {
 
 
 	DIED = '';
-	USR_DATA_ARRAY = [{NAME: 'USR', LFP: 5, ATK: 1}];
+// USR_DATA_ARRAY = [{NAME: 'USR', LFP: 5, ATK: 1}];
+
+USR_DATA_ARRAY = [{
+	NAME: 'USR',
+	LFP: 5,
+	ATK: 1,
+	EQP: [
+{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0},
+	],
+}];
+
+
 	// UNT_DATA_OBJ = {
 	// 	UNT_NUM_0: {TYPE: 'UNT', NAME: 'UNT_0', LFP: 3, ATK: 1},
 	// 	UNT_NUM_1: {TYPE: 'UNT', NAME: 'UNT_1', LFP: 2, ATK: 2},
@@ -732,7 +776,23 @@ onMount(async () => {
 							</div>
 
 							<div>
-								<div>{USR_DATA_ARRAY[0].NAME} LFP: {USR_DATA_ARRAY[0].LFP} ATK: {USR_DATA_ARRAY[0].ATK}</div>
+								<div>
+									{USR_DATA_ARRAY[0].NAME}
+									LFP: {USR_DATA_ARRAY[0].LFP}
+									ATK: {USR_DATA_ARRAY[0].ATK}
+									{#each USR_DATA_ARRAY[0].EQP as EQP, EQP_I}
+										{#if EQP}
+											<div>
+												<!-- {EQP_I} -->
+												RARITY: {EQP.RARITY}
+												LFP_BUFF: {EQP.LFP_BUFF}
+												<!-- LFP_DEBUFF: {EQP.LFP_DEBUFF} -->
+												ATK_BUFF: {EQP.ATK_BUFF}
+												<!-- ATK_DEBUFF: {EQP.ATK_DEBUFF} -->
+											</div>
+										{/if}
+									{/each}
+								</div>
 								{#each Object.keys(UNT_DATA_OBJ) as key}
 									<div>{UNT_DATA_OBJ[key].NAME} LFP: {UNT_DATA_OBJ[key].LFP} ATK: {UNT_DATA_OBJ[key].ATK}</div>
 								{/each}
@@ -772,6 +832,13 @@ onMount(async () => {
 					<span class="EQP_SPAN">{EQP['LFP_DEBUFF']}</span>
 					<span class="EQP_SPAN">{EQP['ATK_BUFF']}</span>
 					<span class="EQP_SPAN">{EQP['ATK_DEBUFF']}</span>
+					<!-- set_EQPボタン -->
+					<!-- NAME, EQP, LIMITが引数 -->
+					<button on:click={() => set_EQP(
+						USR_DATA_ARRAY[0].NAME,
+						EQP,
+						3,
+					)}>set_EQP</button>
 				{/if}
 			</li>
 			{/each}
@@ -844,6 +911,6 @@ onMount(async () => {
 	/* display: none; */
 }
 .gacha{
-	display: none;
+	/* display: none; */
 }
 </style>
