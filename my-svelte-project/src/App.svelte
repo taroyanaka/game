@@ -40,7 +40,7 @@ import { onMount } from 'svelte';
 // 	[1, 1, 1],
 // ];
 
-const convert_for_magic = (range) => {
+const convert = (range) => {
 	const result = [];
 	range.forEach((row, y) => {
 		row.forEach((col, x) => {
@@ -55,6 +55,22 @@ const convert_for_magic = (range) => {
 	return result;
 }
 
+// convert_for_magicを5行以内の関数に書き換える
+const convert_for_magic = (range) => {
+	const Y_X_FORM_RANGE = range.map(V=>V.map((v, i)=>v === 1 ? [i, V.indexOf(v)] : null))
+		.filter(V=>V !== null)
+			.flat()
+				.filter(V=>V !== null)
+					.sort((a, b) => a[0] - b[0]).sort((a, b) => a[1] - b[1]);
+	return Y_X_FORM_RANGE;
+	//	// resをflatする
+	//	const res2 = res.flat();
+	//	// res2の中身をnullを除外する
+	//	const res3 = res2.filter(V=>V !== null);
+	//	// sortする
+	//	const res4 = res3.sort((a, b) => a[0] - b[0]).sort((a, b) => a[1] - b[1]);
+	//	return res4;
+}
 
 	
 
@@ -275,9 +291,50 @@ document.addEventListener('keypress', keypress_event_for_slot);
 
 
 
-
 const magic_USR_to_UNT = (Magic) => {
-	return Magic
+	// console.log(Magic);
+	try {
+	const magic_attack = convert_for_magic(Magic);
+	console.log(magic_attack);
+	magic_attack.forEach(MAGI=>{
+		// console.log(MAGI);
+		const magic_to_Y = CURRENT_Y_AND_X[0] + MAGI[0];
+		const magic_to_X = CURRENT_Y_AND_X[1] + MAGI[1];
+		if(
+			COLLECT_VALUE2[magic_to_Y][magic_to_X][2] === 'GOL' ||
+			COLLECT_VALUE2[magic_to_Y][magic_to_X][2] === 'BLC' ||
+			COLLECT_VALUE2[magic_to_Y][magic_to_X][2] === 'NON' ||
+			COLLECT_VALUE2[magic_to_Y][magic_to_X][2] === 'USR'
+		){return}
+		// (await window.app.$capture_state().COLLECT_VALUE2)[4][5][2]['NAME'].replaceAll('UNT_', '')
+		// const UNT_NUM = Number(COLLECT_VALUE2[magic_to_Y][magic_to_X][2]['NAME'].slice(-1));
+		const UNT_NUM = Number(COLLECT_VALUE2[magic_to_Y][magic_to_X][2]['NAME'].replaceAll('UNT_', ''));
+		// console.log(UNT_NUM);
+		const UNT_NUM_N = 'UNT_NUM_' + UNT_NUM.toString();
+		const USR_ATK_BUFF = USR_DATA_ARRAY[0]['EQP'].reduce((accumulator, currentValue) => {
+			return accumulator + currentValue['ATK_BUFF'];
+		}, 0) || 0;
+		const USR_ATK = USR_DATA_ARRAY[0].ATK;
+		const USR_ATK_WITH_BUFF = USR_ATK + USR_ATK_BUFF;
+		UNT_DATA_OBJ[UNT_NUM_N]['LFP'] -= USR_ATK_WITH_BUFF;
+		if (UNT_DATA_OBJ[UNT_NUM_N]['LFP'] <= 0) {
+			const UNT_Y_AND_X = 
+					[
+						magic_to_Y,
+						magic_to_X,
+					];
+			// UNTの位置をNONに変更する
+			change_BLC_to_NON(UNT_Y_AND_X[0], UNT_Y_AND_X[1]);
+			// 色も更新する
+			COLLECT_VALUE2[UNT_Y_AND_X[0]][UNT_Y_AND_X[1]][3] = 'background-color: #FFFFFF';
+			// UNT_DATA_OBJからUNT_NUMを指定してUNTを削除する
+			UNT_DATA_OBJ = R.omit([UNT_NUM_N], UNT_DATA_OBJ);
+		}
+	})
+	// return Magic;
+	} catch (error) {
+	console.log(error);
+	}
 }
 
 
@@ -415,11 +472,11 @@ function keypress_event(e) {
 	};
 
 	if(e.key === 't')
-		{attack_USR_to_UNT(0, -1, 0);
+		{magic_USR_to_UNT(USR_DATA_ARRAY[0]['EQP'][1]['MAGIC']);
 			return;
 		}
 	if(e.key === 'g')
-		{UNT_ATTACK_OR_MOVE(0);
+		{magic_USR_to_UNT(USR_DATA_ARRAY[0]['EQP'][2]['MAGIC']);
 		// {attack_UNT_to_USR(0);
 			return;
 		}
@@ -915,6 +972,7 @@ onMount(async () => {
 												<!-- LFP_DEBUFF: {EQP.LFP_DEBUFF} -->
 												ATK_BUFF: {EQP.ATK_BUFF}
 												<!-- ATK_DEBUFF: {EQP.ATK_DEBUFF} -->
+												MAGIC: {EQP.MAGIC}
 											</div>
 										{/if}
 									{/each}
