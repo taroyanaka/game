@@ -11,6 +11,9 @@
 import { onMount } from 'svelte';
 
 
+	
+
+
 // DEV_MODEではGOLの位置を固定する。USRの位置も固定する。UNTの位置も固定する。
 // 今後シードランダムを導入してNONの位置を固定する。
 let DEV_MODE = true;
@@ -28,10 +31,11 @@ let DEV_MODE = true;
 // unit1は{NAME: 'UNT', LFP: 3, ATK: 1};
 // unit2は{NAME: 'UNT', LFP: 2, ATK: 2};
 
+
 let USR_DATA_ARRAY = [
 	{
 	NAME: 'USR',
-	LFP: 5,
+	LFP: 20,
 	ATK: 1,
 	EQP: [
 {RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0},
@@ -43,7 +47,7 @@ let USR_DATA_ARRAY = [
 // MINEから指定したUSR_DATA_ARRAYのNAMEのEQPにオブジェクトを追加する関数。
 // オブジェクトの数はLIMITという引数の数が上限となる
 const set_EQP = (NAME, EQP, LIMIT) =>{
-	console.log(NAME, EQP, LIMIT);
+	// console.log(NAME, EQP, LIMIT);
 	// MINEから指定したUSR_DATA_ARRAYのNAMEのEQPを取得する
 	// const USR_EQP = MINE.filter(V=>V.NAME === NAME)[0].EQP;
 	const USR_EQP = EQP;
@@ -163,7 +167,7 @@ const slot_exe_once = () =>{
 	const SLOT3_KAKUHEN = KAKUHEN ? decrease_any_rarity(0, DECREASE_PERCENT) : SLOT3;
 	// SLOT3_KAKUHENからランダムで1つ選択する
 	const random_SLOT3_KAKUHEN = shuffle(SLOT3_KAKUHEN)[0];
-	console.log(random_SLOT3_KAKUHEN);
+	// console.log(random_SLOT3_KAKUHEN);
 	// GOLDが足りなかったら追加しない。GOLDが足りたらGOLDを減らす。
 	if (GOLD < 1) {
 		return;
@@ -252,18 +256,42 @@ const change_BLC_to_NON = (Y, X) => {
 
 
 // USRがUNTにアタックする関数(UNTのLFPをUSRのATK分減らす)(引数にはUNT_DATA_ARRAYのUNT_NUMを指定する)
-const attack_USR_to_UNT = (UNT_NUM, Go_to_Y, Go_to_X) => {
+// const attack_USR_to_UNT = (UNT_NUM, Go_to_Y, Go_to_X) => {
+const attack_USR_to_UNT = (Go_to_Y, Go_to_X) => {
+	console.log('attack_USR_to_UNT');
+	console.log(COLLECT_VALUE2[Go_to_Y][Go_to_X][2]);
+	// Go_to_YとGo_to_XにUNTが存在しない場合はreturnする
+	if (COLLECT_VALUE2[Go_to_Y][Go_to_X][2]['TYPE'] !== 'UNT') {
+		console.log('UNTが存在しない');
+		return;
+	}
+
+	// Go_to_YとGo_to_XからUNT_NUMを取得する
+	// const UNT_NUM = COLLECT_VALUE2[Go_to_Y][Go_to_X][2]['UNT_NUM'];
+	const UNT_NUM = Number(COLLECT_VALUE2[Go_to_Y][Go_to_X][2]['NAME'].slice(-1));
+	// (await window.app.$capture_state().COLLECT_VALUE2[4][5])[2]['NAME'].slice(-1)
 	const UNT_NUM_N = 'UNT_NUM_' + UNT_NUM.toString();
+	// USR_DATA_ARRAY[0]の['EQP']の中から['ATK_BUFF']を累計してUSR_ATK_BUFFに代入すr
+	const USR_ATK_BUFF = USR_DATA_ARRAY[0]['EQP'].reduce((accumulator, currentValue) => {
+		return accumulator + currentValue['ATK_BUFF'];
+	}, 0) || 0;
 	// USRのATKを取得する
 	const USR_ATK = USR_DATA_ARRAY[0].ATK;
+	const USR_ATK_WITH_BUFF = USR_ATK + USR_ATK_BUFF;
 	// 指定したUNTのLFPをUSRのATK分減らす
-	UNT_DATA_OBJ[UNT_NUM_N]['LFP'] -= USR_ATK;
+	// UNT_DATA_OBJ[UNT_NUM_N]['LFP'] -= USR_ATK;
+	console.log(UNT_NUM_N);
+	// console.log(UNT_DATA_OBJ[UNT_NUM_N]);
+	// ['LFP']);
+	UNT_DATA_OBJ[UNT_NUM_N]['LFP'] -= USR_ATK_WITH_BUFF;
 	// 指定したUNTのLFPが0以下になったら、指定したUNTの位置をNONに変更する
 	if (UNT_DATA_OBJ[UNT_NUM_N]['LFP'] <= 0) {
 		const UNT_Y_AND_X = 
 				[
-					CURRENT_Y_AND_X[0] + Go_to_Y,
-					CURRENT_Y_AND_X[1] + Go_to_X,
+					// CURRENT_Y_AND_X[0] + Go_to_Y,
+					// CURRENT_Y_AND_X[1] + Go_to_X,
+					Go_to_Y,
+					Go_to_X,
 				];
 		// UNTの位置をNONに変更する
 		change_BLC_to_NON(UNT_Y_AND_X[0], UNT_Y_AND_X[1]);
@@ -384,24 +412,35 @@ function keypress_event(e) {
 		CURRENT_Y_AND_X = go_to_y_x;
 	}
 
-	UNT_ATTACK_OR_MOVE(0);
-	// UNT_ATTACK_OR_MOVE(1);
-	UNT_ATTACK_OR_MOVE(2);
-	UNT_ATTACK_OR_MOVE(3);
-	UNT_ATTACK_OR_MOVE(4);
-	UNT_ATTACK_OR_MOVE(5);
-	UNT_ATTACK_OR_MOVE(6);
-	UNT_ATTACK_OR_MOVE(7);
-	UNT_ATTACK_OR_MOVE(8);
-	UNT_ATTACK_OR_MOVE(9);
-	UNT_ATTACK_OR_MOVE(10);
-	UNT_ATTACK_OR_MOVE(11);
-	UNT_ATTACK_OR_MOVE(12);
-	UNT_ATTACK_OR_MOVE(13);
-	UNT_ATTACK_OR_MOVE(14);
-	UNT_ATTACK_OR_MOVE(15);
-	UNT_ATTACK_OR_MOVE(16);
-	
+	// USRがUNTにアタックする。引数はUNT_DATA_ARRAYのUNT_NUMの指定と攻撃対象のUNTのIDの指定。
+	// attack_USR_to_UNT(0, go_to_y_x[0], go_to_y_x[1]);
+	attack_USR_to_UNT(go_to_y_x[0], go_to_y_x[1]);
+
+
+	Object.entries(UNT_DATA_OBJ)
+		// .map((V,I)=>I)
+		.map((V,I)=>{
+			UNT_ATTACK_OR_MOVE(V[1]['NAME']);
+			// UNT_ATTACK_OR_MOVE(V[0]);
+			// UNT_ATTACK_OR_MOVE(I);
+			// UNT_ATTACK_OR_MOVE(I);
+			// UNT_ATTACK_OR_MOVE(I);
+			// UNT_ATTACK_OR_MOVE(I);
+			// UNT_ATTACK_OR_MOVE(I);
+			// UNT_ATTACK_OR_MOVE(I);
+			// UNT_ATTACK_OR_MOVE(I);
+			// UNT_ATTACK_OR_MOVE(I);
+			// UNT_ATTACK_OR_MOVE(I);
+			// UNT_ATTACK_OR_MOVE(I);
+			// UNT_ATTACK_OR_MOVE(I);
+			// UNT_ATTACK_OR_MOVE(I);
+			// UNT_ATTACK_OR_MOVE(I);
+			// UNT_ATTACK_OR_MOVE(I);
+			// UNT_ATTACK_OR_MOVE(I);
+			// UNT_ATTACK_OR_MOVE(I);
+			// UNT_ATTACK_OR_MOVE(I);
+
+	})
 
 	// console.log(
 	// 	keypress_position[e.key],
@@ -441,7 +480,7 @@ const get_UNT_position = (UNT_NUM=0) => {
 	// console.log(UNT_Y_AND_X);
 	return [Y, X];
 	} catch (error) {
-		console.log(UNT_NUM);
+		// console.log(UNT_NUM);
 		console.log(error);
 	}
 };
@@ -450,8 +489,9 @@ const get_UNT_position = (UNT_NUM=0) => {
 // 隣接しているUSRがいたらアタックする
 // USRが隣接していない場合はランダムに1マス移動する
 // UNTの移動順はATKの値が高いUNTから順番に行動する。ATKが同値の場合はUNT_NUMが小さい方から行動する。
-const UNT_ATTACK_OR_MOVE = (UNT_NUM=0) => {
+const UNT_ATTACK_OR_MOVE = (NAME) => {
 	try {
+	const UNT_NUM = NAME ? Number(NAME.replaceAll('UNT_', '')) : 0;
 	const usr_position = get_USR_position();
 	const unt_position = get_UNT_position(UNT_NUM);
 	// console.log(unt_position);
@@ -613,7 +653,7 @@ const reset_or_init_map = ({when_mounted_time=true}) => {
 
 USR_DATA_ARRAY = [{
 	NAME: 'USR',
-	LFP: 5,
+	LFP: 50,
 	ATK: 1,
 	EQP: [
 {RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0},
@@ -911,6 +951,6 @@ onMount(async () => {
 	/* display: none; */
 }
 .gacha{
-	display: none;
+	/* display: none; */
 }
 </style>
