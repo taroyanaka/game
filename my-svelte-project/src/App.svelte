@@ -10,6 +10,51 @@
 
 import { onMount } from 'svelte';
 
+// const range = [
+// [1, 1, 0],
+// [1, 'U', 1],
+// [0, 1, 0],
+// ]
+
+// // 上記のrangeを以下のように変換する
+// const sample = [
+// 	[0,0],[0,1],[1,0],[1,2],[2,1],
+// ]
+
+// // 1の部分を配列に変換する('U'は無視)
+// const range2 = [
+// 	[0, 1, 1],
+// 	[1, 'U', 1],
+// 	[1, 1, 0],
+// ];
+
+// const sample2 = [
+// 	[0,1],[0,2],[1,0],[1,2],[2,0],[2,1],
+// ]
+
+// // 1の部分を配列に変換する('U'は無視)関数
+
+// const range3 = [
+// 	[0, 1, 1],
+// 	[0, 'U', 1],
+// 	[1, 1, 1],
+// ];
+
+const convert_for_magic = (range) => {
+	const result = [];
+	range.forEach((row, y) => {
+		row.forEach((col, x) => {
+			if (col === 1) {
+				if(range[y][x] === 'U'){
+					return;
+				}
+				result.push([y, x]);
+			}
+		});
+	});
+	return result;
+}
+
 
 	
 
@@ -38,7 +83,23 @@ let USR_DATA_ARRAY = [
 	LFP: 20,
 	ATK: 1,
 	EQP: [
-{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0},
+		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, MAGIC: null},
+		{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+			[
+				[0,  1,  0],
+				[1, 'U', 1],
+				[0,  1,  0],
+			]
+		},
+		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+			[
+				[1, 1,  1,  1, 1],
+				[1, 0,  0,  0, 1],
+				[1, 0, 'U', 0, 1],
+				[1, 0,  0,  0, 1],
+				[1, 1,  1,  1, 1],
+			]
+		},
 	],
 }
 ];
@@ -215,7 +276,9 @@ document.addEventListener('keypress', keypress_event_for_slot);
 
 
 
-
+const magic_USR_to_UNT = (Magic) => {
+	return Magic
+}
 
 
 
@@ -258,6 +321,10 @@ const change_BLC_to_NON = (Y, X) => {
 // USRがUNTにアタックする関数(UNTのLFPをUSRのATK分減らす)(引数にはUNT_DATA_ARRAYのUNT_NUMを指定する)
 // const attack_USR_to_UNT = (UNT_NUM, Go_to_Y, Go_to_X) => {
 const attack_USR_to_UNT = (Go_to_Y, Go_to_X) => {
+	console.log(
+		"Go_to_Y, Go_to_X",
+		Go_to_Y, Go_to_X
+	)
 	console.log('attack_USR_to_UNT');
 	console.log(COLLECT_VALUE2[Go_to_Y][Go_to_X][2]);
 	// Go_to_YとGo_to_XにUNTが存在しない場合はreturnする
@@ -656,9 +723,28 @@ USR_DATA_ARRAY = [{
 	LFP: 50,
 	ATK: 1,
 	EQP: [
-{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0},
+		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, MAGIC: null},
+		{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+			[
+				[1,  1,  0],
+				[1, 'U', 1],
+				[0,  1,  0],
+			]
+		},
+		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+			[
+				[1, 1,  1,  1, 1],
+				[1, 0,  0,  0, 1],
+				[1, 0, 'U', 0, 1],
+				[1, 0,  0,  0, 1],
+				[1, 1,  1,  1, 1],
+			]
+		},
 	],
 }];
+
+
+
 
 
 	// UNT_DATA_OBJ = {
