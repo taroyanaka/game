@@ -987,7 +987,7 @@ onMount(async () => {
 								{/each}
 							</div>
 
-							<div>Ver 0.0.0.4</div>
+							<div>Ver 0.0.0.5</div>
 							<a href="https://github.com/taroyanaka/game/">GitHub</a>
 
 
