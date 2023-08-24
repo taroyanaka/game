@@ -57,12 +57,15 @@ const convert = (range) => {
 
 // convert_for_magicを5行以内の関数に書き換える
 const convert_for_magic = (range) => {
-	const Y_X_FORM_RANGE = range.map(V=>V.map((v, i)=>v === 1 ? [i, V.indexOf(v)] : null))
-		.filter(V=>V !== null)
+	const center = range.map(V=>V.map((v, i)=>v === 'U' ? [i, V.indexOf(v)] : null))
+			.flat().filter((v, i)=>v !== null)[0];
+	const non_center = range.map((V, I)=>V.map((v, i)=>v === 1 ? [I, i] : null))
 			.flat()
-				.filter(V=>V !== null)
-					.sort((a, b) => a[0] - b[0]).sort((a, b) => a[1] - b[1]);
+				.filter(V=>V !== null);
+					// .sort((a, b) => a[0] - b[0]).sort((a, b) => a[1] - b[1]);
+	const Y_X_FORM_RANGE = non_center.map(V=>[ (V[0] - center[0]), (V[1] - center[1]) ] );
 	return Y_X_FORM_RANGE;
+	// return [center, non_center];
 	//	// resをflatする
 	//	const res2 = res.flat();
 	//	// res2の中身をnullを除外する
@@ -295,11 +298,13 @@ const magic_USR_to_UNT = (Magic) => {
 	// console.log(Magic);
 	try {
 	const magic_attack = convert_for_magic(Magic);
-	console.log(magic_attack);
+	// console.log(magic_attack);
 	magic_attack.forEach(MAGI=>{
 		// console.log(MAGI);
 		const magic_to_Y = CURRENT_Y_AND_X[0] + MAGI[0];
 		const magic_to_X = CURRENT_Y_AND_X[1] + MAGI[1];
+		console.log(magic_to_Y, magic_to_X);
+		console.log(COLLECT_VALUE2[magic_to_Y][magic_to_X][2]);
 		if(
 			COLLECT_VALUE2[magic_to_Y][magic_to_X][2] === 'GOL' ||
 			COLLECT_VALUE2[magic_to_Y][magic_to_X][2] === 'BLC' ||
@@ -783,7 +788,7 @@ USR_DATA_ARRAY = [{
 		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, MAGIC: null},
 		{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
 			[
-				[1,  1,  0],
+				[0,  1,  0],
 				[1, 'U', 1],
 				[0,  1,  0],
 			]
