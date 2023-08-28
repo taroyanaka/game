@@ -1,4 +1,9 @@
 <script>
+// const exe_any_magic_1 = (Magic) => magic_USR_to_UNT(USR_DATA_ARRAY[0]['EQP'][1]['MAGIC']);
+// const exe_any_magic_1 = (Magic) => console.log(USR_DATA_ARRAY[0]['EQP'][1]['MAGIC']);
+// const exe_any_magic_1 = (Magic) => console.log(Magic);
+// const exe_any_magic_2 = (Magic) => console.log(USR_DATA_ARRAY[0]['EQP'][1]['MAGIC']);
+// const magic_attack = (Magic) => magic_USR_to_UNT(Magic);
 
 
 // import Gacha from './Gacha.svelte';
@@ -95,14 +100,13 @@ let DEV_MODE = true;
 // unit1は{NAME: 'UNT', LFP: 3, ATK: 1};
 // unit2は{NAME: 'UNT', LFP: 2, ATK: 2};
 
-
 let USR_DATA_ARRAY = [
 	{
 	NAME: 'USR',
 	LFP: 20,
 	ATK: 1,
 	EQP: [
-		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, MAGIC: null},
+		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, MAGIC: [0, null]},
 		{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
 			[
 				[0,  1,  0],
@@ -456,7 +460,8 @@ const attack_UNT_to_USR = (UNT_NUM) => {
 // const ANY_MOVE_FN = () => 'WIP';
 
 
-
+let CURRENT_MAGIC = null;
+const set_magic = (Magic) => CURRENT_MAGIC = Magic;
 function keypress_event(e) {
 	// console.log('keypress_event');
 
@@ -473,11 +478,23 @@ function keypress_event(e) {
 		'a': [0, -1],
 		's': [1, 0],
 		'd': [0, 1],
-		// 'g': slot_exe_once(),
+		'm': null, // Magic of m
 	};
 
+// // Magic引数がある場合はmagic_attackとUNT_ATTACK_OR_MOVEを実行し、
+// usr_moveとattack_USR_to_UNTを実行せず、早期リターンする
+if(e.Magic){
+	// console.log('keypress_event');
+	magic_USR_to_UNT(e.Magic);
+	Object.entries(UNT_DATA_OBJ)
+		.map((V,I)=>{
+			UNT_ATTACK_OR_MOVE(V[1]['NAME']);
+		})
+	return;
+}
+
 	if(e.key === 't')
-		{magic_USR_to_UNT(USR_DATA_ARRAY[0]['EQP'][1]['MAGIC']);
+		{magic_USR_to_UNT(USR_DATA_ARRAY[0]['EQP'][1]['MAGIC'][1]);
 			return;
 		}
 	if(e.key === 'g')
@@ -518,57 +535,39 @@ function keypress_event(e) {
 		}, 1000);
 	}
 
+if(!e.Magic){
+	const usr_move = () => {
+		// go_to_y_xがNONの場合は更新する
+		if (COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][2] === 'NON') {
+			COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][2] = 'USR';
+			COLLECT_VALUE2[CURRENT_Y_AND_X[0]][CURRENT_Y_AND_X[1]][2] = 'NON';
+			// 色も更新する
+			COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][3] = 'background-color: #0000FF';
+			COLLECT_VALUE2[CURRENT_Y_AND_X[0]][CURRENT_Y_AND_X[1]][3] = 'background-color: #FFFFFF';
 
-	// go_to_y_xがNONの場合は更新する
-	if (COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][2] === 'NON') {
-		COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][2] = 'USR';
-		COLLECT_VALUE2[CURRENT_Y_AND_X[0]][CURRENT_Y_AND_X[1]][2] = 'NON';
-		// 色も更新する
-		COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][3] = 'background-color: #0000FF';
-		COLLECT_VALUE2[CURRENT_Y_AND_X[0]][CURRENT_Y_AND_X[1]][3] = 'background-color: #FFFFFF';
+			// USR_DATA_ARRAYを更新する([4]にUSR_DATA_ARRAYを反映し、元の位置を空にする)
+			// COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][4] = USR_DATA_ARRAY[0];
+			// COLLECT_VALUE2[CURRENT_Y_AND_X[0]][CURRENT_Y_AND_X[1]][4] = null;
 
-		// USR_DATA_ARRAYを更新する([4]にUSR_DATA_ARRAYを反映し、元の位置を空にする)
-		// COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][4] = USR_DATA_ARRAY[0];
-		// COLLECT_VALUE2[CURRENT_Y_AND_X[0]][CURRENT_Y_AND_X[1]][4] = null;
-
-		console.log(
-			// keypress_position[e.key],
-			// "COLLECT_VALUE2", COLLECT_VALUE2,
-			// "COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]]", COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]],
-			// "CURRENT_Y_AND_X", CURRENT_Y_AND_X,
-		);
-
-		CURRENT_Y_AND_X = go_to_y_x;
+			console.log(
+				// keypress_position[e.key],
+				// "COLLECT_VALUE2", COLLECT_VALUE2,
+				// "COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]]", COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]],
+				// "CURRENT_Y_AND_X", CURRENT_Y_AND_X,
+			);
+			CURRENT_Y_AND_X = go_to_y_x;
+		}
 	}
-
+	usr_move();
 	// USRがUNTにアタックする。引数はUNT_DATA_ARRAYのUNT_NUMの指定と攻撃対象のUNTのIDの指定。
 	// attack_USR_to_UNT(0, go_to_y_x[0], go_to_y_x[1]);
 	attack_USR_to_UNT(go_to_y_x[0], go_to_y_x[1]);
-
+}
 
 	Object.entries(UNT_DATA_OBJ)
 		// .map((V,I)=>I)
 		.map((V,I)=>{
 			UNT_ATTACK_OR_MOVE(V[1]['NAME']);
-			// UNT_ATTACK_OR_MOVE(V[0]);
-			// UNT_ATTACK_OR_MOVE(I);
-			// UNT_ATTACK_OR_MOVE(I);
-			// UNT_ATTACK_OR_MOVE(I);
-			// UNT_ATTACK_OR_MOVE(I);
-			// UNT_ATTACK_OR_MOVE(I);
-			// UNT_ATTACK_OR_MOVE(I);
-			// UNT_ATTACK_OR_MOVE(I);
-			// UNT_ATTACK_OR_MOVE(I);
-			// UNT_ATTACK_OR_MOVE(I);
-			// UNT_ATTACK_OR_MOVE(I);
-			// UNT_ATTACK_OR_MOVE(I);
-			// UNT_ATTACK_OR_MOVE(I);
-			// UNT_ATTACK_OR_MOVE(I);
-			// UNT_ATTACK_OR_MOVE(I);
-			// UNT_ATTACK_OR_MOVE(I);
-			// UNT_ATTACK_OR_MOVE(I);
-			// UNT_ATTACK_OR_MOVE(I);
-
 	})
 
 	// console.log(
@@ -785,21 +784,27 @@ USR_DATA_ARRAY = [{
 	LFP: 50,
 	ATK: 1,
 	EQP: [
-		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, MAGIC: null},
+		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, MAGIC: [null, null]},
 		{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
 			[
-				[0,  1,  0],
-				[1, 'U', 1],
-				[0,  1,  0],
+				{MAGIC_COUNT: 1},
+				[
+					[0,  1,  0],
+					[1, 'U', 1],
+					[0,  1,  0],
+				]
 			]
 		},
 		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
 			[
-				[1, 1,  1,  1, 1],
-				[1, 0,  0,  0, 1],
-				[1, 0, 'U', 0, 1],
-				[1, 0,  0,  0, 1],
-				[1, 1,  1,  1, 1],
+				{MAGIC_COUNT: 1},
+				[
+					[1, 1,  1,  1, 1],
+					[1, 0,  0,  0, 1],
+					[1, 0, 'U', 0, 1],
+					[1, 0,  0,  0, 1],
+					[1, 1,  1,  1, 1],
+				]
 			]
 		},
 	],
@@ -977,7 +982,9 @@ onMount(async () => {
 												<!-- LFP_DEBUFF: {EQP.LFP_DEBUFF} -->
 												ATK_BUFF: {EQP.ATK_BUFF}
 												<!-- ATK_DEBUFF: {EQP.ATK_DEBUFF} -->
-												MAGIC: {EQP.MAGIC}
+<!-- <button on:click={() => keypress_event(EQP.MAGIC)}>MAGIC</button> -->
+<button  on:click={() => keypress_event({key: 'm', Magic: EQP.MAGIC[1]})}>MAGIC</button>
+												MAGIC: {EQP.MAGIC[1]}
 											</div>
 										{/if}
 									{/each}
@@ -987,7 +994,7 @@ onMount(async () => {
 								{/each}
 							</div>
 
-							<div>Ver 0.0.0.5</div>
+							<div>Ver 0.0.0.6</div>
 							<a href="https://github.com/taroyanaka/game/">GitHub</a>
 
 
@@ -1056,33 +1063,6 @@ onMount(async () => {
 <!-- gachagachagachagachagachagacha -->
 
 
-
-
-
-
-
-<!-- <Slot bind:message={message} /> -->
-<!-- <Slot on:message /> -->
-
-
-<!-- 
-<div>
-	{message}
-</div> -->
-
-<!-- <Gacha answer={42}><Gacha /> -->
-
-<!-- <Gacha on:answer /> -->
-
-
-<!-- <p>{message}</p> -->
-<!-- <p>{message2}</p> -->
-
-<!-- <p>{message2}</p> -->
-
-
-
-
 <style>
 .WASD, .WASD_NULL{
 	font-size: 30px;
@@ -1095,11 +1075,13 @@ onMount(async () => {
 	width: 6.5rem;
 }
 
+
 /* Gacha開発中はfieldをnoneをON/OFFして非表示にする */
 .field {
 	/* display: none; */
 }
+
 .gacha{
-	/* display: none; */
+	display: none;
 }
 </style>
