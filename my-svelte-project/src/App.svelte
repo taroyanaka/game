@@ -14,6 +14,49 @@
 
 
 import { onMount } from 'svelte';
+// import { beforeUpdate, afterUpdate } from 'svelte';
+
+const INIT_USR_DATA_ARRAY = [{
+	NAME: 'USR',
+	LFP: 50,
+	ATK: 1,
+	EQP: [
+		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, 
+			MAGIC: 
+				[
+					{MAGIC_COUNT: 0},
+					[
+						[0,  0,  0],
+						[0, 'U', 0],
+						[0,  0,  0],
+					]
+				]
+		},
+		{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+			[
+				{MAGIC_COUNT: 3},
+				[
+					[0,  1,  0],
+					[1, 'U', 1],
+					[0,  1,  0],
+				]
+			]
+		},
+		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+			[
+				{MAGIC_COUNT: 1},
+				[
+					[1, 1,  1,  1, 1],
+					[1, 0,  0,  0, 1],
+					[1, 0, 'U', 0, 1],
+					[1, 0,  0,  0, 1],
+					[1, 1,  1,  1, 1],
+				]
+			]
+		},
+	],
+}];
+let USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY);
 
 // const range = [
 // [1, 1, 0],
@@ -44,6 +87,16 @@ import { onMount } from 'svelte';
 // 	[0, 'U', 1],
 // 	[1, 1, 1],
 // ];
+
+const decrement_MAGIC_COUNTER = (EqpNum) => {
+	// console.log(EqpNum);
+	// console.log(USR_DATA_ARRAY[0]['EQP'][EqpNum]['MAGIC'][0]['MAGIC_COUNT']);
+	// console.log(USR_DATA_ARRAY[0]['EQP'][EqpNum]['MAGIC']);
+
+	// USR_DATA_ARRAY[0]['EQP'][EqpNum]['MAGIC'][0]['MAGIC_COUNT'] -= 1;
+	USR_DATA_ARRAY[0]['EQP'][EqpNum]['MAGIC'][0]['MAGIC_COUNT'] -= 1;
+}
+
 
 const convert = (range) => {
 	const result = [];
@@ -100,32 +153,32 @@ let DEV_MODE = true;
 // unit1は{NAME: 'UNT', LFP: 3, ATK: 1};
 // unit2は{NAME: 'UNT', LFP: 2, ATK: 2};
 
-let USR_DATA_ARRAY = [
-	{
-	NAME: 'USR',
-	LFP: 20,
-	ATK: 1,
-	EQP: [
-		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, MAGIC: [0, null]},
-		{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
-			[
-				[0,  1,  0],
-				[1, 'U', 1],
-				[0,  1,  0],
-			]
-		},
-		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
-			[
-				[1, 1,  1,  1, 1],
-				[1, 0,  0,  0, 1],
-				[1, 0, 'U', 0, 1],
-				[1, 0,  0,  0, 1],
-				[1, 1,  1,  1, 1],
-			]
-		},
-	],
-}
-];
+// let USR_DATA_ARRAY = [
+// 	{
+// 	NAME: 'USR',
+// 	LFP: 20,
+// 	ATK: 1,
+// 	EQP: [
+// 		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, MAGIC: [0, null]},
+// 		{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+// 			[
+// 				[0,  1,  0],
+// 				[1, 'U', 1],
+// 				[0,  1,  0],
+// 			]
+// 		},
+// 		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+// 			[
+// 				[1, 1,  1,  1, 1],
+// 				[1, 0,  0,  0, 1],
+// 				[1, 0, 'U', 0, 1],
+// 				[1, 0,  0,  0, 1],
+// 				[1, 1,  1,  1, 1],
+// 			]
+// 		},
+// 	],
+// }
+// ];
 
 
 // MINEから指定したUSR_DATA_ARRAYのNAMEのEQPにオブジェクトを追加する関数。
@@ -482,18 +535,16 @@ function keypress_event(e) {
 	};
 
 // let MagicCount = e.Magic[0];
-const MagicRange = e.Magic[1];
+
 
 
 
 // // Magic引数がある場合はmagic_attackとUNT_ATTACK_OR_MOVEを実行し、
 // usr_moveとattack_USR_to_UNTを実行せず、早期リターンする
 if(e.Magic){
-	// console.log('keypress_event');
-	// e.Magic[0]['MAGIC_COUNT']が0以下の場合はreturnする
-	if(e.Magic[0]['MAGIC_COUNT'] <= 0){return}
-	e.Magic[0]['MAGIC_COUNT'] -= 1;
-	magic_USR_to_UNT(e.MagicRange);
+	decrement_MAGIC_COUNTER(e.Eqp_I);
+	// console.log(e.Magic[1]);
+	magic_USR_to_UNT(e.Magic[1]);
 	Object.entries(UNT_DATA_OBJ)
 		.map((V,I)=>{
 			UNT_ATTACK_OR_MOVE(V[1]['NAME']);
@@ -787,36 +838,7 @@ const reset_or_init_map = ({when_mounted_time=true}) => {
 	DIED = '';
 // USR_DATA_ARRAY = [{NAME: 'USR', LFP: 5, ATK: 1}];
 
-USR_DATA_ARRAY = [{
-	NAME: 'USR',
-	LFP: 50,
-	ATK: 1,
-	EQP: [
-		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, MAGIC: [{MAGIC_COUNT: 0}, [[0, 0, 0], [0, 'U', 0], [0, 0, 0]]]},
-		{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
-			[
-				{MAGIC_COUNT: 1},
-				[
-					[0,  1,  0],
-					[1, 'U', 1],
-					[0,  1,  0],
-				]
-			]
-		},
-		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
-			[
-				{MAGIC_COUNT: 1},
-				[
-					[1, 1,  1,  1, 1],
-					[1, 0,  0,  0, 1],
-					[1, 0, 'U', 0, 1],
-					[1, 0,  0,  0, 1],
-					[1, 1,  1,  1, 1],
-				]
-			]
-		},
-	],
-}];
+if(when_mounted_time === false){USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY)};
 
 
 
@@ -899,6 +921,14 @@ USR_DATA_ARRAY = [{
 
 // const remove_error_message = () => ERROR_MESSAGE = "";
 
+// beforeUpdate(async () => {
+// 	try {
+// 		// console.log("mounted");
+// 		reset_or_init_map({when_mounted_time: true});
+// 	} catch (error) {
+// 		console.log(error);		
+// 	}
+// });
 onMount(async () => {
 	try {
 		// console.log("mounted");
@@ -983,31 +1013,36 @@ onMount(async () => {
 									ATK: {USR_DATA_ARRAY[0].ATK}
 									{#each USR_DATA_ARRAY[0].EQP as EQP, EQP_I}
 										{#if EQP}
-											<div>
-												<!-- {EQP_I} -->
-												RARITY: {EQP.RARITY}
-												LFP_BUFF: {EQP.LFP_BUFF}
-												<!-- LFP_DEBUFF: {EQP.LFP_DEBUFF} -->
-												ATK_BUFF: {EQP.ATK_BUFF}
-												<!-- ATK_DEBUFF: {EQP.ATK_DEBUFF} -->
-<!-- <button on:click={() => keypress_event(EQP.MAGIC)}>MAGIC</button> -->
-
-										<!-- EQP.MAGIC[0]['MAGIC_COUNT']が0以下の場合下記ブロックを非表示にする -->
-											{#if EQP.MAGIC[0]['MAGIC_COUNT'] >= 1}
-											<button  on:click={() => keypress_event({key: 'm', Magic: EQP.MAGIC})}>MAGIC</button>
+										<div>
+											<!-- {EQP_I} -->
+											RARITY: {EQP.RARITY}
+											LFP_BUFF: {EQP.LFP_BUFF}
+											<!-- LFP_DEBUFF: {EQP.LFP_DEBUFF} -->
+											ATK_BUFF: {EQP.ATK_BUFF}
+											<!-- ATK_DEBUFF: {EQP.ATK_DEBUFF} -->
+												<!-- EQP.MAGIC[0]['MAGIC_COUNT']が0以下の場合下記ブロックを非表示にする -->
+												<div>
+													{#if EQP.MAGIC[0]['MAGIC_COUNT'] >= 1}
+														<button  on:click={() => keypress_event({key: 'm', Magic: EQP.MAGIC, Eqp_I: EQP_I})}>MAGIC</button>
+													{/if}
 													MAGIC_COUNT: {EQP.MAGIC[0]['MAGIC_COUNT']}
-													MAGIC_RANGE: {EQP.MAGIC[1]}
-											{/if}
+													<!-- MAGIC_RANGE: {EQP.MAGIC[1]} -->
+													{#each EQP.MAGIC[1] as MAGIC_1, MAGIC_1_I}
+														<div>
+															{MAGIC_1}
+														</div>
+													{/each}
+												</div>
 										</div>
 										{/if}
-										{/each}
+									{/each}
 								</div>
 								{#each Object.keys(UNT_DATA_OBJ) as key}
 									<div>{UNT_DATA_OBJ[key].NAME} LFP: {UNT_DATA_OBJ[key].LFP} ATK: {UNT_DATA_OBJ[key].ATK}</div>
 								{/each}
 							</div>
 
-							<div>Ver 0.0.0.7</div>
+							<div>Ver 0.0.0.8</div>
 							<a href="https://github.com/taroyanaka/game/">GitHub</a>
 
 
