@@ -34,7 +34,7 @@ const INIT_USR_DATA_ARRAY = [{
 		},
 		{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
 			[
-				{MAGIC_COUNT: 3},
+				{MAGIC_COUNT: 1},
 				[
 					[0,  1,  0],
 					[1, 'U', 1],
@@ -230,13 +230,37 @@ const RARITY_ZERO_VOLUME = 80;
 const PROBABILITY_CHANGE_THRESHOLD_0 = 2;
 const PROBABILITY_CHANGE_THRESHOLD_1 = 3;
 const DECREASE_PERCENT = 90;
+const no_magic = () => [{MAGIC_COUNT: 0},[[0,  0,  0],[0, 'U', 0],[0,  0,  0],]];
 let SLOT = [
-{RARITY: 0, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 1, ATK_DEBUFF: 0},
-{RARITY: 1, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 2, ATK_DEBUFF: 0},
-{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 3, ATK_DEBUFF: 0},
-{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0},
+{RARITY: 0, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 1, ATK_DEBUFF: 0, MAGIC: R.clone(no_magic())},
+{RARITY: 1, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 2, ATK_DEBUFF: 0, MAGIC: R.clone(no_magic())},
+{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 3, ATK_DEBUFF: 0, MAGIC: R.clone(no_magic())},
+{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, MAGIC: R.clone(no_magic())},
 
-{RARITY: 90, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 10, ATK_DEBUFF: 0},
+{RARITY: 90, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 10, ATK_DEBUFF: 0, MAGIC: R.clone(no_magic())},
+
+{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+	[
+		{MAGIC_COUNT: 1},
+		[
+			[0,  1,  0],
+			[1, 'U', 1],
+			[0,  1,  0],
+		]
+	]
+},
+{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+	[
+		{MAGIC_COUNT: 1},
+		[
+			[1, 1,  1,  1, 1],
+			[1, 0,  0,  0, 1],
+			[1, 0, 'U', 0, 1],
+			[1, 0,  0,  0, 1],
+			[1, 1,  1,  1, 1],
+		]
+	]
+},
 
 // {RARITY: 0, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 1, ATK_DEBUFF: 0},
 // {RARITY: 1, LFP_BUFF: 2, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0},
@@ -1042,7 +1066,7 @@ onMount(async () => {
 								{/each}
 							</div>
 
-							<div>Ver 0.0.0.8</div>
+							<div>Ver 0.0.0.9</div>
 							<a href="https://github.com/taroyanaka/game/">GitHub</a>
 
 
@@ -1067,6 +1091,8 @@ onMount(async () => {
 				<span class="EQP_SPAN">LFP_DEBUFF</span>
 				<span class="EQP_SPAN">ATK_BUFF</span>
 				<span class="EQP_SPAN">ATK_DEBUFF</span>
+				<span class="EQP_SPAN">MAGIC</span>
+				<span class="EQP_SPAN">MAGIC_RANGE</span>
 			</li>
 			{#each MINE as EQP, EQP_I}
 			<li>
@@ -1076,12 +1102,15 @@ onMount(async () => {
 					<span class="EQP_SPAN">{EQP['LFP_DEBUFF']}</span>
 					<span class="EQP_SPAN">{EQP['ATK_BUFF']}</span>
 					<span class="EQP_SPAN">{EQP['ATK_DEBUFF']}</span>
+
+					<span class="EQP_SPAN">{EQP['MAGIC'][0]['MAGIC_COUNT']}</span>
+					<span class="EQP_SPAN">{EQP['MAGIC'][1]}</span>
 					<!-- set_EQPボタン -->
 					<!-- NAME, EQP, LIMITが引数 -->
 					<button on:click={() => set_EQP(
 						USR_DATA_ARRAY[0].NAME,
 						EQP,
-						3,
+						10,
 					)}>set_EQP</button>
 				{/if}
 			</li>
@@ -1094,6 +1123,8 @@ onMount(async () => {
 				<span class="EQP_SPAN">LFP_DEBUFF</span>
 				<span class="EQP_SPAN">ATK_BUFF</span>
 				<span class="EQP_SPAN">ATK_DEBUFF</span>
+				<span class="EQP_SPAN">MAGIC</span>
+				<span class="EQP_SPAN">MAGIC_RANGE</span>
 			</li>
 			{#each SLOT3 as EQP, EQP_I}
 			<li>
@@ -1103,6 +1134,8 @@ onMount(async () => {
 					<span class="EQP_SPAN">{EQP['LFP_DEBUFF']}</span>
 					<span class="EQP_SPAN">{EQP['ATK_BUFF']}</span>
 					<span class="EQP_SPAN">{EQP['ATK_DEBUFF']}</span>
+					<span class="EQP_SPAN">{EQP['MAGIC'][0]['MAGIC_COUNT']}</span>
+					<span class="EQP_SPAN">{EQP['MAGIC'][1]}</span>
 				{/if}
 			</li>
 			{/each}
