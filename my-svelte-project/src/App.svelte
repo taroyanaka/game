@@ -481,11 +481,19 @@ function keypress_event(e) {
 		'm': null, // Magic of m
 	};
 
+// let MagicCount = e.Magic[0];
+const MagicRange = e.Magic[1];
+
+
+
 // // Magic引数がある場合はmagic_attackとUNT_ATTACK_OR_MOVEを実行し、
 // usr_moveとattack_USR_to_UNTを実行せず、早期リターンする
 if(e.Magic){
 	// console.log('keypress_event');
-	magic_USR_to_UNT(e.Magic);
+	// e.Magic[0]['MAGIC_COUNT']が0以下の場合はreturnする
+	if(e.Magic[0]['MAGIC_COUNT'] <= 0){return}
+	e.Magic[0]['MAGIC_COUNT'] -= 1;
+	magic_USR_to_UNT(e.MagicRange);
 	Object.entries(UNT_DATA_OBJ)
 		.map((V,I)=>{
 			UNT_ATTACK_OR_MOVE(V[1]['NAME']);
@@ -784,7 +792,7 @@ USR_DATA_ARRAY = [{
 	LFP: 50,
 	ATK: 1,
 	EQP: [
-		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, MAGIC: [null, null]},
+		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, MAGIC: [{MAGIC_COUNT: 0}, [[0, 0, 0], [0, 'U', 0], [0, 0, 0]]]},
 		{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
 			[
 				{MAGIC_COUNT: 1},
@@ -983,18 +991,23 @@ onMount(async () => {
 												ATK_BUFF: {EQP.ATK_BUFF}
 												<!-- ATK_DEBUFF: {EQP.ATK_DEBUFF} -->
 <!-- <button on:click={() => keypress_event(EQP.MAGIC)}>MAGIC</button> -->
-<button  on:click={() => keypress_event({key: 'm', Magic: EQP.MAGIC[1]})}>MAGIC</button>
-												MAGIC: {EQP.MAGIC[1]}
-											</div>
+
+										<!-- EQP.MAGIC[0]['MAGIC_COUNT']が0以下の場合下記ブロックを非表示にする -->
+											{#if EQP.MAGIC[0]['MAGIC_COUNT'] >= 1}
+											<button  on:click={() => keypress_event({key: 'm', Magic: EQP.MAGIC})}>MAGIC</button>
+													MAGIC_COUNT: {EQP.MAGIC[0]['MAGIC_COUNT']}
+													MAGIC_RANGE: {EQP.MAGIC[1]}
+											{/if}
+										</div>
 										{/if}
-									{/each}
+										{/each}
 								</div>
 								{#each Object.keys(UNT_DATA_OBJ) as key}
 									<div>{UNT_DATA_OBJ[key].NAME} LFP: {UNT_DATA_OBJ[key].LFP} ATK: {UNT_DATA_OBJ[key].ATK}</div>
 								{/each}
 							</div>
 
-							<div>Ver 0.0.0.6</div>
+							<div>Ver 0.0.0.7</div>
 							<a href="https://github.com/taroyanaka/game/">GitHub</a>
 
 
