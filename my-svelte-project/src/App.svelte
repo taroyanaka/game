@@ -20,7 +20,7 @@ import { onMount } from 'svelte';
 
 const INIT_USR_DATA_ARRAY = [{
 	NAME: 'USR',
-	LFP: 100,
+	LFP: 30,
 	ATK: 1,
 	EQP: [
 		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, 
