@@ -528,6 +528,50 @@ const attack_UNT_to_USR = (UNT_NUM) => {
 	}
 };
 
+// :ja 点滅
+// :en blink
+
+
+// 紫のカラーコード #FF00FF
+
+// LFPが減った時に対象のUSRかUNTの色を500ms点滅させる関数
+const damage_effect = (
+	{
+		Y_X_Ary=[5, 5],
+		ms=200,
+		Original_Color='#0000FF',
+		// Color_0='#FF00FF',
+		Color_0='#0000FF',
+		// Color_1='#FF0000',
+		Color_1='#FFFFFF',
+	}
+	) =>{
+	const [Y, X] = Y_X_Ary;
+	const function1 = () => COLLECT_VALUE2[Y][X][3] = `background-color: ${Color_0}`;
+	const function2 = () => COLLECT_VALUE2[Y][X][3] = `background-color: ${Color_1}`;
+	const function3 = () => COLLECT_VALUE2[Y][X][3] = `background-color: ${Original_Color}`;
+	const color_blink = (ms, Color_0, Color_1) =>{
+		const limitSeconds = ms / 1000;
+		const startTime = new Date().getTime();
+		let count = 0;
+
+		const intervalId = setInterval(() => {
+			const currentTime = new Date().getTime();
+			const elapsedTime = (currentTime - startTime) / 1000;
+
+			elapsedTime >= limitSeconds ? clearInterval(intervalId) :
+				count++ % 2 === 0 ? function1() : function2();
+		}, 10);
+	};
+	color_blink(ms, Color_0, Color_1);
+	// タイマーをクリアして元の色に戻す
+	setTimeout(() => {
+		function3();
+	}, ms);
+};
+
+
+
 
 // UNTが移動する関数
 // ATKの値が高いUNTから順番に移動する
@@ -535,10 +579,6 @@ const attack_UNT_to_USR = (UNT_NUM) => {
 // 移動先がBLCもしくは他のUNTだったら移動しない
 // 移動先にGOLがいたら移動しない
 // const ANY_MOVE_FN = () => 'WIP';
-
-
-let CURRENT_MAGIC = null;
-const set_magic = (Magic) => CURRENT_MAGIC = Magic;
 function keypress_event(e) {
 	// console.log('keypress_event');
 
@@ -1066,7 +1106,7 @@ onMount(async () => {
 								{/each}
 							</div>
 
-							<div>Ver 0.0.0.9</div>
+							<div>Ver 0.0.1.0</div>
 							<a href="https://github.com/taroyanaka/game/">GitHub</a>
 
 
