@@ -18,7 +18,7 @@ import { onMount } from 'svelte';
 
 const INIT_USR_DATA_ARRAY = [{
 	NAME: 'USR',
-	LFP: 50,
+	LFP: 100,
 	ATK: 1,
 	EQP: [
 		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, 
@@ -396,7 +396,7 @@ const magic_USR_to_UNT = (Magic) => {
 		// const UNT_NUM = Number(COLLECT_VALUE2[magic_to_Y][magic_to_X][2]['NAME'].slice(-1));
 		const UNT_NUM = Number(COLLECT_VALUE2[magic_to_Y][magic_to_X][2]['NAME'].replaceAll('UNT_', ''));
 		// console.log(UNT_NUM);
-		const UNT_NUM_N = 'UNT_NUM_' + UNT_NUM.toString();
+		const UNT_NUM_N = 'UNT_NUM_' + (UNT_NUM).toString();
 		const USR_ATK_BUFF = USR_DATA_ARRAY[0]['EQP'].reduce((accumulator, currentValue) => {
 			return accumulator + currentValue['ATK_BUFF'];
 		}, 0) || 0;
@@ -464,23 +464,40 @@ const change_BLC_to_NON = (Y, X) => {
 // USRがUNTにアタックする関数(UNTのLFPをUSRのATK分減らす)(引数にはUNT_DATA_ARRAYのUNT_NUMを指定する)
 // const attack_USR_to_UNT = (UNT_NUM, Go_to_Y, Go_to_X) => {
 const attack_USR_to_UNT = (Go_to_Y, Go_to_X) => {
-	console.log(
-		"Go_to_Y, Go_to_X",
-		Go_to_Y, Go_to_X
-	)
-	console.log('attack_USR_to_UNT');
-	console.log(COLLECT_VALUE2[Go_to_Y][Go_to_X][2]);
+	// console.log(
+	// 	"Go_to_Y, Go_to_X",
+	// 	Go_to_Y, Go_to_X
+	// )
+	// console.log('attack_USR_to_UNT');
+	// console.log(COLLECT_VALUE2[Go_to_Y][Go_to_X][2]);
+
 	// Go_to_YとGo_to_XにUNTが存在しない場合はreturnする
+	if (COLLECT_VALUE2[Go_to_Y][Go_to_X][2] !== 'object'){
+		console.log('UNTではない');
+		// return;
+	}
 	if (COLLECT_VALUE2[Go_to_Y][Go_to_X][2]['TYPE'] !== 'UNT') {
 		console.log('UNTが存在しない');
 		return;
 	}
 
+
+	// ダメージエフェクト
+	damage_effect({Y_X_Ary: [Go_to_Y, Go_to_X],
+		ms: 200,
+		Original_Color: '#00FF00',
+		Color_0: '#FF0000',
+		Color_1: '#FFFFFF',
+	});
+
 	// Go_to_YとGo_to_XからUNT_NUMを取得する
 	// const UNT_NUM = COLLECT_VALUE2[Go_to_Y][Go_to_X][2]['UNT_NUM'];
-	const UNT_NUM = Number(COLLECT_VALUE2[Go_to_Y][Go_to_X][2]['NAME'].slice(-1));
+	// const UNT_NUM = Number(COLLECT_VALUE2[Go_to_Y][Go_to_X][2]['NAME'].slice(-1));
+	const UNT_NUM = Number(COLLECT_VALUE2[Go_to_Y][Go_to_X][2]['NAME'].replaceAll('UNT_',''));
+	// console.log(UNT_NUM);
 	// (await window.app.$capture_state().COLLECT_VALUE2[4][5])[2]['NAME'].slice(-1)
-	const UNT_NUM_N = 'UNT_NUM_' + UNT_NUM.toString();
+	const UNT_NUM_N = 'UNT_NUM_' + (UNT_NUM).toString();
+	// console.log(UNT_NUM_N);
 	// USR_DATA_ARRAY[0]の['EQP']の中から['ATK_BUFF']を累計してUSR_ATK_BUFFに代入すr
 	const USR_ATK_BUFF = USR_DATA_ARRAY[0]['EQP'].reduce((accumulator, currentValue) => {
 		return accumulator + currentValue['ATK_BUFF'];
@@ -490,7 +507,9 @@ const attack_USR_to_UNT = (Go_to_Y, Go_to_X) => {
 	const USR_ATK_WITH_BUFF = USR_ATK + USR_ATK_BUFF;
 	// 指定したUNTのLFPをUSRのATK分減らす
 	// UNT_DATA_OBJ[UNT_NUM_N]['LFP'] -= USR_ATK;
-	console.log(UNT_NUM_N);
+	// console.log(UNT_NUM_N);
+	// console.log(UNT_DATA_OBJ);
+	// console.log(UNT_NUM_N);
 	// console.log(UNT_DATA_OBJ[UNT_NUM_N]);
 	// ['LFP']);
 	UNT_DATA_OBJ[UNT_NUM_N]['LFP'] -= USR_ATK_WITH_BUFF;
@@ -514,6 +533,15 @@ const attack_USR_to_UNT = (Go_to_Y, Go_to_X) => {
 
 // UNTがUSRにアタックする関数(USRのLFPをUNTのATK分減らす)(引数にはUNT_DATA_ARRAYのUNT_NUMを指定する)
 const attack_UNT_to_USR = (UNT_NUM) => {
+// console.log([get_USR_position[0], get_USR_position[1]]);
+// console.log([get_USR_position
+	damage_effect({Y_X_Ary: [get_USR_position()[0], get_USR_position()[1]],
+	// damage_effect({Y_X_Ary: [0,0],
+		ms: 200,
+		Original_Color: '#0000FF',
+		Color_0: '#FF0000',
+		Color_1: '#FFFFFF',
+	});
 	const UNT_NUM_N = 'UNT_NUM_' + (UNT_NUM).toString();
 	const UNT_ATK = UNT_DATA_OBJ[UNT_NUM_N].ATK;
 	// 指定したUNTのATKをUSRのLFP分減らす
@@ -546,6 +574,7 @@ const damage_effect = (
 		Color_1='#FFFFFF',
 	}
 	) =>{
+		// console.log('damage_effect');
 	const [Y, X] = Y_X_Ary;
 	const function1 = () => COLLECT_VALUE2[Y][X][3] = `background-color: ${Color_0}`;
 	const function2 = () => COLLECT_VALUE2[Y][X][3] = `background-color: ${Color_1}`;
@@ -616,20 +645,20 @@ if(e.Magic){
 	return;
 }
 
-	if(e.key === 't')
-		{magic_USR_to_UNT(USR_DATA_ARRAY[0]['EQP'][1]['MAGIC'][1]);
-			return;
-		}
-	if(e.key === 'g')
-		{magic_USR_to_UNT(USR_DATA_ARRAY[0]['EQP'][2]['MAGIC']);
-		// {attack_UNT_to_USR(0);
-			return;
-		}
-	if(e.key === 'b')
-		{UNT_ATTACK_OR_MOVE(1);
-		// {attack_UNT_to_USR(1);
-			return;
-		}
+	// if(e.key === 't')
+	// 	{magic_USR_to_UNT(USR_DATA_ARRAY[0]['EQP'][1]['MAGIC'][1]);
+	// 		return;
+	// 	}
+	// if(e.key === 'g')
+	// 	{magic_USR_to_UNT(USR_DATA_ARRAY[0]['EQP'][2]['MAGIC']);
+	// 		return;
+	// 	}
+	// if(e.key === 'b')
+	// 	{UNT_ATTACK_OR_MOVE(1);
+	// 		return;
+	// 	}
+
+
 	// Y,Xを更新する
 	const go_to_y_x = [
 		CURRENT_Y_AND_X[0] + keypress_position[e.key][0],
@@ -672,12 +701,12 @@ if(!e.Magic){
 			// COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][4] = USR_DATA_ARRAY[0];
 			// COLLECT_VALUE2[CURRENT_Y_AND_X[0]][CURRENT_Y_AND_X[1]][4] = null;
 
-			console.log(
+			// console.log(
 				// keypress_position[e.key],
 				// "COLLECT_VALUE2", COLLECT_VALUE2,
 				// "COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]]", COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]],
 				// "CURRENT_Y_AND_X", CURRENT_Y_AND_X,
-			);
+			// );
 			CURRENT_Y_AND_X = go_to_y_x;
 		}
 	}
@@ -718,16 +747,37 @@ const get_UNT_position = (UNT_NUM=0) => {
 	const UNT_NUM_N = 'UNT_NUM_' + (UNT_NUM).toString();
 	// UNTの位置を取得する
 	// filterで['TYPE']がUNTかつ['NAME']がUNT_0等のものを抽出する
+	const NUMBER_STR_AND_YX = COLLECT_VALUE2.map((V1, I1)=>V1.map((V2, I2)=>{
+    	return typeof V2[2] === 'object' ? [V2[2]['NAME'].replaceAll('UNT_',''),[I1, I2]] : null;
+    // return typeof V2[2]
+	})).flat().filter(V=>V!==null);
+
+	// console.log(NUMBER_STR_AND_YX);
+
+	const res1 = NUMBER_STR_AND_YX.filter(V=>V[0]===UNT_NUM_STR)[0][1];
+	console.log(res1);
+
+	// NUMBER_STR_AND_YX.filter(V=>V[0]===UNT_NUM_STR)[0][1];
+
 	const UNT_Y_AND_X = COLLECT_VALUE2
 		.map(V=>V.filter(V2=>V2[2]['TYPE']==='UNT' && V2[2]['NAME']===('UNT_'+UNT_NUM_STR) ))
 		.filter(V=>V.length>0)
-		[0][0]
+		[0][0];
+
+		// console.log(UNT_Y_AND_X);
 		// .map(V=>V.map(V2=> [ V2[2]['TYPE'], V2[2]['NAME'] ] ))
 		// .flat()
 		// .map(V=>V.slice(0, 2));
 		;
 		// console.log(UNT_Y_AND_X);
-	const [Y, X] = [UNT_Y_AND_X[0], UNT_Y_AND_X[1]];
+
+
+		// const [Y, X] = [UNT_Y_AND_X[0], UNT_Y_AND_X[1]];
+
+
+
+
+		const [Y, X] = res1;
 	// console.log(UNT_Y_AND_X);
 	return [Y, X];
 	} catch (error) {
@@ -742,7 +792,12 @@ const get_UNT_position = (UNT_NUM=0) => {
 // UNTの移動順はATKの値が高いUNTから順番に行動する。ATKが同値の場合はUNT_NUMが小さい方から行動する。
 const UNT_ATTACK_OR_MOVE = (NAME) => {
 	try {
+		// console.log('NAME is ', NAME);
 	const UNT_NUM = NAME ? Number(NAME.replaceAll('UNT_', '')) : 0;
+	// let UNT_NUM = null;
+	// if(NAME){
+	// 	UNT_NUM = Number(NAME.replaceAll('UNT_', ''));
+	// }
 	const usr_position = get_USR_position();
 	const unt_position = get_UNT_position(UNT_NUM);
 	// console.log(unt_position);
@@ -801,7 +856,7 @@ const UNT_ATTACK_OR_MOVE = (NAME) => {
 		}
 	}
 	} catch (error) {
-		console.log(error);	
+		// console.log(error);	
 	}
 };
 
@@ -858,13 +913,19 @@ const change_UNT_to_NON = () => {
 	};
 
 	const set_UNT = () =>{
-		const all_NON = get_NON_Y_AND_X();
+		let all_NON = get_NON_Y_AND_X();
 		// 以下のようにUNTを配置する
 		// COLLECT_VALUE2[6][4][3] = 'background-color: #00FF00';
 		// COLLECT_VALUE2[6][4][2] = UNT_DATA_OBJ['UNT_NUM_0'];
+		// console.log(all_NON);
 		Object.entries(UNT_DATA_OBJ).forEach((V, I) => {
 			const UNT_NUM_N = 'UNT_NUM_' + (I).toString();
 			const random_Y_AND_X = shuffle(all_NON)[0];
+
+// random_Y_AND_Xをall_NONから削除する
+all_NON = all_NON.filter(V=>V!==random_Y_AND_X);
+// console.log(all_NON.length);
+
 			COLLECT_VALUE2[random_Y_AND_X[0]][random_Y_AND_X[1]][2] = UNT_DATA_OBJ[UNT_NUM_N];
 			COLLECT_VALUE2[random_Y_AND_X[0]][random_Y_AND_X[1]][3] = 'background-color: #00FF00';
 			// console.log(V);
@@ -1102,11 +1163,11 @@ onMount(async () => {
 									{/each}
 								</div>
 								{#each Object.keys(UNT_DATA_OBJ) as key}
-									<div>{UNT_DATA_OBJ[key].NAME} LFP: {UNT_DATA_OBJ[key].LFP} ATK: {UNT_DATA_OBJ[key].ATK}</div>
+									<div class='UNT_BACK'>{UNT_DATA_OBJ[key].NAME} LFP: {UNT_DATA_OBJ[key].LFP} ATK: {UNT_DATA_OBJ[key].ATK}</div>
 								{/each}
 							</div>
 
-							<div>Ver 0.0.1.0</div>
+							<div>Ver 0.0.1.1</div>
 							<a href="https://github.com/taroyanaka/game/">GitHub</a>
 
 
