@@ -473,13 +473,13 @@ const attack_USR_to_UNT = (Go_to_Y, Go_to_X) => {
 
 	// Go_to_YとGo_to_XにUNTが存在しない場合はreturnする
 	if (COLLECT_VALUE2[Go_to_Y][Go_to_X][2] !== 'object'){
-		console.log('UNTではない');
-		// return;
+		// 	console.log('UNTではない');
+		if (COLLECT_VALUE2[Go_to_Y][Go_to_X][2]['TYPE'] !== 'UNT') {
+			// console.log('UNTが存在しない');
+			return;
+		}
 	}
-	if (COLLECT_VALUE2[Go_to_Y][Go_to_X][2]['TYPE'] !== 'UNT') {
-		console.log('UNTが存在しない');
-		return;
-	}
+
 
 
 	// ダメージエフェクト
@@ -749,36 +749,11 @@ const get_UNT_position = (UNT_NUM=0) => {
 	// filterで['TYPE']がUNTかつ['NAME']がUNT_0等のものを抽出する
 	const NUMBER_STR_AND_YX = COLLECT_VALUE2.map((V1, I1)=>V1.map((V2, I2)=>{
     	return typeof V2[2] === 'object' ? [V2[2]['NAME'].replaceAll('UNT_',''),[I1, I2]] : null;
-    // return typeof V2[2]
 	})).flat().filter(V=>V!==null);
 
-	// console.log(NUMBER_STR_AND_YX);
 
 	const res1 = NUMBER_STR_AND_YX.filter(V=>V[0]===UNT_NUM_STR)[0][1];
-	console.log(res1);
-
-	// NUMBER_STR_AND_YX.filter(V=>V[0]===UNT_NUM_STR)[0][1];
-
-	const UNT_Y_AND_X = COLLECT_VALUE2
-		.map(V=>V.filter(V2=>V2[2]['TYPE']==='UNT' && V2[2]['NAME']===('UNT_'+UNT_NUM_STR) ))
-		.filter(V=>V.length>0)
-		[0][0];
-
-		// console.log(UNT_Y_AND_X);
-		// .map(V=>V.map(V2=> [ V2[2]['TYPE'], V2[2]['NAME'] ] ))
-		// .flat()
-		// .map(V=>V.slice(0, 2));
-		;
-		// console.log(UNT_Y_AND_X);
-
-
-		// const [Y, X] = [UNT_Y_AND_X[0], UNT_Y_AND_X[1]];
-
-
-
-
-		const [Y, X] = res1;
-	// console.log(UNT_Y_AND_X);
+	const [Y, X] = res1;
 	return [Y, X];
 	} catch (error) {
 		// console.log(UNT_NUM);
@@ -792,7 +767,6 @@ const get_UNT_position = (UNT_NUM=0) => {
 // UNTの移動順はATKの値が高いUNTから順番に行動する。ATKが同値の場合はUNT_NUMが小さい方から行動する。
 const UNT_ATTACK_OR_MOVE = (NAME) => {
 	try {
-		// console.log('NAME is ', NAME);
 	const UNT_NUM = NAME ? Number(NAME.replaceAll('UNT_', '')) : 0;
 	// let UNT_NUM = null;
 	// if(NAME){
@@ -800,7 +774,6 @@ const UNT_ATTACK_OR_MOVE = (NAME) => {
 	// }
 	const usr_position = get_USR_position();
 	const unt_position = get_UNT_position(UNT_NUM);
-	// console.log(unt_position);
 
 	// console.log(
 	// 'unt_position[0]', unt_position[0],
