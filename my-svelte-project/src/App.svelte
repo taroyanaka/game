@@ -1,4 +1,6 @@
 <script>
+// let SHOW_DAMAGE = true;
+let SHOW_DAMAGE = 'ON';
 // const exe_any_magic_1 = (Magic) => magic_USR_to_UNT(USR_DATA_ARRAY[0]['EQP'][1]['MAGIC']);
 // const exe_any_magic_1 = (Magic) => console.log(USR_DATA_ARRAY[0]['EQP'][1]['MAGIC']);
 // const exe_any_magic_1 = (Magic) => console.log(Magic);
@@ -482,13 +484,6 @@ const attack_USR_to_UNT = (Go_to_Y, Go_to_X) => {
 
 
 
-	// ダメージエフェクト
-	damage_effect({Y_X_Ary: [Go_to_Y, Go_to_X],
-		ms: 200,
-		Original_Color: '#00FF00',
-		Color_0: '#FF0000',
-		Color_1: '#FFFFFF',
-	});
 
 	// Go_to_YとGo_to_XからUNT_NUMを取得する
 	// const UNT_NUM = COLLECT_VALUE2[Go_to_Y][Go_to_X][2]['UNT_NUM'];
@@ -512,7 +507,20 @@ const attack_USR_to_UNT = (Go_to_Y, Go_to_X) => {
 	// console.log(UNT_NUM_N);
 	// console.log(UNT_DATA_OBJ[UNT_NUM_N]);
 	// ['LFP']);
+	damage_alert({
+		Before_LFP: UNT_DATA_OBJ[UNT_NUM_N]['LFP'],
+		After_LFP: UNT_DATA_OBJ[UNT_NUM_N]['LFP'] - USR_ATK_WITH_BUFF,
+		Damage: USR_ATK_WITH_BUFF,
+	});
 	UNT_DATA_OBJ[UNT_NUM_N]['LFP'] -= USR_ATK_WITH_BUFF;
+	// ダメージエフェクト
+	damage_effect({Y_X_Ary: [Go_to_Y, Go_to_X],
+		ms: 200,
+		Original_Color: '#00FF00',
+		Color_0: '#FF0000',
+		Color_1: '#FFFFFF',
+	});
+
 	// 指定したUNTのLFPが0以下になったら、指定したUNTの位置をNONに変更する
 	if (UNT_DATA_OBJ[UNT_NUM_N]['LFP'] <= 0) {
 		const UNT_Y_AND_X = 
@@ -536,7 +544,6 @@ const attack_UNT_to_USR = (UNT_NUM) => {
 // console.log([get_USR_position[0], get_USR_position[1]]);
 // console.log([get_USR_position
 	damage_effect({Y_X_Ary: [get_USR_position()[0], get_USR_position()[1]],
-	// damage_effect({Y_X_Ary: [0,0],
 		ms: 200,
 		Original_Color: '#0000FF',
 		Color_0: '#FF0000',
@@ -544,6 +551,11 @@ const attack_UNT_to_USR = (UNT_NUM) => {
 	});
 	const UNT_NUM_N = 'UNT_NUM_' + (UNT_NUM).toString();
 	const UNT_ATK = UNT_DATA_OBJ[UNT_NUM_N].ATK;
+	damage_alert({
+		Before_LFP: USR_DATA_ARRAY[0].LFP,
+		After_LFP: USR_DATA_ARRAY[0].LFP - UNT_ATK,
+		Damage: UNT_ATK,
+	});
 	// 指定したUNTのATKをUSRのLFP分減らす
 	USR_DATA_ARRAY[0]['LFP'] -= UNT_ATK;
 	// USRのLFPが0以下になったら、ゲームオーバーにする
@@ -556,12 +568,23 @@ const attack_UNT_to_USR = (UNT_NUM) => {
 	}
 };
 
-// :ja 点滅
-// :en blink
+// 与えるダメージ表示する関数
+const damage_alert = ({
+	Before_LFP=0,
+	After_LFP=0,
+	Damage=0
+}) =>{
+	if(SHOW_DAMAGE !== 'ON'){return}
+	alert(
+		"Before_LFP: " + (Before_LFP).toString() + ' ' +
+		"Damage: " + (Damage).toString() + ' ' +
+		"After_LFP: " + (After_LFP).toString() + ' '
+	);
+}
+
 
 
 // 紫のカラーコード #FF00FF
-
 // LFPが減った時に対象のUSRかUNTの色を500ms点滅させる関数
 const damage_effect = (
 	{
@@ -574,16 +597,56 @@ const damage_effect = (
 		Color_1='#FFFFFF',
 	}
 	) =>{
-		// console.log('damage_effect');
 	const [Y, X] = Y_X_Ary;
-	const function1 = () => COLLECT_VALUE2[Y][X][3] = `background-color: ${Color_0}`;
-	const function2 = () => COLLECT_VALUE2[Y][X][3] = `background-color: ${Color_1}`;
-	const function3 = () => COLLECT_VALUE2[Y][X][3] = `background-color: ${Original_Color}`;
+	const UNT_DATA_OBJ_LIST_BLINK = (Color) => {
+		// console.log(COLLECT_VALUE2[Y][X][2]);
+		// console.log(Y, X);
+		// console.log('UNT_DATA_OBJ_LIST_BLINK');
+
+	// const index = Number(COLLECT_VALUE2[Y][X][2]['NAME'].replaceAll('UNT_', ''));
+		// Array.from(wordRef.children).filter(V=>V['id']==='UNT_0')[0]['style']['background-color'] = '#FFFF00'
+
+		// Array.from(wordRef.children).filter(V=>V['id']===COLLECT_VALUE2[Y][X][2]['NAME'])[0]['style']['background-color'] = '#FFFF00'
+
+		if(typeof COLLECT_VALUE2[Y][X][2] === 'object'){
+			// console.log('UNT_DATA_OBJ_LIST_BLINK_2');
+			// const index = Number(COLLECT_VALUE2[Y][X][2]['NAME'].replaceAll('UNT_', ''));
+
+// Array.from(wordRef.children).filter(V=>V['id']==='UNT_0')[0]['style']['background-color'] = '#FFFF00'
+
+	// Array.from(wordRef.children).filter(V=>V['id']==='UNT_0')[0]['style']['background-color'] = '#FFFF00'
+
+	// Array.from(wordRef.children).filter(V=>V['id']===index)[0]['style']['background-color'] = '#FFFF00'
+
+	// wordRef.children[index]['style']= `background-color: ${Color_0}`;
+			// console.log(
+			// 	Array.from(wordRef.children)
+			// 	.filter(V=>V['id']===index)
+			// 	[0]['style']['background-color']
+			// );
+			// Array.from(wordRef.children)
+			// 	.filter(V=>V['id']===index)
+			// 	[0]['style']['background-color'] = Color;
+			// wordRef.children[index]['style']= `background-color: ${Color}`;
+		}
+	}
+
+	const function1 = () => {
+		COLLECT_VALUE2[Y][X][3] = `background-color: ${Color_0}`;
+		UNT_DATA_OBJ_LIST_BLINK(Color_0);
+	};
+	const function2 = () => {
+		COLLECT_VALUE2[Y][X][3] = `background-color: ${Color_1}`;
+		UNT_DATA_OBJ_LIST_BLINK(Color_1);
+	};
+	const function3 = () => {
+		COLLECT_VALUE2[Y][X][3] = `background-color: ${Original_Color}`;
+		UNT_DATA_OBJ_LIST_BLINK(Original_Color);
+	};
 	const color_blink = (ms, Color_0, Color_1) =>{
 		const limitSeconds = ms / 1000;
 		const startTime = new Date().getTime();
 		let count = 0;
-
 		const intervalId = setInterval(() => {
 			const currentTime = new Date().getTime();
 			const elapsedTime = (currentTime - startTime) / 1000;
@@ -1063,6 +1126,21 @@ onMount(async () => {
 								</div>
 							{/if}
 
+							<!-- SHOW_ALERTをON/OFFできるラジオ -->
+							<div>
+								<fieldset>
+								<span>SHOW_DAMAGE:</span>
+								<span>
+									<input type="radio" id="ON" name="SHOW_DAMAGE" value="ON" bind:group={SHOW_DAMAGE} />
+									<label for="ON">ON</label>
+								</span>
+								<span>
+									<input type="radio" id="OFF" name="SHOW_DAMAGE" value="OFF" bind:group={SHOW_DAMAGE} />
+									<label for="OFF">OFF</label>
+								</span>
+								</fieldset>
+							</div>
+
 							<!-- PICKELを表示するdivタグ -->
 							<div>
 								PICKEL: {PICKEL}
@@ -1135,12 +1213,17 @@ onMount(async () => {
 										{/if}
 									{/each}
 								</div>
-								{#each Object.keys(UNT_DATA_OBJ) as key}
-									<div class='UNT_BACK'>{UNT_DATA_OBJ[key].NAME} LFP: {UNT_DATA_OBJ[key].LFP} ATK: {UNT_DATA_OBJ[key].ATK}</div>
+
+								<div>
+								<!-- <div bind:this={wordRef}> -->
+								{#each Object.keys(UNT_DATA_OBJ) as key, IDX}
+<!-- <div id='UNT_{IDX}' style='background-color: #FFFFFF'  class='UNT_BACK'>{UNT_DATA_OBJ[key].NAME} LFP: {UNT_DATA_OBJ[key].LFP} ATK: {UNT_DATA_OBJ[key].ATK}</div> -->
+<div id={UNT_DATA_OBJ[key].NAME} style='background-color: #FFFFFF'  class='UNT_BACK'>{UNT_DATA_OBJ[key].NAME} LFP: {UNT_DATA_OBJ[key].LFP} ATK: {UNT_DATA_OBJ[key].ATK}</div>
 								{/each}
+								</div>
 							</div>
 
-							<div>Ver 0.0.1.1</div>
+							<div>Ver 0.0.1.2</div>
 							<a href="https://github.com/taroyanaka/game/">GitHub</a>
 
 
