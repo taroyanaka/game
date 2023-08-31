@@ -1,1 +1,1 @@
-.WASD.svelte-13164b6,.WASD_NULL.svelte-13164b6{font-size:30px}.WASD_NULL.svelte-13164b6{background-color:black}.EQP_SPAN.svelte-13164b6{display:inline-block;width:6.5rem}.gacha.svelte-13164b6{display:none}
+:root{--field-none:'block';--gacha-none:'none'}.WASD.svelte-utgg1h,.WASD_NULL.svelte-utgg1h{font-size:30px}.WASD_NULL.svelte-utgg1h{background-color:black}.EQP_SPAN.svelte-utgg1h{display:inline-block;width:6.5rem}.field.svelte-utgg1h{display:var(--field-none)}.gacha.svelte-utgg1h{display:var(--gacha-none)}

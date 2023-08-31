@@ -1,15 +1,46 @@
 <script>
+let rootElement;
+
+let field_none = 'block';
+let gacha_none = 'none';
+
+// $: rootElement && rootElement.style.setProperty('--col-1', 'red');
+$: rootElement && rootElement.style.setProperty('--field-none', field_none);
+$: rootElement && rootElement.style.setProperty('--gacha-none', gacha_none);
+
+const switch_field_gacha = () => {
+	field_none = field_none === 'none' ? 'block' : 'none';
+	gacha_none = gacha_none === 'none' ? 'block' : 'none';
+};
+const next_field = () => switch_field_gacha();
+
+// .field .gachaのdisplayをnoneを切り替える関数
+const toggle_gacha_display = () => {
+	const gacha = document.querySelector('.gacha');
+	gacha.style.display = gacha.style.display === 'none' ? 'block' : 'none';
+	const field = document.querySelector('.field');
+	field.style.display = field.style.display === 'none' ? 'block' : 'none';
+};
+
+
+const LFP_ATK_Range_Array_Min_Max_Table = [
+	{LFP_Min: 2,LFP_Max: 10,ATK_Min: 1,ATK_Max: 3,},
+	{LFP_Min: 5,LFP_Max: 8,ATK_Min: 3,ATK_Max: 10,},
+];
+
+
+
 const make_UNT_DATA_OBJ = ({
-		Repeat_Array_Num=2,
+		Repeat_Array_Num=1,
 		Repeat_Array_Times=20,
 		LFP_Range_Array=[2, 10],
-		ATK_Range_Array=[1, 8],
+		ATK_Range_Array=[1, 3],
 	}) => {
 	const UNT_DATA_OBJ = {};
 	// 特定の範囲の配列からランダムで1つ選択する関数
-	const get_randam_range = ({Default_Range=[1,10]}) => {
-		const min = Default_Range[0];
-		const max = Default_Range[1];
+	const get_randam_range = ({Range=[1,10]}) => {
+		const min = Range[0];
+		const max = Range[1];
 		const randam = Math.floor(Math.random() * (max + 1 - min)) + min;
 		return randam;
 	};
@@ -30,7 +61,7 @@ const make_UNT_DATA_OBJ = ({
 };
 
 
-let FLOOR = 1;
+let FLOOR = 0;
 // let SHOW_DAMAGE = 'ON';
 let SHOW_DAMAGE = 'OFF';
 
@@ -125,7 +156,7 @@ const set_EQP = (NAME, EQP, LIMIT) =>{
 	
 let UNT_DATA_OBJ = {};
 
-let GOLD = 1000;
+let GOLD = 10;
 let MINE = [];
 
 let KAKUHEN = false;
@@ -405,6 +436,8 @@ const attack_UNT_to_USR = (UNT_NUM) => {
 	if (USR_DATA_ARRAY[0].LFP <= 0) {
 		// ゲームオーバーにする
 		DIED = 'YOU DIED, GAME OVER';
+		FLOOR = 0;
+		PICKEL = 0;
 		setTimeout(() => {
 			reset_or_init_map({when_mounted_time: false});
 		}, 1000);
@@ -518,7 +551,7 @@ if(e.Magic){
 
 		// 1秒後にreset_mapを実行する
 		setTimeout(() => {
-			reset_or_init_map({when_mounted_time: false});
+			reset_or_init_map({when_mounted_time: false, go_up: true});
 		}, 1000);
 	}
 
@@ -695,7 +728,7 @@ const change_UNT_to_NON = () => {
 
 // マップを初期化してやり直す関数
 // 起動時にも実行する
-const reset_or_init_map = ({when_mounted_time=true}) => {
+const reset_or_init_map = ({when_mounted_time=true, go_up=false}) => {
 	// when_mounted_timeがfalseの時はconfirmでagainを表示する
 	// againでない場合は早期リターンして、以降の処理はしない
 	if(when_mounted_time === false){
@@ -738,7 +771,25 @@ const reset_or_init_map = ({when_mounted_time=true}) => {
 		UNT_NUM_16: {TYPE: 'UNT', NAME: 'UNT_16', LFP: 1, ATK: 3},
 	};
 	UNT_DATA_OBJ = {};
-	UNT_DATA_OBJ = make_UNT_DATA_OBJ({});
+	let UNT_DATA_CONF = {};
+	if(go_up===true){
+		switch_field_gacha();
+		FLOOR += 1;
+		const FLOOR_plus_one = () => FLOOR + 1;
+		const Table_Id = 0;
+		const LFP_Range_Array_Min = FLOOR_plus_one() * LFP_ATK_Range_Array_Min_Max_Table[Table_Id]['LFP_Min'];
+		const LFP_Range_Array_Max = FLOOR_plus_one() * LFP_ATK_Range_Array_Min_Max_Table[Table_Id]['LFP_Max'];
+		const ATK_Range_Array_Min = FLOOR_plus_one() * LFP_ATK_Range_Array_Min_Max_Table[Table_Id]['ATK_Min'];
+		const ATK_Range_Array_Max = FLOOR_plus_one() * LFP_ATK_Range_Array_Min_Max_Table[Table_Id]['ATK_Max'];
+		console.log(ATK_Range_Array_Max);
+		UNT_DATA_CONF = {
+			Repeat_Array_Num: 1,
+			Repeat_Array_Times: 20,
+			LFP_Range_Array: [LFP_Range_Array_Min, LFP_Range_Array_Max],
+			ATK_Range_Array: [ATK_Range_Array_Min, ATK_Range_Array_Max],
+		}
+	}
+	UNT_DATA_OBJ = make_UNT_DATA_OBJ(UNT_DATA_CONF);
 
 	// GOALを初期位置に戻す
 	change_BLC_to_GOL(0, 9);
@@ -780,6 +831,7 @@ onMount(async () => {
 </script>
 
 
+<div class="container" bind:this={rootElement}>
 
 <!-- fieldfieldfieldfieldfieldfield -->
 <div class="field">
@@ -819,6 +871,11 @@ onMount(async () => {
 								</fieldset>
 							</div>
 
+							<!-- FLOORを表示するdivタグ -->
+							<div>
+								FLOOR: {FLOOR}
+							</div>
+
 							<!-- PICKELを表示するdivタグ -->
 							<div>
 								PICKEL: {PICKEL}
@@ -851,6 +908,9 @@ onMount(async () => {
 								<button on:click={() => keypress_event({key: 's'})} class='WASD'>S</button>
 								<button class='WASD_NULL'>◾️</button>
 							</div>
+
+							<!-- switch_field_gachaボタン -->
+							<!-- <button on:click={switch_field_gacha}>switch_field_gacha</button> -->
 
 							<div>
 								<div>
@@ -891,7 +951,7 @@ onMount(async () => {
 								</div>
 							</div>
 
-							<div>Ver 0.0.1.4</div>
+							<div>Ver 0.0.1.5</div>
 							<a href="https://github.com/taroyanaka/game/">GitHub</a>
 
 </div>
@@ -904,6 +964,7 @@ onMount(async () => {
 <!-- gachagachagachagachagachagacha -->
 <div class="gacha">
 		<button on:click={slot_exe_once}>slot_exe_once</button>
+		<button on:click={next_field}>next_field</button>
 		<div>MINE</div>
 		GOLD: {GOLD}
 		KAKUHEN: {KAKUHEN}
@@ -967,8 +1028,16 @@ onMount(async () => {
 </div>
 <!-- gachagachagachagachagachagacha -->
 
-
+</div>
 <style>
+:root {
+	/* Gacha開発中はfieldをnoneをON/OFFして非表示にする */
+	--field-none: 'block';
+	/* --field-none: 'none'; */
+	--gacha-none: 'none';
+	/* --gacha-none: 'block'; */
+}
+
 .WASD, .WASD_NULL{
 	font-size: 30px;
 }
@@ -980,13 +1049,11 @@ onMount(async () => {
 	width: 6.5rem;
 }
 
-
-/* Gacha開発中はfieldをnoneをON/OFFして非表示にする */
 .field {
-	/* display: none; */
+	/* background-color: var(--col-1); */
+	display: var(--field-none);
 }
-
 .gacha{
-	display: none;
+	display: var(--gacha-none);
 }
 </style>
