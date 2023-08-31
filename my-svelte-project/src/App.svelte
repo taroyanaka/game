@@ -1,19 +1,7 @@
 <script>
-// let SHOW_DAMAGE = true;
-let SHOW_DAMAGE = 'ON';
-// const exe_any_magic_1 = (Magic) => magic_USR_to_UNT(USR_DATA_ARRAY[0]['EQP'][1]['MAGIC']);
-// const exe_any_magic_1 = (Magic) => console.log(USR_DATA_ARRAY[0]['EQP'][1]['MAGIC']);
-// const exe_any_magic_1 = (Magic) => console.log(Magic);
-// const exe_any_magic_2 = (Magic) => console.log(USR_DATA_ARRAY[0]['EQP'][1]['MAGIC']);
-// const magic_attack = (Magic) => magic_USR_to_UNT(Magic);
-
-
-// import Gacha from './Gacha.svelte';
-// export let message; // 受け取る側でexport宣言を行う
-// export let message2; // 受け取る側でexport宣言を行う
-// export let message_hoge; // 受け取る側でexport宣言を行う
-
-
+let FLOOR = 1;
+// let SHOW_DAMAGE = 'ON';
+let SHOW_DAMAGE = 'OFF';
 
 import { onMount } from 'svelte';
 // import { beforeUpdate, afterUpdate } from 'svelte';
@@ -60,45 +48,7 @@ const INIT_USR_DATA_ARRAY = [{
 }];
 let USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY);
 
-// const range = [
-// [1, 1, 0],
-// [1, 'U', 1],
-// [0, 1, 0],
-// ]
-
-// // 上記のrangeを以下のように変換する
-// const sample = [
-// 	[0,0],[0,1],[1,0],[1,2],[2,1],
-// ]
-
-// // 1の部分を配列に変換する('U'は無視)
-// const range2 = [
-// 	[0, 1, 1],
-// 	[1, 'U', 1],
-// 	[1, 1, 0],
-// ];
-
-// const sample2 = [
-// 	[0,1],[0,2],[1,0],[1,2],[2,0],[2,1],
-// ]
-
-// // 1の部分を配列に変換する('U'は無視)関数
-
-// const range3 = [
-// 	[0, 1, 1],
-// 	[0, 'U', 1],
-// 	[1, 1, 1],
-// ];
-
-const decrement_MAGIC_COUNTER = (EqpNum) => {
-	// console.log(EqpNum);
-	// console.log(USR_DATA_ARRAY[0]['EQP'][EqpNum]['MAGIC'][0]['MAGIC_COUNT']);
-	// console.log(USR_DATA_ARRAY[0]['EQP'][EqpNum]['MAGIC']);
-
-	// USR_DATA_ARRAY[0]['EQP'][EqpNum]['MAGIC'][0]['MAGIC_COUNT'] -= 1;
-	USR_DATA_ARRAY[0]['EQP'][EqpNum]['MAGIC'][0]['MAGIC_COUNT'] -= 1;
-}
-
+const decrement_MAGIC_COUNTER = (EqpNum) => USR_DATA_ARRAY[0]['EQP'][EqpNum]['MAGIC'][0]['MAGIC_COUNT'] -= 1;
 
 const convert = (range) => {
 	const result = [];
@@ -125,101 +75,24 @@ const convert_for_magic = (range) => {
 					// .sort((a, b) => a[0] - b[0]).sort((a, b) => a[1] - b[1]);
 	const Y_X_FORM_RANGE = non_center.map(V=>[ (V[0] - center[0]), (V[1] - center[1]) ] );
 	return Y_X_FORM_RANGE;
-	// return [center, non_center];
-	//	// resをflatする
-	//	const res2 = res.flat();
-	//	// res2の中身をnullを除外する
-	//	const res3 = res2.filter(V=>V !== null);
-	//	// sortする
-	//	const res4 = res3.sort((a, b) => a[0] - b[0]).sort((a, b) => a[1] - b[1]);
-	//	return res4;
 }
-
-	
-
 
 // DEV_MODEではGOLの位置を固定する。USRの位置も固定する。UNTの位置も固定する。
 // 今後シードランダムを導入してNONの位置を固定する。
 let DEV_MODE = true;
-// DEV_MODEがtrueの時はシャッフルはseed値を固定する。falseの時はseed値をMath.randomで決める。
-// const shuffle = DEV_MODE ? require('shuffle-seed') : require('shuffle-array');
-
-
-
-// USRはlifepoint(LFP)とattack(ATK)を持つ
-// LFPが0になるとゲームオーバー
-// USRの初期値は{NAME: 'USR', LFP: 5, ATK: 1};
-
-// unit1(UNT)やunit2(UNT)が存在し、任意のLFPとATKを持つ
-// 例として、
-// unit1は{NAME: 'UNT', LFP: 3, ATK: 1};
-// unit2は{NAME: 'UNT', LFP: 2, ATK: 2};
-
-// let USR_DATA_ARRAY = [
-// 	{
-// 	NAME: 'USR',
-// 	LFP: 20,
-// 	ATK: 1,
-// 	EQP: [
-// 		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, MAGIC: [0, null]},
-// 		{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
-// 			[
-// 				[0,  1,  0],
-// 				[1, 'U', 1],
-// 				[0,  1,  0],
-// 			]
-// 		},
-// 		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
-// 			[
-// 				[1, 1,  1,  1, 1],
-// 				[1, 0,  0,  0, 1],
-// 				[1, 0, 'U', 0, 1],
-// 				[1, 0,  0,  0, 1],
-// 				[1, 1,  1,  1, 1],
-// 			]
-// 		},
-// 	],
-// }
-// ];
-
-
-// MINEから指定したUSR_DATA_ARRAYのNAMEのEQPにオブジェクトを追加する関数。
-// オブジェクトの数はLIMITという引数の数が上限となる
 const set_EQP = (NAME, EQP, LIMIT) =>{
-	// console.log(NAME, EQP, LIMIT);
 	// MINEから指定したUSR_DATA_ARRAYのNAMEのEQPを取得する
-	// const USR_EQP = MINE.filter(V=>V.NAME === NAME)[0].EQP;
 	const USR_EQP = EQP;
 	// USR_EQPの長さがLIMITより大きかったら、USR_EQPをLIMITの数になるまでスライスする
-	// const USR_EQP_SLICE = USR_DATA_ARRAY[0].EQP.length >= LIMIT ? USR_EQP.slice(0, LIMIT) : USR_EQP;
-
 	if(USR_DATA_ARRAY[0].EQP.length >= LIMIT){
 		return;
 	}
 	// USR_DATA_ARRAY[0].EQPオブジェクトにEQPをramda.jsで追加する
 	USR_DATA_ARRAY[0].EQP = R.append(EQP, USR_DATA_ARRAY[0].EQP);
-
-
 	// MINEから指定したUSR_DATA_ARRAYのNAMEのEQPをUSR_EQP_SLICE_PUSHに更新する
-	// MINE.filter(V=>V.NAME === NAME)[0].EQP = USR_EQP_SLICE_PUSH;
 };
 	
-let UNT_DATA_OBJ = {
-	// UNT_NUM_0: {TYPE: 'UNT', NAME: 'UNT_0', LFP: 3, ATK: 1},
-	// UNT_NUM_1: {TYPE: 'UNT', NAME: 'UNT_1', LFP: 2, ATK: 2},
-	// UNT_NUM_2: {TYPE: 'UNT', NAME: 'UNT_2', LFP: 2, ATK: 3},
-	// UNT_NUM_3: {TYPE: 'UNT', NAME: 'UNT_3', LFP: 2, ATK: 4},
-	// UNT_NUM_4: {TYPE: 'UNT', NAME: 'UNT_4', LFP: 4, ATK: 1},
-	// UNT_NUM_5: {TYPE: 'UNT', NAME: 'UNT_5', LFP: 4, ATK: 2},
-	// UNT_NUM_6: {TYPE: 'UNT', NAME: 'UNT_6', LFP: 5, ATK: 1},
-};
-
-
-// let UNT_DATA_ARRAY = [
-// 	{UNT_NUM: 0, NAME: 'UNT', LFP: 3, ATK: 1},
-// 	{UNT_NUM: 1, NAME: 'UNT', LFP: 2, ATK: 2},
-// ];
-
+let UNT_DATA_OBJ = {};
 
 let GOLD = 1000;
 let MINE = [];
@@ -234,48 +107,37 @@ const PROBABILITY_CHANGE_THRESHOLD_1 = 3;
 const DECREASE_PERCENT = 90;
 const no_magic = () => [{MAGIC_COUNT: 0},[[0,  0,  0],[0, 'U', 0],[0,  0,  0],]];
 let SLOT = [
-{RARITY: 0, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 1, ATK_DEBUFF: 0, MAGIC: R.clone(no_magic())},
-{RARITY: 1, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 2, ATK_DEBUFF: 0, MAGIC: R.clone(no_magic())},
-{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 3, ATK_DEBUFF: 0, MAGIC: R.clone(no_magic())},
-{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, MAGIC: R.clone(no_magic())},
+	{RARITY: 0, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 1, ATK_DEBUFF: 0, MAGIC: R.clone(no_magic())},
+	{RARITY: 1, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 2, ATK_DEBUFF: 0, MAGIC: R.clone(no_magic())},
+	{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 3, ATK_DEBUFF: 0, MAGIC: R.clone(no_magic())},
+	{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, MAGIC: R.clone(no_magic())},
 
-{RARITY: 90, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 10, ATK_DEBUFF: 0, MAGIC: R.clone(no_magic())},
+	{RARITY: 90, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 10, ATK_DEBUFF: 0, MAGIC: R.clone(no_magic())},
 
-{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
-	[
-		{MAGIC_COUNT: 1},
+	{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
 		[
-			[0,  1,  0],
-			[1, 'U', 1],
-			[0,  1,  0],
+			{MAGIC_COUNT: 1},
+			[
+				[0,  1,  0],
+				[1, 'U', 1],
+				[0,  1,  0],
+			]
 		]
-	]
-},
-{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
-	[
-		{MAGIC_COUNT: 1},
+	},
+	{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
 		[
-			[1, 1,  1,  1, 1],
-			[1, 0,  0,  0, 1],
-			[1, 0, 'U', 0, 1],
-			[1, 0,  0,  0, 1],
-			[1, 1,  1,  1, 1],
+			{MAGIC_COUNT: 1},
+			[
+				[1, 1,  1,  1, 1],
+				[1, 0,  0,  0, 1],
+				[1, 0, 'U', 0, 1],
+				[1, 0,  0,  0, 1],
+				[1, 1,  1,  1, 1],
+			]
 		]
-	]
-},
+	},
 
-// {RARITY: 0, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 1, ATK_DEBUFF: 0},
-// {RARITY: 1, LFP_BUFF: 2, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0},
-// {RARITY: 2, LFP_BUFF: 3, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0},
-// {RARITY: 3, LFP_BUFF: 4, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0},
-
-// {RARITY: 90, LFP_BUFF: 10, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0},
 ];
-
-
-
-    // import { get } from 'svelte/store';
-// import { afterUpdate } from 'svelte';
 
 // $: if(true) console.log('hello');
 
@@ -286,8 +148,6 @@ let GOAL = false;
 let DIED = '';
 let ADJACENT_Y_AND_X = [];
 let COLLECT_VALUE2 = [];
-
-
 
 // SLOTのRARITYの合計の値が100になるように100個ランダムで選択する。
 // ただし、RARITYが90のものは1つだけ選択し、RARITYが0はRARITY_ZERO_VOLUME個選択する。
@@ -301,12 +161,10 @@ let SLOT2 = SLOT.reduce((accumulator, currentValue) => {
 	}
 	return accumulator;
 }, []);
-// ATK_BUFFのみ
-// let SLOT3 = shuffle(SLOT2.slice(0, 100));
+
 let SLOT3 = shuffle(SLOT2);
 // LFP_BUFFのみ
 let SLOT4 = shuffle(SLOT2.slice(0, 100));
-
 
 // 任意のRARITYを任意のパーセンテージ減らす関数
 const decrease_any_rarity = (Rarity, Percent) => {
@@ -320,7 +178,6 @@ const decrease_any_rarity = (Rarity, Percent) => {
 };
 
 
-
 // ワロタ https://detail.chiebukuro.yahoo.co.jp/qa/question_detail/q14218518669
 // 関数。SLOT3からランダムで1つ選択してMINEに追加。GOLDが足りなかったら追加しない。GOLDが足りたらGOLDを減らす。
 // RARITYが1以上のものをPROBABILITY_CHANGE_THRESHOLD連続で追加できた場合、KAKUHENをtrueにする。
@@ -330,7 +187,6 @@ const slot_exe_once = () =>{
 	const SLOT3_KAKUHEN = KAKUHEN ? decrease_any_rarity(0, DECREASE_PERCENT) : SLOT3;
 	// SLOT3_KAKUHENからランダムで1つ選択する
 	const random_SLOT3_KAKUHEN = shuffle(SLOT3_KAKUHEN)[0];
-	// console.log(random_SLOT3_KAKUHEN);
 	// GOLDが足りなかったら追加しない。GOLDが足りたらGOLDを減らす。
 	if (GOLD < 1) {
 		return;
@@ -338,14 +194,8 @@ const slot_exe_once = () =>{
 		GOLD -= 1;
 	}
 	// MINEに追加する
-	// MINE.push(random_SLOT3_KAKUHEN);
-
-	// ramda.jsでMINEに{RARITY: 1, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 2, ATK_DEBUFF: 0}を追加する
-	// MINE = R.append({RARITY: 1, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 2, ATK_DEBUFF: 0}, MINE);
 	MINE = R.append(random_SLOT3_KAKUHEN, MINE);
-
 	// RARITYが1以上のものをPROBABILITY_CHANGE_THRESHOLD(_0か_1のどちらかランダムの値)の値の回数連続で追加できた場合、KAKUHENをtrueにする。
-	// if (MINE.slice(-(PROBABILITY_CHANGE_THRESHOLD)).every(V=>V.RARITY >= 1)) {
 	if (MINE.slice(
 			-(shuffle([PROBABILITY_CHANGE_THRESHOLD_0, PROBABILITY_CHANGE_THRESHOLD_1])[0])
 		).every(V=>V.RARITY >= 1)) {
@@ -356,9 +206,6 @@ const slot_exe_once = () =>{
 		KAKUHEN_COUNTER += 1;
 		KAKUHEN = KAKUHEN_COUNTER >= KAKUHEN_COUNTER_LIMIT ? false : true;
 		KAKUHEN_COUNTER = KAKUHEN_COUNTER >= KAKUHEN_COUNTER_LIMIT ? 0 : KAKUHEN_COUNTER;
-		// if (MINE.length >= 10) {
-		// 	KAKUHEN = false;
-		// }
 	}
 };
 
@@ -378,26 +225,18 @@ document.addEventListener('keypress', keypress_event_for_slot);
 
 
 const magic_USR_to_UNT = (Magic) => {
-	// console.log(Magic);
 	try {
 	const magic_attack = convert_for_magic(Magic);
-	// console.log(magic_attack);
 	magic_attack.forEach(MAGI=>{
-		// console.log(MAGI);
 		const magic_to_Y = CURRENT_Y_AND_X[0] + MAGI[0];
 		const magic_to_X = CURRENT_Y_AND_X[1] + MAGI[1];
-		console.log(magic_to_Y, magic_to_X);
-		console.log(COLLECT_VALUE2[magic_to_Y][magic_to_X][2]);
 		if(
 			COLLECT_VALUE2[magic_to_Y][magic_to_X][2] === 'GOL' ||
 			COLLECT_VALUE2[magic_to_Y][magic_to_X][2] === 'BLC' ||
 			COLLECT_VALUE2[magic_to_Y][magic_to_X][2] === 'NON' ||
 			COLLECT_VALUE2[magic_to_Y][magic_to_X][2] === 'USR'
 		){return}
-		// (await window.app.$capture_state().COLLECT_VALUE2)[4][5][2]['NAME'].replaceAll('UNT_', '')
-		// const UNT_NUM = Number(COLLECT_VALUE2[magic_to_Y][magic_to_X][2]['NAME'].slice(-1));
 		const UNT_NUM = Number(COLLECT_VALUE2[magic_to_Y][magic_to_X][2]['NAME'].replaceAll('UNT_', ''));
-		// console.log(UNT_NUM);
 		const UNT_NUM_N = 'UNT_NUM_' + (UNT_NUM).toString();
 		const USR_ATK_BUFF = USR_DATA_ARRAY[0]['EQP'].reduce((accumulator, currentValue) => {
 			return accumulator + currentValue['ATK_BUFF'];
@@ -419,7 +258,6 @@ const magic_USR_to_UNT = (Magic) => {
 			UNT_DATA_OBJ = R.omit([UNT_NUM_N], UNT_DATA_OBJ);
 		}
 	})
-	// return Magic;
 	} catch (error) {
 	console.log(error);
 	}
@@ -437,13 +275,11 @@ const get_click_position = (Y, X) => {
 		[X+1, X],
 	];
 	ADJACENT_Y_AND_X = click_position;
-	// console.logでX,Y,ADJACENT_X_AND_Yを確認する
 	console.log(
 		CURRENT_Y_AND_X[0],
 		CURRENT_Y_AND_X[1],
 		ADJACENT_Y_AND_X,
 	);
-
 	return click_position;
 };
 
@@ -466,33 +302,17 @@ const change_BLC_to_NON = (Y, X) => {
 // USRがUNTにアタックする関数(UNTのLFPをUSRのATK分減らす)(引数にはUNT_DATA_ARRAYのUNT_NUMを指定する)
 // const attack_USR_to_UNT = (UNT_NUM, Go_to_Y, Go_to_X) => {
 const attack_USR_to_UNT = (Go_to_Y, Go_to_X) => {
-	// console.log(
-	// 	"Go_to_Y, Go_to_X",
-	// 	Go_to_Y, Go_to_X
-	// )
-	// console.log('attack_USR_to_UNT');
-	// console.log(COLLECT_VALUE2[Go_to_Y][Go_to_X][2]);
-
 	// Go_to_YとGo_to_XにUNTが存在しない場合はreturnする
 	if (COLLECT_VALUE2[Go_to_Y][Go_to_X][2] !== 'object'){
-		// 	console.log('UNTではない');
 		if (COLLECT_VALUE2[Go_to_Y][Go_to_X][2]['TYPE'] !== 'UNT') {
-			// console.log('UNTが存在しない');
+			// UNTではない UNTが存在しない
 			return;
 		}
 	}
 
-
-
-
 	// Go_to_YとGo_to_XからUNT_NUMを取得する
-	// const UNT_NUM = COLLECT_VALUE2[Go_to_Y][Go_to_X][2]['UNT_NUM'];
-	// const UNT_NUM = Number(COLLECT_VALUE2[Go_to_Y][Go_to_X][2]['NAME'].slice(-1));
 	const UNT_NUM = Number(COLLECT_VALUE2[Go_to_Y][Go_to_X][2]['NAME'].replaceAll('UNT_',''));
-	// console.log(UNT_NUM);
-	// (await window.app.$capture_state().COLLECT_VALUE2[4][5])[2]['NAME'].slice(-1)
 	const UNT_NUM_N = 'UNT_NUM_' + (UNT_NUM).toString();
-	// console.log(UNT_NUM_N);
 	// USR_DATA_ARRAY[0]の['EQP']の中から['ATK_BUFF']を累計してUSR_ATK_BUFFに代入すr
 	const USR_ATK_BUFF = USR_DATA_ARRAY[0]['EQP'].reduce((accumulator, currentValue) => {
 		return accumulator + currentValue['ATK_BUFF'];
@@ -501,12 +321,6 @@ const attack_USR_to_UNT = (Go_to_Y, Go_to_X) => {
 	const USR_ATK = USR_DATA_ARRAY[0].ATK;
 	const USR_ATK_WITH_BUFF = USR_ATK + USR_ATK_BUFF;
 	// 指定したUNTのLFPをUSRのATK分減らす
-	// UNT_DATA_OBJ[UNT_NUM_N]['LFP'] -= USR_ATK;
-	// console.log(UNT_NUM_N);
-	// console.log(UNT_DATA_OBJ);
-	// console.log(UNT_NUM_N);
-	// console.log(UNT_DATA_OBJ[UNT_NUM_N]);
-	// ['LFP']);
 	damage_alert({
 		Before_LFP: UNT_DATA_OBJ[UNT_NUM_N]['LFP'],
 		After_LFP: UNT_DATA_OBJ[UNT_NUM_N]['LFP'] - USR_ATK_WITH_BUFF,
@@ -541,8 +355,6 @@ const attack_USR_to_UNT = (Go_to_Y, Go_to_X) => {
 
 // UNTがUSRにアタックする関数(USRのLFPをUNTのATK分減らす)(引数にはUNT_DATA_ARRAYのUNT_NUMを指定する)
 const attack_UNT_to_USR = (UNT_NUM) => {
-// console.log([get_USR_position[0], get_USR_position[1]]);
-// console.log([get_USR_position
 	damage_effect({Y_X_Ary: [get_USR_position()[0], get_USR_position()[1]],
 		ms: 200,
 		Original_Color: '#0000FF',
@@ -582,67 +394,20 @@ const damage_alert = ({
 	);
 }
 
-
-
-// 紫のカラーコード #FF00FF
 // LFPが減った時に対象のUSRかUNTの色を500ms点滅させる関数
 const damage_effect = (
 	{
 		Y_X_Ary=[5, 5],
 		ms=200,
 		Original_Color='#0000FF',
-		// Color_0='#FF00FF',
 		Color_0='#0000FF',
-		// Color_1='#FF0000',
 		Color_1='#FFFFFF',
 	}
 	) =>{
 	const [Y, X] = Y_X_Ary;
-	const UNT_DATA_OBJ_LIST_BLINK = (Color) => {
-		// console.log(COLLECT_VALUE2[Y][X][2]);
-		// console.log(Y, X);
-		// console.log('UNT_DATA_OBJ_LIST_BLINK');
-
-	// const index = Number(COLLECT_VALUE2[Y][X][2]['NAME'].replaceAll('UNT_', ''));
-		// Array.from(wordRef.children).filter(V=>V['id']==='UNT_0')[0]['style']['background-color'] = '#FFFF00'
-
-		// Array.from(wordRef.children).filter(V=>V['id']===COLLECT_VALUE2[Y][X][2]['NAME'])[0]['style']['background-color'] = '#FFFF00'
-
-		if(typeof COLLECT_VALUE2[Y][X][2] === 'object'){
-			// console.log('UNT_DATA_OBJ_LIST_BLINK_2');
-			// const index = Number(COLLECT_VALUE2[Y][X][2]['NAME'].replaceAll('UNT_', ''));
-
-// Array.from(wordRef.children).filter(V=>V['id']==='UNT_0')[0]['style']['background-color'] = '#FFFF00'
-
-	// Array.from(wordRef.children).filter(V=>V['id']==='UNT_0')[0]['style']['background-color'] = '#FFFF00'
-
-	// Array.from(wordRef.children).filter(V=>V['id']===index)[0]['style']['background-color'] = '#FFFF00'
-
-	// wordRef.children[index]['style']= `background-color: ${Color_0}`;
-			// console.log(
-			// 	Array.from(wordRef.children)
-			// 	.filter(V=>V['id']===index)
-			// 	[0]['style']['background-color']
-			// );
-			// Array.from(wordRef.children)
-			// 	.filter(V=>V['id']===index)
-			// 	[0]['style']['background-color'] = Color;
-			// wordRef.children[index]['style']= `background-color: ${Color}`;
-		}
-	}
-
-	const function1 = () => {
-		COLLECT_VALUE2[Y][X][3] = `background-color: ${Color_0}`;
-		UNT_DATA_OBJ_LIST_BLINK(Color_0);
-	};
-	const function2 = () => {
-		COLLECT_VALUE2[Y][X][3] = `background-color: ${Color_1}`;
-		UNT_DATA_OBJ_LIST_BLINK(Color_1);
-	};
-	const function3 = () => {
-		COLLECT_VALUE2[Y][X][3] = `background-color: ${Original_Color}`;
-		UNT_DATA_OBJ_LIST_BLINK(Original_Color);
-	};
+	const function1 = () => {COLLECT_VALUE2[Y][X][3] = `background-color: ${Color_0}`};
+	const function2 = () => {COLLECT_VALUE2[Y][X][3] = `background-color: ${Color_1}`};
+	const function3 = () => {COLLECT_VALUE2[Y][X][3] = `background-color: ${Original_Color}`};
 	const color_blink = (ms, Color_0, Color_1) =>{
 		const limitSeconds = ms / 1000;
 		const startTime = new Date().getTime();
@@ -664,7 +429,11 @@ const damage_effect = (
 
 
 
-
+// USRはlifepoint(LFP)とattack(ATK)を持つ
+// LFPが0になるとゲームオーバー
+// USRの初期値は{NAME: 'USR', LFP: 5, ATK: 1};
+// MINEから指定したUSR_DATA_ARRAYのNAMEのEQPにオブジェクトを追加する関数。
+// オブジェクトの数はLIMITという引数の数が上限となる
 // UNTが移動する関数
 // ATKの値が高いUNTから順番に移動する
 // 移動先にUSRがいたらアタックする
@@ -672,14 +441,6 @@ const damage_effect = (
 // 移動先にGOLがいたら移動しない
 // const ANY_MOVE_FN = () => 'WIP';
 function keypress_event(e) {
-	// console.log('keypress_event');
-
-// // UNTの配置
-// COLLECT_VALUE2[5][4][2] = 'UNT'; COLLECT_VALUE2[5][4][3] = 'background-color: #00FF00';
-// COLLECT_VALUE2[5][4][4] = UNT_DATA_ARRAY[0];
-// COLLECT_VALUE2[5][6][2] = 'UNT'; COLLECT_VALUE2[5][6][3] = 'background-color: #00FF00';
-// COLLECT_VALUE2[5][6][4] = UNT_DATA_ARRAY[1];
-
 	// キーボードの上下左右をwasdで操作する
 	// wは上、aは左、sは下、dは右
 	const keypress_position = {
@@ -690,16 +451,10 @@ function keypress_event(e) {
 		'm': null, // Magic of m
 	};
 
-// let MagicCount = e.Magic[0];
-
-
-
-
 // // Magic引数がある場合はmagic_attackとUNT_ATTACK_OR_MOVEを実行し、
 // usr_moveとattack_USR_to_UNTを実行せず、早期リターンする
 if(e.Magic){
 	decrement_MAGIC_COUNTER(e.Eqp_I);
-	// console.log(e.Magic[1]);
 	magic_USR_to_UNT(e.Magic[1]);
 	Object.entries(UNT_DATA_OBJ)
 		.map((V,I)=>{
@@ -707,20 +462,6 @@ if(e.Magic){
 		})
 	return;
 }
-
-	// if(e.key === 't')
-	// 	{magic_USR_to_UNT(USR_DATA_ARRAY[0]['EQP'][1]['MAGIC'][1]);
-	// 		return;
-	// 	}
-	// if(e.key === 'g')
-	// 	{magic_USR_to_UNT(USR_DATA_ARRAY[0]['EQP'][2]['MAGIC']);
-	// 		return;
-	// 	}
-	// if(e.key === 'b')
-	// 	{UNT_ATTACK_OR_MOVE(1);
-	// 		return;
-	// 	}
-
 
 	// Y,Xを更新する
 	const go_to_y_x = [
@@ -759,36 +500,14 @@ if(!e.Magic){
 			// 色も更新する
 			COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][3] = 'background-color: #0000FF';
 			COLLECT_VALUE2[CURRENT_Y_AND_X[0]][CURRENT_Y_AND_X[1]][3] = 'background-color: #FFFFFF';
-
-			// USR_DATA_ARRAYを更新する([4]にUSR_DATA_ARRAYを反映し、元の位置を空にする)
-			// COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][4] = USR_DATA_ARRAY[0];
-			// COLLECT_VALUE2[CURRENT_Y_AND_X[0]][CURRENT_Y_AND_X[1]][4] = null;
-
-			// console.log(
-				// keypress_position[e.key],
-				// "COLLECT_VALUE2", COLLECT_VALUE2,
-				// "COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]]", COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]],
-				// "CURRENT_Y_AND_X", CURRENT_Y_AND_X,
-			// );
 			CURRENT_Y_AND_X = go_to_y_x;
 		}
 	}
 	usr_move();
 	// USRがUNTにアタックする。引数はUNT_DATA_ARRAYのUNT_NUMの指定と攻撃対象のUNTのIDの指定。
-	// attack_USR_to_UNT(0, go_to_y_x[0], go_to_y_x[1]);
 	attack_USR_to_UNT(go_to_y_x[0], go_to_y_x[1]);
 }
-
-	Object.entries(UNT_DATA_OBJ)
-		// .map((V,I)=>I)
-		.map((V,I)=>{
-			UNT_ATTACK_OR_MOVE(V[1]['NAME']);
-	})
-
-	// console.log(
-	// 	keypress_position[e.key],
-	// 	CURRENT_Y_AND_X
-	// );
+	Object.entries(UNT_DATA_OBJ).map((V,I)=>{UNT_ATTACK_OR_MOVE(V[1]['NAME'])});
 };
 
 
@@ -798,8 +517,7 @@ const get_USR_position = () => {
 	const USR_Y_AND_X = COLLECT_VALUE2
 		.map(V=>V.filter(V2=>V2[2] === 'USR' ))
 		.filter(V=>V.length>0)
-		[0][0]
-		;
+		[0][0];
 	return USR_Y_AND_X;
 };
 // 指定したUNTの位置を取得する関数
@@ -811,7 +529,9 @@ const get_UNT_position = (UNT_NUM=0) => {
 	// UNTの位置を取得する
 	// filterで['TYPE']がUNTかつ['NAME']がUNT_0等のものを抽出する
 	const NUMBER_STR_AND_YX = COLLECT_VALUE2.map((V1, I1)=>V1.map((V2, I2)=>{
-    	return typeof V2[2] === 'object' ? [V2[2]['NAME'].replaceAll('UNT_',''),[I1, I2]] : null;
+    	return typeof V2[2] === 'object' ?
+			[V2[2]['NAME'].replaceAll('UNT_',''),[I1, I2]] :
+			null;
 	})).flat().filter(V=>V!==null);
 
 
@@ -819,7 +539,6 @@ const get_UNT_position = (UNT_NUM=0) => {
 	const [Y, X] = res1;
 	return [Y, X];
 	} catch (error) {
-		// console.log(UNT_NUM);
 		console.log(error);
 	}
 };
@@ -831,24 +550,8 @@ const get_UNT_position = (UNT_NUM=0) => {
 const UNT_ATTACK_OR_MOVE = (NAME) => {
 	try {
 	const UNT_NUM = NAME ? Number(NAME.replaceAll('UNT_', '')) : 0;
-	// let UNT_NUM = null;
-	// if(NAME){
-	// 	UNT_NUM = Number(NAME.replaceAll('UNT_', ''));
-	// }
 	const usr_position = get_USR_position();
 	const unt_position = get_UNT_position(UNT_NUM);
-
-	// console.log(
-	// 'unt_position[0]', unt_position[0],
-	// 'unt_position[1]', unt_position[1],
-	// 'usr_position[0]', usr_position[0],
-	// 'usr_position[1]', usr_position[1],
-
-	// '( (unt_position[1] === usr_position[1]) && (unt_position[0] === usr_position[0] - 1) )', ( (unt_position[1] === usr_position[1]) && (unt_position[0] === usr_position[0] - 1) ),
-	// '( (unt_position[1] === usr_position[1]) && (unt_position[0] === usr_position[0] + 1) )', ( (unt_position[1] === usr_position[1]) && (unt_position[0] === usr_position[0] + 1) ),
-	// '( (unt_position[1] === usr_position[0]) && (unt_position[0] === usr_position[1] + 1) )', ( (unt_position[1] === usr_position[0]) && (unt_position[0] === usr_position[1] + 1) ),
-	// '( (unt_position[1] === usr_position[0]) && (unt_position[0] === usr_position[1] + 1) )', ( (unt_position[1] === usr_position[0]) && (unt_position[0] === usr_position[1] + 1) ),
-	// );
 
 	// 隣接しているマスにUSRがいたらアタックする
 	if (
@@ -892,7 +595,7 @@ const UNT_ATTACK_OR_MOVE = (NAME) => {
 		}
 	}
 	} catch (error) {
-		// console.log(error);	
+		console.log(error);
 	}
 };
 
@@ -909,9 +612,6 @@ const random_BLC_Y_AND_X = () => {
 	return [random_Y, random_X];
 };
 // BLCの任意の分量(パーセント)をNONに変更する関数
-// :ja パーセント
-// :en percent
-// const change_percent_BLC_to_NON = (Percent=30) => {
 const change_percent_BLC_to_NON = (Percent=80) => {
 	// BLCの総量を取得する
 	const BLC_count = COLLECT_VALUE2
@@ -920,8 +620,6 @@ const change_percent_BLC_to_NON = (Percent=80) => {
 		.length;
 	// BLC_countからPercentの分量を算出する
 	const BLC_count_percent = Math.floor(BLC_count * (Percent / 100));
-
-
 	// BLCの半数をNONに変更する
 	for (let i = 0; i < BLC_count_percent; i++) {
 		const random_Y_AND_X = random_BLC_Y_AND_X();
@@ -951,22 +649,15 @@ const change_UNT_to_NON = () => {
 	const set_UNT = () =>{
 		let all_NON = get_NON_Y_AND_X();
 		// 以下のようにUNTを配置する
-		// COLLECT_VALUE2[6][4][3] = 'background-color: #00FF00';
-		// COLLECT_VALUE2[6][4][2] = UNT_DATA_OBJ['UNT_NUM_0'];
-		// console.log(all_NON);
 		Object.entries(UNT_DATA_OBJ).forEach((V, I) => {
 			const UNT_NUM_N = 'UNT_NUM_' + (I).toString();
 			const random_Y_AND_X = shuffle(all_NON)[0];
 
 // random_Y_AND_Xをall_NONから削除する
-all_NON = all_NON.filter(V=>V!==random_Y_AND_X);
-// console.log(all_NON.length);
-
-			COLLECT_VALUE2[random_Y_AND_X[0]][random_Y_AND_X[1]][2] = UNT_DATA_OBJ[UNT_NUM_N];
-			COLLECT_VALUE2[random_Y_AND_X[0]][random_Y_AND_X[1]][3] = 'background-color: #00FF00';
-			// console.log(V);
-		});
-
+	all_NON = all_NON.filter(V=>V!==random_Y_AND_X);
+				COLLECT_VALUE2[random_Y_AND_X[0]][random_Y_AND_X[1]][2] = UNT_DATA_OBJ[UNT_NUM_N];
+				COLLECT_VALUE2[random_Y_AND_X[0]][random_Y_AND_X[1]][3] = 'background-color: #00FF00';
+			});
 	}
 	set_UNT();
 };
@@ -997,19 +688,7 @@ const reset_or_init_map = ({when_mounted_time=true}) => {
 
 
 	DIED = '';
-// USR_DATA_ARRAY = [{NAME: 'USR', LFP: 5, ATK: 1}];
-
-if(when_mounted_time === false){USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY)};
-
-
-
-
-
-	// UNT_DATA_OBJ = {
-	// 	UNT_NUM_0: {TYPE: 'UNT', NAME: 'UNT_0', LFP: 3, ATK: 1},
-	// 	UNT_NUM_1: {TYPE: 'UNT', NAME: 'UNT_1', LFP: 2, ATK: 2},
-	// };
-
+	if(when_mounted_time === false){USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY)};
 	UNT_DATA_OBJ = {
 		UNT_NUM_0: {TYPE: 'UNT', NAME: 'UNT_0', LFP: 3, ATK: 1},
 		UNT_NUM_1: {TYPE: 'UNT', NAME: 'UNT_1', LFP: 2, ATK: 2},
@@ -1030,12 +709,8 @@ if(when_mounted_time === false){USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY)};
 		UNT_NUM_16: {TYPE: 'UNT', NAME: 'UNT_16', LFP: 1, ATK: 3},
 	};
 
-
 	// GOALを初期位置に戻す
 	change_BLC_to_GOL(0, 9);
-	// change_BLC_to_GOL(9, 0);
-	// change_BLC_to_GOL(9, 9);
-	// change_BLC_to_GOL(0, 0);
 
 	// PICKELを初期化する
 	PICKEL = 0;
@@ -1059,40 +734,13 @@ if(when_mounted_time === false){USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY)};
 	COLLECT_VALUE2[3][5][2] = 'NON'; COLLECT_VALUE2[3][5][3] = 'background-color: #FFFFFF';
 	COLLECT_VALUE2[7][5][2] = 'NON'; COLLECT_VALUE2[7][5][3] = 'background-color: #FFFFFF';
 
-	// UNTの配置
-	// COLLECT_VALUE2[6][4][3] = 'background-color: #00FF00';
-	// COLLECT_VALUE2[6][4][2] = UNT_DATA_OBJ['UNT_NUM_0'];
-	// COLLECT_VALUE2[5][6][3] = 'background-color: #00FF00';
-	// COLLECT_VALUE2[5][6][2] = UNT_DATA_OBJ['UNT_NUM_1'];
-
 	change_UNT_to_NON();
 	
 	document.addEventListener('keypress', keypress_event);
 };
 
-
-
-// const fetch_get_tags_for_autocomplete = async () => {
-// 	const json = (await fetch('http://localhost:8000/get_tags_for_autocomplete', get_POST_object({ name: NAME, password: PASSWORD })))
-// 					.json();
-// 	const RES = await json;
-// 	// TMP = RES;
-// 	ALL_TAGS = await RES.message;
-// };
-
-// const remove_error_message = () => ERROR_MESSAGE = "";
-
-// beforeUpdate(async () => {
-// 	try {
-// 		// console.log("mounted");
-// 		reset_or_init_map({when_mounted_time: true});
-// 	} catch (error) {
-// 		console.log(error);		
-// 	}
-// });
 onMount(async () => {
 	try {
-		// console.log("mounted");
 		reset_or_init_map({when_mounted_time: true});
 	} catch (error) {
 		console.log(error);		
@@ -1106,12 +754,11 @@ onMount(async () => {
 <div class="field">
 
 							<!-- ERROR_MESSAGEを表示するdivタグ。クリックしたら非表示になる -->
-							<div>
-								<!-- {ERROR_MESSAGE} -->
-								{#if ERROR_MESSAGE}
+							<!-- <div> -->
+								<!-- {#if ERROR_MESSAGE} -->
 									<!-- <button on:click={remove_error_message}>remove_error_message</button> -->
-								{/if}
-							</div>
+								<!-- {/if} -->
+							<!-- </div> -->
 
 							<!-- GOALがtrueの場合はGOALと表示する -->
 							{#if GOAL}
@@ -1156,14 +803,6 @@ onMount(async () => {
 									</li>
 								{/each}
 							</ul>
-
-							<!-- リセットボタン。押したらreset_mapを実行する -->
-							<!-- <button on:click={() => reset_or_init_map({when_mounted_time: false})}>reset_map</button> -->
-								
-							<!-- <button on:click={() => get_USR_position()}>get_USR_position</button> -->
-							<!-- <button on:click={() => get_UNT_position()}>get_UNT_position</button> -->
-							<!-- <button on:click={() => UNT_ATTACK_OR_MOVE()}>UNT_ATTACK_OR_MOVE</button> -->
-
 
 							<!-- 上下左右のボタン(WASDに対応する) -->
 							<div>
@@ -1215,17 +854,14 @@ onMount(async () => {
 								</div>
 
 								<div>
-								<!-- <div bind:this={wordRef}> -->
 								{#each Object.keys(UNT_DATA_OBJ) as key, IDX}
-<!-- <div id='UNT_{IDX}' style='background-color: #FFFFFF'  class='UNT_BACK'>{UNT_DATA_OBJ[key].NAME} LFP: {UNT_DATA_OBJ[key].LFP} ATK: {UNT_DATA_OBJ[key].ATK}</div> -->
-<div id={UNT_DATA_OBJ[key].NAME} style='background-color: #FFFFFF'  class='UNT_BACK'>{UNT_DATA_OBJ[key].NAME} LFP: {UNT_DATA_OBJ[key].LFP} ATK: {UNT_DATA_OBJ[key].ATK}</div>
+									<div id={UNT_DATA_OBJ[key].NAME} style='background-color: #FFFFFF'  class='UNT_BACK'>{UNT_DATA_OBJ[key].NAME} LFP: {UNT_DATA_OBJ[key].LFP} ATK: {UNT_DATA_OBJ[key].ATK}</div>
 								{/each}
 								</div>
 							</div>
 
-							<div>Ver 0.0.1.2</div>
+							<div>Ver 0.0.1.3</div>
 							<a href="https://github.com/taroyanaka/game/">GitHub</a>
-
 
 </div>
 <!-- fieldfieldfieldfieldfieldfield -->
