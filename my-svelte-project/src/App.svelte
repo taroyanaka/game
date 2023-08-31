@@ -1030,6 +1030,7 @@ onMount(async () => {
 
 </div>
 <style>
+/* https://svelte.dev/repl/57f03a5268884c8080b286c95e9a7c52?version=4.2.0 */
 :root {
 	/* Gacha開発中はfieldをnoneをON/OFFして非表示にする */
 	--field-none: 'block';
