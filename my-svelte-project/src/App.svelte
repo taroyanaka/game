@@ -1,4 +1,35 @@
 <script>
+const make_UNT_DATA_OBJ = ({
+		Repeat_Array_Num=2,
+		Repeat_Array_Times=20,
+		LFP_Range_Array=[2, 10],
+		ATK_Range_Array=[1, 8],
+	}) => {
+	const UNT_DATA_OBJ = {};
+	// 特定の範囲の配列からランダムで1つ選択する関数
+	const get_randam_range = ({Default_Range=[1,10]}) => {
+		const min = Default_Range[0];
+		const max = Default_Range[1];
+		const randam = Math.floor(Math.random() * (max + 1 - min)) + min;
+		return randam;
+	};
+
+	// R.repeatで指定した数字を指定した回数繰り返す配列を返す関数
+	const repeat_array = (num, times) => R.repeat(num, times);
+
+	// MINEからUNT_DATA_OBJを作成する
+	repeat_array(Repeat_Array_Num, Repeat_Array_Times).forEach((V, I) => {
+		UNT_DATA_OBJ['UNT_NUM_' + (I).toString()] = {
+			TYPE: 'UNT',
+			NAME: 'UNT_' + (I).toString(),
+			LFP: V * get_randam_range({Range: LFP_Range_Array}),
+			ATK: V * get_randam_range({Range: ATK_Range_Array}),
+		};
+	});
+	return UNT_DATA_OBJ;
+};
+
+
 let FLOOR = 1;
 // let SHOW_DAMAGE = 'ON';
 let SHOW_DAMAGE = 'OFF';
@@ -595,7 +626,7 @@ const UNT_ATTACK_OR_MOVE = (NAME) => {
 		}
 	}
 	} catch (error) {
-		console.log(error);
+		// console.log(error);
 	}
 };
 
@@ -684,8 +715,6 @@ const reset_or_init_map = ({when_mounted_time=true}) => {
 	// USRを初期位置に戻す
 	COLLECT_VALUE2[5][5][2] = 'USR'; COLLECT_VALUE2[5][5][3] = 'background-color: #0000FF';
 	// USRのスポーン位置にUSR_DATA_ARRAYを反映する
-	// COLLECT_VALUE2[5][5][4] = USR_DATA_ARRAY[0];
-
 
 	DIED = '';
 	if(when_mounted_time === false){USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY)};
@@ -708,6 +737,8 @@ const reset_or_init_map = ({when_mounted_time=true}) => {
 		UNT_NUM_15: {TYPE: 'UNT', NAME: 'UNT_15', LFP: 1, ATK: 2},
 		UNT_NUM_16: {TYPE: 'UNT', NAME: 'UNT_16', LFP: 1, ATK: 3},
 	};
+	UNT_DATA_OBJ = {};
+	UNT_DATA_OBJ = make_UNT_DATA_OBJ({});
 
 	// GOALを初期位置に戻す
 	change_BLC_to_GOL(0, 9);
@@ -860,7 +891,7 @@ onMount(async () => {
 								</div>
 							</div>
 
-							<div>Ver 0.0.1.3</div>
+							<div>Ver 0.0.1.4</div>
 							<a href="https://github.com/taroyanaka/game/">GitHub</a>
 
 </div>
