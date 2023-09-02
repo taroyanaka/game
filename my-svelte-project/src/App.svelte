@@ -6,6 +6,7 @@ const what_sort_by_any = ({
 		Asc_Desc='DESC',
 	}) => {
 		// What = What.sort((a,b)=>b['RARITY'] - a['RARITY']);
+		// console.log("What");
 		Asc_Desc ?
 		What = What.sort((a,b)=>b[Any] - a[Any]) :
 		What = What.sort((a,b)=>a[Any] - b[Any]);
@@ -369,6 +370,9 @@ const magic_USR_to_UNT = (Magic) => {
 			COLLECT_VALUE2[magic_to_Y][magic_to_X][2] === 'NON' ||
 			COLLECT_VALUE2[magic_to_Y][magic_to_X][2] === 'USR'
 		){return}
+
+
+
 		const UNT_NUM = Number(COLLECT_VALUE2[magic_to_Y][magic_to_X][2]['NAME'].replaceAll('UNT_', ''));
 		const UNT_NUM_N = 'UNT_NUM_' + (UNT_NUM).toString();
 		const USR_ATK_BUFF = USR_DATA_ARRAY[0]['EQP'].reduce((accumulator, currentValue) => {
@@ -377,6 +381,23 @@ const magic_USR_to_UNT = (Magic) => {
 		const USR_ATK = USR_DATA_ARRAY[0].ATK;
 		const USR_ATK_WITH_BUFF = USR_ATK + USR_ATK_BUFF;
 		UNT_DATA_OBJ[UNT_NUM_N]['LFP'] -= USR_ATK_WITH_BUFF;
+
+
+		if(
+		COLLECT_VALUE2[magic_to_Y][magic_to_X][3] === 'background-color: #00FF00'
+	){
+			damage_effect({Y_X_Ary: [magic_to_Y, magic_to_X],
+				ms: 200,
+				// Original_Color: '#00FF00',
+				Original_Color: 
+				UNT_DATA_OBJ[UNT_NUM_N]['LFP'] <= 0 ?
+					'#FFFFFF' :
+					'#00FF00',
+				Color_0: '#FF0000',
+				Color_1: '#FFFFFF',
+			});
+	}
+
 		if (UNT_DATA_OBJ[UNT_NUM_N]['LFP'] <= 0) {
 			const UNT_Y_AND_X = 
 					[
