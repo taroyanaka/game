@@ -1,18 +1,60 @@
 <script>
+
+const what_sort_by_any = ({
+		What=MINE,
+		Any='RARITY',
+		Asc_Desc='DESC',
+	}) => {
+		// What = What.sort((a,b)=>b['RARITY'] - a['RARITY']);
+		Asc_Desc ?
+		What = What.sort((a,b)=>b[Any] - a[Any]) :
+		What = What.sort((a,b)=>a[Any] - b[Any]);
+};
+
+import { onMount } from 'svelte';
+// import { beforeUpdate, afterUpdate } from 'svelte';
+
 let rootElement;
 
-let field_none = 'block';
-let gacha_none = 'none';
+// let field_none = 'block';
+let field_none = 'none';
+// let gacha_none = 'none';
+let gacha_none = 'block';
 
-// $: rootElement && rootElement.style.setProperty('--col-1', 'red');
+$: MINE && what_sort_by_any({What: MINE, Any: 'RARITY', Asc_Desc: 'DESC'});
 $: rootElement && rootElement.style.setProperty('--field-none', field_none);
 $: rootElement && rootElement.style.setProperty('--gacha-none', gacha_none);
+
+// $: MINE && 	USR_DATA_ARRAY[0]['EQP'].map(V=>V['MAGIC'][0]['MAGIC_COUNT']=1);
 
 const switch_field_gacha = () => {
 	field_none = field_none === 'none' ? 'block' : 'none';
 	gacha_none = gacha_none === 'none' ? 'block' : 'none';
 };
-const next_field = () => switch_field_gacha();
+
+const UN_EQP = (Eqp_Index) => {
+	// MINEに指定したUSR_DATA_ARRAYのEqpを追加する
+	MINE = R.append(USR_DATA_ARRAY[0]['EQP'][Eqp_Index], MINE);
+	// USR_DATA_ARRAY[0].EQPオブジェクトから指定したUSR_DATA_ARRAYのEqpを削除する
+	USR_DATA_ARRAY[0]['EQP'] = R.remove(Eqp_Index, 1, USR_DATA_ARRAY[0]['EQP']);
+}
+
+
+const recharge_magic_count = () => USR_DATA_ARRAY[0]['EQP'].map(V=>V['MAGIC'][0]['MAGIC_COUNT']=1);
+
+// beforeUpdate(async () => {
+// 	try {
+// 		recharge_magic_count();
+// 	} catch (error) {
+// 		console.log(error);		
+// 	}
+// });
+
+const next_field = () => {
+	MINE = [];
+	switch_field_gacha();
+	recharge_magic_count();
+};
 
 // .field .gachaのdisplayをnoneを切り替える関数
 const toggle_gacha_display = () => {
@@ -64,13 +106,12 @@ const make_UNT_DATA_OBJ = ({
 let FLOOR = 0;
 // let SHOW_DAMAGE = 'ON';
 let SHOW_DAMAGE = 'OFF';
+let USR_DATA_ARRAY = [];
 
-import { onMount } from 'svelte';
-// import { beforeUpdate, afterUpdate } from 'svelte';
 
 const INIT_USR_DATA_ARRAY = [{
 	NAME: 'USR',
-	LFP: 30,
+	LFP: 100,
 	ATK: 1,
 	EQP: [
 		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, 
@@ -107,8 +148,11 @@ const INIT_USR_DATA_ARRAY = [{
 			]
 		},
 	],
+	GOLD: 100,
 }];
-let USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY);
+
+USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY);
+
 
 const decrement_MAGIC_COUNTER = (EqpNum) => USR_DATA_ARRAY[0]['EQP'][EqpNum]['MAGIC'][0]['MAGIC_COUNT'] -= 1;
 
@@ -142,21 +186,48 @@ const convert_for_magic = (range) => {
 // DEV_MODEではGOLの位置を固定する。USRの位置も固定する。UNTの位置も固定する。
 // 今後シードランダムを導入してNONの位置を固定する。
 let DEV_MODE = true;
-const set_EQP = (NAME, EQP, LIMIT) =>{
+
+// const set_EQP = (NAME, EQP, LIMIT, Eqp_Index) =>{
+const set_EQP = ({
+	// Name=USR_DATA_ARRAY[0].NAME,
+	Eqp={'UNT_NUM_0': {ATK: 3,LFP: 4,NAME: "UNT_0",TYPE: "UNT"}},
+	Eqp_Limit=5,
+	Eqp_Index=0,
+	}) =>{
+
+// MINEから指定したUSR_DATA_ARRAYのEqpを取得する
+// Object.keys({'UNT_NUM_0': {ATK: 3,LFP: 4,NAME: "UNT_0",TYPE: "UNT"}})
+// MINE = R.omit([Eqp], MINE);
+// MINE = R.omit([Object.keys({'UNT_NUM_0': {ATK: 3,LFP: 4,NAME: "UNT_0",TYPE: "UNT"}})], MINE);
+// MINE = R.omit([Eqp_Index+1], MINE);
+
+// console.log(MINE);
+
+
+
 	// MINEから指定したUSR_DATA_ARRAYのNAMEのEQPを取得する
-	const USR_EQP = EQP;
+	const USR_EQP = Eqp;
 	// USR_EQPの長さがLIMITより大きかったら、USR_EQPをLIMITの数になるまでスライスする
-	if(USR_DATA_ARRAY[0].EQP.length >= LIMIT){
+	if(USR_DATA_ARRAY[0]['EQP'].length >= Eqp_Limit){
 		return;
 	}
 	// USR_DATA_ARRAY[0].EQPオブジェクトにEQPをramda.jsで追加する
-	USR_DATA_ARRAY[0].EQP = R.append(EQP, USR_DATA_ARRAY[0].EQP);
+	USR_DATA_ARRAY[0]['EQP'] = R.append(Eqp, USR_DATA_ARRAY[0]['EQP']);
 	// MINEから指定したUSR_DATA_ARRAYのNAMEのEQPをUSR_EQP_SLICE_PUSHに更新する
+
+	console.log(MINE);
+		// MINE = R.omit([Eqp_Index+1], MINE);
+		// MINE = R.omit([MINE[Eqp_Index]], MINE);
+		// MINE = R.omit([Eqp_Index+1], MINE);
+		MINE = R.remove(Eqp_Index, 1, MINE);
+		console.log(MINE);
+
 };
-	
+
+const LFP_RECHARGE_NUM = 50;
 let UNT_DATA_OBJ = {};
 
-let GOLD = 10;
+let GOLD = 0;
 let MINE = [];
 
 let KAKUHEN = false;
@@ -439,7 +510,8 @@ const attack_UNT_to_USR = (UNT_NUM) => {
 		FLOOR = 0;
 		PICKEL = 0;
 		setTimeout(() => {
-			reset_or_init_map({when_mounted_time: false});
+			// reset_or_init_map({when_mounted_time: false});
+			reset_or_init_map({when_mounted_time: true, go_up: false});
 		}, 1000);
 	}
 };
@@ -544,6 +616,7 @@ if(e.Magic){
 	// go_to_y_xがGOLの場合はGOALをtrueにする
 	if (COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][2] === 'GOL') {
 		GOAL = true;
+		MINE = [];
 		// ゴール直後に連打できないようにするために
 		// (連打するとagainが何回も表示されてしまうため)、
 		// keypressを解除する
@@ -731,13 +804,9 @@ const change_UNT_to_NON = () => {
 const reset_or_init_map = ({when_mounted_time=true, go_up=false}) => {
 	// when_mounted_timeがfalseの時はconfirmでagainを表示する
 	// againでない場合は早期リターンして、以降の処理はしない
-	if(when_mounted_time === false){
-		if(confirm('Again？')){
-			reset_or_init_map({when_mounted_time: true});
-		}else{
-			return;
-		}
-	}
+	// if(when_mounted_time === false){
+	// 	reset_or_init_map({when_mounted_time: true, go_up: false});
+	// }
 
 	// COLLECT_VALUE2を初期化する
 	COLLECT_VALUE2 = R.xprod(R.range(0, 10), R.range(0, 10))
@@ -750,7 +819,10 @@ const reset_or_init_map = ({when_mounted_time=true, go_up=false}) => {
 	// USRのスポーン位置にUSR_DATA_ARRAYを反映する
 
 	DIED = '';
-	if(when_mounted_time === false){USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY)};
+	if(when_mounted_time === false, go_up === false){
+		USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY);
+		GOLD = USR_DATA_ARRAY[0]['GOLD'];
+	};
 	UNT_DATA_OBJ = {
 		UNT_NUM_0: {TYPE: 'UNT', NAME: 'UNT_0', LFP: 3, ATK: 1},
 		UNT_NUM_1: {TYPE: 'UNT', NAME: 'UNT_1', LFP: 2, ATK: 2},
@@ -772,8 +844,18 @@ const reset_or_init_map = ({when_mounted_time=true, go_up=false}) => {
 	};
 	UNT_DATA_OBJ = {};
 	let UNT_DATA_CONF = {};
+	// if(go_up === false){
+	// 	USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY);
+	// }
 	if(go_up===true){
+		// if(go_up === false){
+			
+			// USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY);
+			// USR_DATA_ARRAY = USR_DATA_ARRAY[0]['EQP']
+		// }
+
 		switch_field_gacha();
+		USR_DATA_ARRAY[0]['LFP'] += LFP_RECHARGE_NUM;
 		FLOOR += 1;
 		const FLOOR_plus_one = () => FLOOR + 1;
 		const Table_Id = 0;
@@ -823,7 +905,7 @@ const reset_or_init_map = ({when_mounted_time=true, go_up=false}) => {
 
 onMount(async () => {
 	try {
-		reset_or_init_map({when_mounted_time: true});
+		reset_or_init_map({when_mounted_time: true, go_up: false});
 	} catch (error) {
 		console.log(error);		
 	}
@@ -951,7 +1033,7 @@ onMount(async () => {
 								</div>
 							</div>
 
-							<div>Ver 0.0.1.5</div>
+							<div>Ver 0.0.1.6</div>
 							<a href="https://github.com/taroyanaka/game/">GitHub</a>
 
 </div>
@@ -962,7 +1044,40 @@ onMount(async () => {
 
 
 <!-- gachagachagachagachagachagacha -->
-<div class="gacha">
+<div class="gacha">					
+		<div>
+			{USR_DATA_ARRAY[0].NAME}
+			LFP: {USR_DATA_ARRAY[0].LFP}
+			ATK: {USR_DATA_ARRAY[0].ATK}
+			{#each USR_DATA_ARRAY[0].EQP as EQP, EQP_I}
+				{#if EQP}
+				<div>
+					<!-- {EQP_I} -->
+					RARITY: {EQP.RARITY}
+					LFP_BUFF: {EQP.LFP_BUFF}
+					<!-- LFP_DEBUFF: {EQP.LFP_DEBUFF} -->
+					ATK_BUFF: {EQP.ATK_BUFF}
+					<!-- ATK_DEBUFF: {EQP.ATK_DEBUFF} -->
+						<!-- EQP.MAGIC[0]['MAGIC_COUNT']が0以下の場合下記ブロックを非表示にする -->
+						<div>
+							<!-- {#if EQP.MAGIC[0]['MAGIC_COUNT'] >= 1}
+								<button  on:click={() => keypress_event({key: 'm', Magic: EQP.MAGIC, Eqp_I: EQP_I})}>MAGIC</button>
+							{/if} -->
+<!-- <button on:click={UN_EQP}>UN_EQP</button> -->
+<!-- <button on:click={UN_EQP(EQP_I)}>UN_EQP</button> -->
+<button on:click={() => UN_EQP(EQP_I)}>UN_EQP</button>
+							MAGIC_COUNT: {EQP.MAGIC[0]['MAGIC_COUNT']}
+							{#each EQP.MAGIC[1] as MAGIC_1, MAGIC_1_I}
+								<div>
+									{MAGIC_1}
+								</div>
+							{/each}
+						</div>
+				</div>
+				{/if}
+			{/each}
+		</div>
+
 		<button on:click={slot_exe_once}>slot_exe_once</button>
 		<button on:click={next_field}>next_field</button>
 		<div>MINE</div>
@@ -992,11 +1107,11 @@ onMount(async () => {
 					<span class="EQP_SPAN">{EQP['MAGIC'][1]}</span>
 					<!-- set_EQPボタン -->
 					<!-- NAME, EQP, LIMITが引数 -->
-					<button on:click={() => set_EQP(
-						USR_DATA_ARRAY[0].NAME,
-						EQP,
-						10,
-					)}>set_EQP</button>
+					<button on:click={() => set_EQP({
+						Eqp: EQP,
+						Eqp_Limit: 5,
+						Eqp_Index: EQP_I,
+					})}>set_EQP</button>
 				{/if}
 			</li>
 			{/each}
@@ -1034,9 +1149,7 @@ onMount(async () => {
 :root {
 	/* Gacha開発中はfieldをnoneをON/OFFして非表示にする */
 	--field-none: 'block';
-	/* --field-none: 'none'; */
 	--gacha-none: 'none';
-	/* --gacha-none: 'block'; */
 }
 
 .WASD, .WASD_NULL{
