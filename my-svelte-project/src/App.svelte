@@ -112,7 +112,7 @@ let USR_DATA_ARRAY = [];
 
 const INIT_USR_DATA_ARRAY = [{
 	NAME: 'USR',
-	LFP: 100,
+	LFP: 30,
 	ATK: 1,
 	EQP: [
 		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, 
@@ -150,6 +150,50 @@ const INIT_USR_DATA_ARRAY = [{
 		},
 	],
 	GOLD: 100,
+}];
+
+
+const RETRY_USR_DATA_ARRAY = [{
+	NAME: 'USR',
+	LFP: 100,
+	ATK: 1,
+	// EQPとGOLDは死亡時の状態を持ち越す
+	// EQP: [
+	// 	{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, 
+	// 		MAGIC: 
+	// 			[
+	// 				{MAGIC_COUNT: 0},
+	// 				[
+	// 					[0,  0,  0],
+	// 					[0, 'U', 0],
+	// 					[0,  0,  0],
+	// 				]
+	// 			]
+	// 	},
+	// 	{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+	// 		[
+	// 			{MAGIC_COUNT: 1},
+	// 			[
+	// 				[0,  1,  0],
+	// 				[1, 'U', 1],
+	// 				[0,  1,  0],
+	// 			]
+	// 		]
+	// 	},
+	// 	{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+	// 		[
+	// 			{MAGIC_COUNT: 1},
+	// 			[
+	// 				[1, 1,  1,  1, 1],
+	// 				[1, 0,  0,  0, 1],
+	// 				[1, 0, 'U', 0, 1],
+	// 				[1, 0,  0,  0, 1],
+	// 				[1, 1,  1,  1, 1],
+	// 			]
+	// 		]
+	// 	},
+	// ],
+	// GOLD: 100,
 }];
 
 USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY);
@@ -225,10 +269,10 @@ const set_EQP = ({
 
 };
 
-const LFP_RECHARGE_NUM = 50;
+const LFP_RECHARGE_NUM = 0;
 let UNT_DATA_OBJ = {};
 
-let GOLD = 0;
+let GOLD = 10;
 let MINE = [];
 
 let KAKUHEN = false;
@@ -276,7 +320,7 @@ let SLOT = [
 // $: if(true) console.log('hello');
 
 let ERROR_MESSAGE = true;
-let CURRENT_Y_AND_X = [5, 5];
+let CURRENT_Y_AND_X = [9, 0];
 let PICKEL = 0;
 let GOAL = false;
 let DIED = '';
@@ -526,13 +570,14 @@ const attack_UNT_to_USR = (UNT_NUM) => {
 	USR_DATA_ARRAY[0]['LFP'] -= UNT_ATK;
 	// USRのLFPが0以下になったら、ゲームオーバーにする
 	if (USR_DATA_ARRAY[0].LFP <= 0) {
+		
 		// ゲームオーバーにする
 		DIED = 'YOU DIED, GAME OVER';
 		FLOOR = 0;
 		PICKEL = 0;
 		setTimeout(() => {
 			// reset_or_init_map({when_mounted_time: false});
-			reset_or_init_map({when_mounted_time: true, go_up: false});
+			reset_or_init_map({when_mounted_time: false, go_up: false, when_died: true});
 		}, 1000);
 	}
 };
@@ -554,7 +599,7 @@ const damage_alert = ({
 // LFPが減った時に対象のUSRかUNTの色を500ms点滅させる関数
 const damage_effect = (
 	{
-		Y_X_Ary=[5, 5],
+		Y_X_Ary=[9, 0],
 		ms=200,
 		Original_Color='#0000FF',
 		Color_0='#0000FF',
@@ -645,7 +690,7 @@ if(e.Magic){
 
 		// 1秒後にreset_mapを実行する
 		setTimeout(() => {
-			reset_or_init_map({when_mounted_time: false, go_up: true});
+			reset_or_init_map({when_mounted_time: false, go_up: true, when_died: false});
 		}, 1000);
 	}
 
@@ -822,7 +867,7 @@ const change_UNT_to_NON = () => {
 
 // マップを初期化してやり直す関数
 // 起動時にも実行する
-const reset_or_init_map = ({when_mounted_time=true, go_up=false}) => {
+const reset_or_init_map = ({when_mounted_time=true, go_up=false, when_died=false}) => {
 	// when_mounted_timeがfalseの時はconfirmでagainを表示する
 	// againでない場合は早期リターンして、以降の処理はしない
 	// if(when_mounted_time === false){
@@ -836,12 +881,21 @@ const reset_or_init_map = ({when_mounted_time=true, go_up=false}) => {
 	COLLECT_VALUE2 = R.splitEvery(10, COLLECT_VALUE2);
 
 	// USRを初期位置に戻す
-	COLLECT_VALUE2[5][5][2] = 'USR'; COLLECT_VALUE2[5][5][3] = 'background-color: #0000FF';
+	COLLECT_VALUE2[9][0][2] = 'USR'; COLLECT_VALUE2[9][0][3] = 'background-color: #0000FF';
 	// USRのスポーン位置にUSR_DATA_ARRAYを反映する
 
 	DIED = '';
-	if(when_mounted_time === false, go_up === false){
-		USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY);
+	if(when_mounted_time === false, go_up === false, when_died === true){
+		// console.log('when_died');
+		// console.log(
+		// 	RETRY_USR_DATA_ARRAY['NAME'],RETRY_USR_DATA_ARRAY['LFP'],RETRY_USR_DATA_ARRAY['ATK'],
+		// );
+		// USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY);
+USR_DATA_ARRAY[0]['NAME'] = RETRY_USR_DATA_ARRAY[0]['NAME'];
+USR_DATA_ARRAY[0]['LFP'] = RETRY_USR_DATA_ARRAY[0]['LFP'];
+USR_DATA_ARRAY[0]['ATK'] = RETRY_USR_DATA_ARRAY[0]['ATK'];
+		// USR_DATA_ARRAY = RETRY_USR_DATA_ARRAY
+		// console.log('when_died2');
 		GOLD = USR_DATA_ARRAY[0]['GOLD'];
 	};
 	UNT_DATA_OBJ = {
@@ -865,16 +919,7 @@ const reset_or_init_map = ({when_mounted_time=true, go_up=false}) => {
 	};
 	UNT_DATA_OBJ = {};
 	let UNT_DATA_CONF = {};
-	// if(go_up === false){
-	// 	USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY);
-	// }
 	if(go_up===true){
-		// if(go_up === false){
-			
-			// USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY);
-			// USR_DATA_ARRAY = USR_DATA_ARRAY[0]['EQP']
-		// }
-
 		switch_field_gacha();
 		USR_DATA_ARRAY[0]['LFP'] += LFP_RECHARGE_NUM;
 		FLOOR += 1;
@@ -904,7 +949,8 @@ const reset_or_init_map = ({when_mounted_time=true, go_up=false}) => {
 	// ADJACENT_Y_AND_Xを初期化する
 	ADJACENT_Y_AND_X = [];
 	// CURRENT_Y_AND_Xを初期化する
-	CURRENT_Y_AND_X = [5, 5];
+	// COLLECT_VALUE2[9][0][2] = 'NON'; COLLECT_VALUE2[9][0][3] = 'background-color: #FFFFFF';
+	CURRENT_Y_AND_X = [9, 0];
 	// BLCを30%をNONに変更する
 	change_percent_BLC_to_NON();
 
@@ -926,7 +972,7 @@ const reset_or_init_map = ({when_mounted_time=true, go_up=false}) => {
 
 onMount(async () => {
 	try {
-		reset_or_init_map({when_mounted_time: true, go_up: false});
+		reset_or_init_map({when_mounted_time: true, go_up: false, when_died: false});
 	} catch (error) {
 		console.log(error);		
 	}
@@ -1054,7 +1100,7 @@ onMount(async () => {
 								</div>
 							</div>
 
-							<div>Ver 0.0.1.7</div>
+							<div>Ver 0.0.1.8</div>
 							<a href="https://github.com/taroyanaka/game/">GitHub</a>
 
 </div>
