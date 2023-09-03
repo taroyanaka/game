@@ -1,4 +1,13 @@
 <script>
+let KILL_STREAK = 0;
+const kill_streak_stack_get_more_gold = ({Unt_Gld=0, Kill_Streak=0}) => {
+	console.log(
+		Unt_Gld,
+		Kill_Streak
+	)
+	return (Unt_Gld * Kill_Streak);
+};
+// UNT_DATA_OBJ[UNT_NUM_N]['GLD']
 
 const what_sort_by_any = ({
 		What=MINE,
@@ -115,7 +124,7 @@ let USR_DATA_ARRAY = [];
 const INIT_USR_DATA_ARRAY = [{
 	NAME: 'USR',
 	LFP: 30,
-	ATK: 1,
+	ATK: 10,
 	EQP: [
 		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, 
 			MAGIC: 
@@ -398,11 +407,15 @@ const magic_USR_to_UNT = (Magic) => {
 		const magic_to_Y = CURRENT_Y_AND_X[0] + MAGI[0];
 		const magic_to_X = CURRENT_Y_AND_X[1] + MAGI[1];
 		if(
+			(typeof COLLECT_VALUE2[magic_to_Y]) === 'undefined' ||
+			(typeof COLLECT_VALUE2[magic_to_Y][magic_to_X]) === 'undefined'
+		){return};
+		if(
 			COLLECT_VALUE2[magic_to_Y][magic_to_X][2] === 'GOL' ||
 			COLLECT_VALUE2[magic_to_Y][magic_to_X][2] === 'BLC' ||
 			COLLECT_VALUE2[magic_to_Y][magic_to_X][2] === 'NON' ||
 			COLLECT_VALUE2[magic_to_Y][magic_to_X][2] === 'USR'
-		){return}
+		){return};
 
 
 
@@ -432,7 +445,13 @@ const magic_USR_to_UNT = (Magic) => {
 	}
 
 		if (UNT_DATA_OBJ[UNT_NUM_N]['LFP'] <= 0) {
-			GOLD += UNT_DATA_OBJ[UNT_NUM_N]['GLD'];
+			KILL_STREAK += 1;
+			// GOLD += 1;
+			GOLD += kill_streak_stack_get_more_gold({
+				Unt_Gld: UNT_DATA_OBJ[UNT_NUM_N]['GLD'],
+				Kill_Streak: KILL_STREAK,
+			});
+			// console.log('FOO', FOO);
 			const UNT_Y_AND_X = 
 					[
 						magic_to_Y,
@@ -525,7 +544,12 @@ const attack_USR_to_UNT = (Go_to_Y, Go_to_X) => {
 
 	// 指定したUNTのLFPが0以下になったら、指定したUNTの位置をNONに変更する
 	if (UNT_DATA_OBJ[UNT_NUM_N]['LFP'] <= 0) {
-		GOLD += UNT_DATA_OBJ[UNT_NUM_N]['GLD'];
+		KILL_STREAK += 1;
+		GOLD += 1;
+		// GOLD += kill_streak_stack_get_more_gold({
+		// 	Unt_Gld: UNT_DATA_OBJ[UNT_NUM_N]['GLD'],
+		// 	Kill_Streak: KILL_STREAK,
+		// });
 		const UNT_Y_AND_X = 
 				[
 					// CURRENT_Y_AND_X[0] + Go_to_Y,
@@ -634,6 +658,7 @@ const damage_effect = (
 // 移動先にGOLがいたら移動しない
 // const ANY_MOVE_FN = () => 'WIP';
 function keypress_event(e) {
+	KILL_STREAK = 0;
 	// キーボードの上下左右をwasdで操作する
 	// wは上、aは左、sは下、dは右
 	const keypress_position = {
@@ -1026,6 +1051,10 @@ onMount(async () => {
 								PICKEL: {PICKEL}
 							</div>
 
+							<div>
+								KILL_STREAK: {KILL_STREAK}
+							</div>
+
 							<ul>
 								<!-- 上記のobjを#eachでレンダリングする -->
 								{#each COLLECT_VALUE2 as item, Y}
@@ -1096,7 +1125,7 @@ onMount(async () => {
 								</div>
 							</div>
 
-							<div>Ver 0.0.1.9</div>
+							<div>Ver 0.0.2.0</div>
 							<a href="https://github.com/taroyanaka/game/">GitHub</a>
 
 </div>
