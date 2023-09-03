@@ -17,10 +17,10 @@ import { onMount } from 'svelte';
 
 let rootElement;
 
-// let field_none = 'block';
-let field_none = 'none';
-// let gacha_none = 'none';
-let gacha_none = 'block';
+let field_none = 'block';
+// let field_none = 'none';
+let gacha_none = 'none';
+// let gacha_none = 'block';
 
 $: MINE && what_sort_by_any({What: MINE, Any: 'RARITY', Asc_Desc: 'DESC'});
 $: rootElement && rootElement.style.setProperty('--field-none', field_none);
@@ -78,6 +78,7 @@ const make_UNT_DATA_OBJ = ({
 		Repeat_Array_Times=20,
 		LFP_Range_Array=[2, 10],
 		ATK_Range_Array=[1, 3],
+		GLD_Range_Array=[1, 2]
 	}) => {
 	const UNT_DATA_OBJ = {};
 	// 特定の範囲の配列からランダムで1つ選択する関数
@@ -98,6 +99,7 @@ const make_UNT_DATA_OBJ = ({
 			NAME: 'UNT_' + (I).toString(),
 			LFP: V * get_randam_range({Range: LFP_Range_Array}),
 			ATK: V * get_randam_range({Range: ATK_Range_Array}),
+			GLD: get_randam_range({Range: GLD_Range_Array}),
 		};
 	});
 	return UNT_DATA_OBJ;
@@ -149,7 +151,7 @@ const INIT_USR_DATA_ARRAY = [{
 			]
 		},
 	],
-	GOLD: 100,
+	GOLD: 1,
 }];
 
 
@@ -240,16 +242,6 @@ const set_EQP = ({
 	Eqp_Index=0,
 	}) =>{
 
-// MINEから指定したUSR_DATA_ARRAYのEqpを取得する
-// Object.keys({'UNT_NUM_0': {ATK: 3,LFP: 4,NAME: "UNT_0",TYPE: "UNT"}})
-// MINE = R.omit([Eqp], MINE);
-// MINE = R.omit([Object.keys({'UNT_NUM_0': {ATK: 3,LFP: 4,NAME: "UNT_0",TYPE: "UNT"}})], MINE);
-// MINE = R.omit([Eqp_Index+1], MINE);
-
-// console.log(MINE);
-
-
-
 	// MINEから指定したUSR_DATA_ARRAYのNAMEのEQPを取得する
 	const USR_EQP = Eqp;
 	// USR_EQPの長さがLIMITより大きかったら、USR_EQPをLIMITの数になるまでスライスする
@@ -260,10 +252,7 @@ const set_EQP = ({
 	USR_DATA_ARRAY[0]['EQP'] = R.append(Eqp, USR_DATA_ARRAY[0]['EQP']);
 	// MINEから指定したUSR_DATA_ARRAYのNAMEのEQPをUSR_EQP_SLICE_PUSHに更新する
 
-	console.log(MINE);
-		// MINE = R.omit([Eqp_Index+1], MINE);
-		// MINE = R.omit([MINE[Eqp_Index]], MINE);
-		// MINE = R.omit([Eqp_Index+1], MINE);
+	// console.log(MINE);
 		MINE = R.remove(Eqp_Index, 1, MINE);
 		console.log(MINE);
 
@@ -272,7 +261,7 @@ const set_EQP = ({
 const LFP_RECHARGE_NUM = 0;
 let UNT_DATA_OBJ = {};
 
-let GOLD = 10;
+let GOLD = 1;
 let MINE = [];
 
 let KAKUHEN = false;
@@ -389,14 +378,14 @@ const slot_exe_once = () =>{
 
 
 
-function keypress_event_for_slot(e) {
-	const keypress_position = {
-		'g': slot_exe_once(),
-	};
-	keypress_position[e.key];
-};
+// function keypress_event_for_slot(e) {
+// 	const keypress_position = {
+// 		'g': slot_exe_once(),
+// 	};
+// 	keypress_position[e.key];
+// };
 
-document.addEventListener('keypress', keypress_event_for_slot);
+// document.addEventListener('keypress', keypress_event_for_slot);
 
 
 
@@ -443,6 +432,7 @@ const magic_USR_to_UNT = (Magic) => {
 	}
 
 		if (UNT_DATA_OBJ[UNT_NUM_N]['LFP'] <= 0) {
+			GOLD += UNT_DATA_OBJ[UNT_NUM_N]['GLD'];
 			const UNT_Y_AND_X = 
 					[
 						magic_to_Y,
@@ -535,6 +525,7 @@ const attack_USR_to_UNT = (Go_to_Y, Go_to_X) => {
 
 	// 指定したUNTのLFPが0以下になったら、指定したUNTの位置をNONに変更する
 	if (UNT_DATA_OBJ[UNT_NUM_N]['LFP'] <= 0) {
+		GOLD += UNT_DATA_OBJ[UNT_NUM_N]['GLD'];
 		const UNT_Y_AND_X = 
 				[
 					// CURRENT_Y_AND_X[0] + Go_to_Y,
@@ -984,7 +975,6 @@ onMount(async () => {
 
 <!-- fieldfieldfieldfieldfieldfield -->
 <div class="field">
-
 							<!-- ERROR_MESSAGEを表示するdivタグ。クリックしたら非表示になる -->
 							<!-- <div> -->
 								<!-- {#if ERROR_MESSAGE} -->
@@ -1019,6 +1009,12 @@ onMount(async () => {
 								</span>
 								</fieldset>
 							</div>
+
+{#if GOLD}
+	<div>
+		GOLD: {GOLD}
+	</div>
+{/if}
 
 							<!-- FLOORを表示するdivタグ -->
 							<div>
@@ -1095,12 +1091,12 @@ onMount(async () => {
 
 								<div>
 								{#each Object.keys(UNT_DATA_OBJ) as key, IDX}
-									<div id={UNT_DATA_OBJ[key].NAME} style='background-color: #FFFFFF'  class='UNT_BACK'>{UNT_DATA_OBJ[key].NAME} LFP: {UNT_DATA_OBJ[key].LFP} ATK: {UNT_DATA_OBJ[key].ATK}</div>
+									<div id={UNT_DATA_OBJ[key].NAME} style='background-color: #FFFFFF'  class='UNT_BACK'>{UNT_DATA_OBJ[key].NAME} LFP: {UNT_DATA_OBJ[key].LFP} ATK: {UNT_DATA_OBJ[key].ATK} GLD: {UNT_DATA_OBJ[key].GLD}</div>
 								{/each}
 								</div>
 							</div>
 
-							<div>Ver 0.0.1.8</div>
+							<div>Ver 0.0.1.9</div>
 							<a href="https://github.com/taroyanaka/game/">GitHub</a>
 
 </div>
