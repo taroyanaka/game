@@ -1,4 +1,12 @@
 <script>
+let rootElement;
+
+let field_none = 'block';
+// let field_none = 'none';
+let gacha_none = 'none';
+// let gacha_none = 'block';
+
+const EQP_LIMIT = 10;
 let KILL_STREAK = 0;
 const kill_streak_stack_get_more_gold = ({Unt_Gld=0, Kill_Streak=0}) => {
 	console.log(
@@ -24,14 +32,9 @@ const what_sort_by_any = ({
 import { onMount } from 'svelte';
 // import { beforeUpdate, afterUpdate } from 'svelte';
 
-let rootElement;
-
-let field_none = 'block';
-// let field_none = 'none';
-let gacha_none = 'none';
-// let gacha_none = 'block';
 
 $: MINE && what_sort_by_any({What: MINE, Any: 'RARITY', Asc_Desc: 'DESC'});
+// $: USR_DATA_ARRAY && console.log('update');
 $: rootElement && rootElement.style.setProperty('--field-none', field_none);
 $: rootElement && rootElement.style.setProperty('--gacha-none', gacha_none);
 
@@ -50,7 +53,17 @@ const UN_EQP = (Eqp_Index) => {
 }
 
 
-const recharge_magic_count = () => USR_DATA_ARRAY[0]['EQP'].map(V=>V['MAGIC'][0]['MAGIC_COUNT']=1);
+// const recharge_magic_count = () => USR_DATA_ARRAY[0]['EQP'].map(V=>V['MAGIC'][0]['MAGIC_COUNT']=1);
+const recharge_magic_count = () => {
+	USR_DATA_ARRAY[0]['EQP'].map((V, Eqp_Index) => {
+			if(V['MAGIC'][0]['MAGIC_COUNT'] !== null){
+				V['MAGIC'][0]['MAGIC_COUNT'] = 1;
+				// return V['MAGIC'][0]['MAGIC_COUNT'];
+			}
+		})
+	// USR_DATA_ARRAY[0]['EQP'].map(V=>V['MAGIC'][0]['MAGIC_COUNT']=1);
+}
+
 
 // beforeUpdate(async () => {
 // 	try {
@@ -63,7 +76,7 @@ const recharge_magic_count = () => USR_DATA_ARRAY[0]['EQP'].map(V=>V['MAGIC'][0]
 const next_field = () => {
 	MINE = [];
 	switch_field_gacha();
-	recharge_magic_count();
+	// recharge_magic_count();
 };
 
 // .field .gachaのdisplayをnoneを切り替える関数
@@ -129,7 +142,7 @@ const INIT_USR_DATA_ARRAY = [{
 		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, 
 			MAGIC: 
 				[
-					{MAGIC_COUNT: 0},
+					{MAGIC_COUNT: null},
 					[
 						[0,  0,  0],
 						[0, 'U', 0],
@@ -147,7 +160,7 @@ const INIT_USR_DATA_ARRAY = [{
 				]
 			]
 		},
-		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+		{RARITY: 4, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
 			[
 				{MAGIC_COUNT: 1},
 				[
@@ -210,7 +223,12 @@ const RETRY_USR_DATA_ARRAY = [{
 USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY);
 
 
-const decrement_MAGIC_COUNTER = (EqpNum) => USR_DATA_ARRAY[0]['EQP'][EqpNum]['MAGIC'][0]['MAGIC_COUNT'] -= 1;
+const decrement_MAGIC_COUNTER = (EqpNum) => {
+	if(USR_DATA_ARRAY[0]['EQP'][EqpNum]['MAGIC'][0]['MAGIC_COUNT'] === null){
+		return;
+	}
+	USR_DATA_ARRAY[0]['EQP'][EqpNum]['MAGIC'][0]['MAGIC_COUNT'] -= 1
+};
 
 const convert = (range) => {
 	const result = [];
@@ -247,14 +265,15 @@ let DEV_MODE = true;
 const set_EQP = ({
 	// Name=USR_DATA_ARRAY[0].NAME,
 	Eqp={'UNT_NUM_0': {ATK: 3,LFP: 4,NAME: "UNT_0",TYPE: "UNT"}},
-	Eqp_Limit=5,
+	// Eqp_Limit=5,
 	Eqp_Index=0,
 	}) =>{
 
 	// MINEから指定したUSR_DATA_ARRAYのNAMEのEQPを取得する
 	const USR_EQP = Eqp;
 	// USR_EQPの長さがLIMITより大きかったら、USR_EQPをLIMITの数になるまでスライスする
-	if(USR_DATA_ARRAY[0]['EQP'].length >= Eqp_Limit){
+	// if(USR_DATA_ARRAY[0]['EQP'].length >= Eqp_Limit){
+	if(USR_DATA_ARRAY[0]['EQP'].length >= EQP_LIMIT){
 		return;
 	}
 	// USR_DATA_ARRAY[0].EQPオブジェクトにEQPをramda.jsで追加する
@@ -267,7 +286,7 @@ const set_EQP = ({
 
 };
 
-const LFP_RECHARGE_NUM = 0;
+const LFP_RECHARGE_NUM = 10;
 let UNT_DATA_OBJ = {};
 
 let GOLD = 1;
@@ -281,8 +300,8 @@ const RARITY_ZERO_VOLUME = 80;
 const PROBABILITY_CHANGE_THRESHOLD_0 = 2;
 const PROBABILITY_CHANGE_THRESHOLD_1 = 3;
 const DECREASE_PERCENT = 90;
-const no_magic = () => [{MAGIC_COUNT: 0},[[0,  0,  0],[0, 'U', 0],[0,  0,  0],]];
-let SLOT = [
+const no_magic = () => [{MAGIC_COUNT: null},[[0,  0,  0],[0, 'U', 0],[0,  0,  0],]];
+const ORIGINAL_SLOT = [
 	{RARITY: 0, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 1, ATK_DEBUFF: 0, MAGIC: R.clone(no_magic())},
 	{RARITY: 1, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 2, ATK_DEBUFF: 0, MAGIC: R.clone(no_magic())},
 	{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 3, ATK_DEBUFF: 0, MAGIC: R.clone(no_magic())},
@@ -290,6 +309,16 @@ let SLOT = [
 
 	{RARITY: 90, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 10, ATK_DEBUFF: 0, MAGIC: R.clone(no_magic())},
 
+	{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+		[
+			{MAGIC_COUNT: 1},
+			[
+				[1,  0,  1],
+				[0, 'U', 0],
+				[1,  0,  1],
+			]
+		]
+	},
 	{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
 		[
 			{MAGIC_COUNT: 1},
@@ -312,8 +341,21 @@ let SLOT = [
 			]
 		]
 	},
-
+	{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+		[
+			{MAGIC_COUNT: 1},
+			[
+				[1, 0,  1,  0, 1],
+				[0, 1,  1,  1, 0],
+				[1, 1, 'U', 1, 1],
+				[0, 1,  1,  1, 0],
+				[1, 0,  1,  0, 1],
+			]
+		]
+	},
 ];
+// let SLOT = R.clone(ORIGINAL_SLOT);
+let SLOT = ORIGINAL_SLOT;
 
 // $: if(true) console.log('hello');
 
@@ -325,22 +367,27 @@ let DIED = '';
 let ADJACENT_Y_AND_X = [];
 let COLLECT_VALUE2 = [];
 
-// SLOTのRARITYの合計の値が100になるように100個ランダムで選択する。
-// ただし、RARITYが90のものは1つだけ選択し、RARITYが0はRARITY_ZERO_VOLUME個選択する。
-let SLOT2 = SLOT.reduce((accumulator, currentValue) => {
-	const RARITY = currentValue.RARITY;
-	const RARITY_NUM = currentValue.RARITY === 90 ?
-						1 : currentValue.RARITY === 0 ?
-								RARITY_ZERO_VOLUME : currentValue.RARITY;
-	for (let i = 0; i < RARITY_NUM; i++) {
-		accumulator.push(currentValue);
-	}
-	return accumulator;
-}, []);
+let SLOT2 = [];
+let SLOT3 = [];
+const make_slot = () => {
+	// SLOTのRARITYの合計の値が100になるように100個ランダムで選択する。
+	// ただし、RARITYが90のものは1つだけ選択し、RARITYが0はRARITY_ZERO_VOLUME個選択する。
+	SLOT2 = SLOT.reduce((accumulator, currentValue) => {
+		const RARITY = currentValue.RARITY;
+		const RARITY_NUM = currentValue.RARITY === 90 ?
+							1 : currentValue.RARITY === 0 ?
+									RARITY_ZERO_VOLUME : currentValue.RARITY;
+		for (let i = 0; i < RARITY_NUM; i++) {
+			accumulator.push(currentValue);
+		}
+		return accumulator;
+	}, []);
+	SLOT3 = shuffle(SLOT2);
+};
 
-let SLOT3 = shuffle(SLOT2);
+make_slot();
 // LFP_BUFFのみ
-let SLOT4 = shuffle(SLOT2.slice(0, 100));
+// let SLOT4 = shuffle(SLOT2.slice(0, 100));
 
 // 任意のRARITYを任意のパーセンテージ減らす関数
 const decrease_any_rarity = (Rarity, Percent) => {
@@ -354,20 +401,66 @@ const decrease_any_rarity = (Rarity, Percent) => {
 };
 
 
+const RATE_AND_X_PAIR = [
+	{Rate: 1, X: 1},
+	{Rate: 4, X: 3},
+	{Rate: 8, X: 5},
+];
+const make_high_rate_slot = ({Rate=1}) => {
+	console.log('make_high_rate_slot');
+	console.log(RATE_AND_X_PAIR.filter(V=>V.Rate === Rate)[0]['Rate']);
+	if (Rate === 1) {
+		SLOT = R.clone(ORIGINAL_SLOT);
+		const new_slot = SLOT.map(V=>{
+			V['ATK_BUFF'] = V['ATK_BUFF'] * 1;
+			return V;
+		})
+		SLOT = R.clone(new_slot);
+		return;
+	}
+	if (Rate === RATE_AND_X_PAIR.filter(V=>V.Rate === Rate)[0]['Rate']) {
+		SLOT = R.clone(ORIGINAL_SLOT);
+		const new_slot = SLOT.map(V=>{
+			V['ATK_BUFF'] = V['ATK_BUFF'] * RATE_AND_X_PAIR.filter(V=>V.Rate === Rate)[0]['X'];
+			// V['RARITY'] = V['RARITY'] * RATE_AND_X_PAIR.filter(V=>V.Rate === Rate)[0]['X'];
+			return V;
+		})
+		SLOT = R.clone(new_slot);
+	}
+	// if(Rate === 4){
+	// 	const new_slot = SLOT.map(V=>{
+	// 		V['ATK_BUFF'] = V['ATK_BUFF'] * RATE_AND_X_PAIR.filter(V=>V.Rate === Rate)[0]['X'];
+	// 		return V;
+	// 	})
+	// 	SLOT = R.clone(new_slot);
+	// }
+	// if(Rate === 8){
+	// 	const new_slot = SLOT.map(V=>{
+	// 		V['ATK_BUFF'] = V['ATK_BUFF'] * RATE_AND_X_PAIR.filter(V=>V.Rate === Rate)[0]['X'];
+	// 		return V;
+	// 	})
+	// 	console.log(new_slot);
+	// 	SLOT = R.clone(new_slot);
+	// }
+}
+
 // ワロタ https://detail.chiebukuro.yahoo.co.jp/qa/question_detail/q14218518669
 // 関数。SLOT3からランダムで1つ選択してMINEに追加。GOLDが足りなかったら追加しない。GOLDが足りたらGOLDを減らす。
 // RARITYが1以上のものをPROBABILITY_CHANGE_THRESHOLD連続で追加できた場合、KAKUHENをtrueにする。
 // KAKUHEN true状態でKAKUHEN_COUNTER_LIMIT回選択した後にKAKUHENをfalseにする。
-const slot_exe_once = () =>{
+const slot_exe_once = ({Rate_Param=1}) =>{
+	console.log('slot_exe_once');
+	make_high_rate_slot({Rate: Rate_Param});
+	make_slot();
 	// KAKUHENがtrueの時はSLOT3からRARITYが0のものを選択する確率が低下する
 	const SLOT3_KAKUHEN = KAKUHEN ? decrease_any_rarity(0, DECREASE_PERCENT) : SLOT3;
 	// SLOT3_KAKUHENからランダムで1つ選択する
 	const random_SLOT3_KAKUHEN = shuffle(SLOT3_KAKUHEN)[0];
 	// GOLDが足りなかったら追加しない。GOLDが足りたらGOLDを減らす。
-	if (GOLD < 1) {
+	if ((GOLD - Rate_Param) <= 0) {
 		return;
 	}else{
-		GOLD -= 1;
+		GOLD -= Rate_Param;
 	}
 	// MINEに追加する
 	MINE = R.append(random_SLOT3_KAKUHEN, MINE);
@@ -902,6 +995,7 @@ const reset_or_init_map = ({when_mounted_time=true, go_up=false, when_died=false
 
 	DIED = '';
 	if(when_mounted_time === false, go_up === false, when_died === true){
+		recharge_magic_count();
 		// console.log('when_died');
 		// console.log(
 		// 	RETRY_USR_DATA_ARRAY['NAME'],RETRY_USR_DATA_ARRAY['LFP'],RETRY_USR_DATA_ARRAY['ATK'],
@@ -936,6 +1030,7 @@ USR_DATA_ARRAY[0]['ATK'] = RETRY_USR_DATA_ARRAY[0]['ATK'];
 	UNT_DATA_OBJ = {};
 	let UNT_DATA_CONF = {};
 	if(go_up===true){
+		recharge_magic_count();
 		switch_field_gacha();
 		USR_DATA_ARRAY[0]['LFP'] += LFP_RECHARGE_NUM;
 		FLOOR += 1;
@@ -1103,15 +1198,15 @@ onMount(async () => {
 												<!-- EQP.MAGIC[0]['MAGIC_COUNT']が0以下の場合下記ブロックを非表示にする -->
 												<div>
 													{#if EQP.MAGIC[0]['MAGIC_COUNT'] >= 1}
-														<button  on:click={() => keypress_event({key: 'm', Magic: EQP.MAGIC, Eqp_I: EQP_I})}>MAGIC</button>
+															<button  on:click={() => keypress_event({key: 'm', Magic: EQP.MAGIC, Eqp_I: EQP_I})}>MAGIC</button>
+														MAGIC_COUNT: {EQP.MAGIC[0]['MAGIC_COUNT']}
+														<!-- MAGIC_RANGE: {EQP.MAGIC[1]} -->
+														{#each EQP.MAGIC[1] as MAGIC_1, MAGIC_1_I}
+															<div>
+																{MAGIC_1}
+															</div>
+														{/each}
 													{/if}
-													MAGIC_COUNT: {EQP.MAGIC[0]['MAGIC_COUNT']}
-													<!-- MAGIC_RANGE: {EQP.MAGIC[1]} -->
-													{#each EQP.MAGIC[1] as MAGIC_1, MAGIC_1_I}
-														<div>
-															{MAGIC_1}
-														</div>
-													{/each}
 												</div>
 										</div>
 										{/if}
@@ -1125,7 +1220,7 @@ onMount(async () => {
 								</div>
 							</div>
 
-							<div>Ver 0.0.2.0</div>
+							<div>Ver 0.0.2.1</div>
 							<a href="https://github.com/taroyanaka/game/">GitHub</a>
 
 </div>
@@ -1170,7 +1265,9 @@ onMount(async () => {
 			{/each}
 		</div>
 
-		<button on:click={slot_exe_once}>slot_exe_once</button>
+		<button on:click={() => slot_exe_once({Rate_Param: 1})}>slot_exe_once</button>
+		<button on:click={() => slot_exe_once({Rate_Param: 4})}>x4_slot_exe_once</button>
+		<button on:click={() => slot_exe_once({Rate_Param: 8})}>x8_slot_exe_once</button>
 		<button on:click={next_field}>next_field</button>
 		<div>MINE</div>
 		GOLD: {GOLD}
@@ -1201,7 +1298,7 @@ onMount(async () => {
 					<!-- NAME, EQP, LIMITが引数 -->
 					<button on:click={() => set_EQP({
 						Eqp: EQP,
-						Eqp_Limit: 5,
+						// Eqp_Limit: 5,
 						Eqp_Index: EQP_I,
 					})}>set_EQP</button>
 				{/if}
