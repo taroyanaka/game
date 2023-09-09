@@ -32,6 +32,9 @@ const spawn = (UNT_NUM, Target_UNT_NUM) => {
 
 	// NONの位置を取得する
 	const NON_POSITION = get_NON_position(UNT_NUM);
+	// NONの中から一つをランダムで選択する
+	const random_NON_POSITION = shuffle(NON_POSITION)[0];
+	
 
 
 
