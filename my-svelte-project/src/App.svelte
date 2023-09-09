@@ -16,9 +16,23 @@ const spawn = (UNT_NUM, Target_UNT_NUM) => {
 		const NON_POSITION = UNT_ADJACENT_Y_AND_X.filter(V=>COLLECT_VALUE2[V[0]][V[1]] === 0);
 		return NON_POSITION;
 	};
+
+	// 誕生するUNTのプロパティを設定する。
+	// UNTのLFPとATKはUNT_NUMとTarget_UNT_NUMのLFPとATKの合計値
+	const new_UNT = {
+		TYPE: 'UNT',
+		NAME: 'UNT_' + (UNT_NUM).toString() + '_' + (Target_UNT_NUM).toString(),
+		LFP: UNT_DATA_OBJ['UNT_NUM_' + (UNT_NUM).toString()]['LFP'] + UNT_DATA_OBJ['UNT_NUM_' + (Target_UNT_NUM).toString()]['LFP'],
+		ATK: UNT_DATA_OBJ['UNT_NUM_' + (UNT_NUM).toString()]['ATK'] + UNT_DATA_OBJ['UNT_NUM_' + (Target_UNT_NUM).toString()]['ATK'],
+		GLD: UNT_DATA_OBJ['UNT_NUM_' + (UNT_NUM).toString()]['GLD'] + UNT_DATA_OBJ['UNT_NUM_' + (Target_UNT_NUM).toString()]['GLD'],
+		BDP: 0,
+		RBP: 0,
+	};
+	new_UNT['BDP'] = new_UNT['LFP'] * new_UNT['ATK'];
+
 	// NONの位置を取得する
 	const NON_POSITION = get_NON_position(UNT_NUM);
-	// NONの位置が無い場合、UNT_NUMに隣接するNONにUNTを誕生させる
+
 
 
 	
