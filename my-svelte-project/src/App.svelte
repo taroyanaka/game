@@ -1,4 +1,53 @@
 <script>
+// spawn関数を宣言
+// spawn関数はUNTを誕生させる関数
+// Target_UNT_NUMに隣接するNONにUNTを誕生させる
+// Target_UNT_NUMに隣接するNONが無い場合、UNT_NUMに隣接するNONにUNTを誕生させる
+// Target_UNT_NUMとUNT_NUMどちらにも隣接するNONが無い場合spawnは実行されない
+const spawn = (UNT_NUM, Target_UNT_NUM) => {
+	const unt_position = get_UNT_position(UNT_NUM);
+	const UNT_ADJACENT_Y_AND_X = get_click_position(unt_position[0], unt_position[1], false);
+	const Target_UNT_position = get_UNT_position(Target_UNT_NUM);
+	const Target_UNT_ADJACENT_Y_AND_X = get_click_position(Target_UNT_position[0], Target_UNT_position[1], false);
+
+	const get_NON_position = (UNT_NUM) => {
+		const unt_position = get_UNT_position(UNT_NUM);
+		const UNT_ADJACENT_Y_AND_X = get_click_position(unt_position[0], unt_position[1], false);
+		const NON_POSITION = UNT_ADJACENT_Y_AND_X.filter(V=>COLLECT_VALUE2[V[0]][V[1]] === 0);
+		return NON_POSITION;
+	};
+	// NONの位置を取得する
+	const NON_POSITION = get_NON_position(UNT_NUM);
+	// NONの位置が無い場合、UNT_NUMに隣接するNONにUNTを誕生させる
+
+
+	
+
+};
+
+
+// breeding points(BDP)はUNTのLFPとATKを掛けた値
+// BDP = LFP * ATK
+// remain breeding points(RBP)の初期値は0でbreedによって加算される
+// RBPがBDPを超えたらUNTが誕生する
+// ATKの値がbreed関数によってRBPに加算される
+const breed = (UNT_NUM, Target_UNT_NUM_Ary) => {
+	// console.log(UNT_NUM, Target_UNT_NUM_Ary);
+	Target_UNT_NUM_Ary.forEach(Target_UNT_NUM=>{
+		const UNIT_NAME = 'UNT_NUM_' + (UNT_NUM).toString();
+		const Target_UNT_NUM_NAME = 'UNT_NUM_' + (Target_UNT_NUM).toString();
+		// UNT_NUMのLFPとATKの合計値
+		// UNT_NUMのLFPとATKの合計値をTarget_UNT_NUMのRBPに加算する
+		UNT_DATA_OBJ[Target_UNT_NUM_NAME]['RBP'] += UNT_DATA_OBJ[UNIT_NAME]['ATK']
+		if(UNT_DATA_OBJ[Target_UNT_NUM_NAME]['RBP'] >= UNT_DATA_OBJ[Target_UNT_NUM_NAME]['BDP']){
+			console.log('BREED!!', UNT_NUM, Target_UNT_NUM_NAME);
+			// RBPがBDPを超えたらUNTが誕生する
+			// RBPを0にする
+			UNT_DATA_OBJ[Target_UNT_NUM_NAME]['RBP'] = 0;
+		}
+	});
+};
+
 let rootElement;
 
 let field_none = 'block';
@@ -100,7 +149,8 @@ const make_UNT_DATA_OBJ = ({
 		Repeat_Array_Times=20,
 		LFP_Range_Array=[2, 10],
 		ATK_Range_Array=[1, 3],
-		GLD_Range_Array=[1, 2]
+		GLD_Range_Array=[1, 2],
+		BDP_Rate=1,
 	}) => {
 	const UNT_DATA_OBJ = {};
 	// 特定の範囲の配列からランダムで1つ選択する関数
@@ -114,6 +164,13 @@ const make_UNT_DATA_OBJ = ({
 	// R.repeatで指定した数字を指定した回数繰り返す配列を返す関数
 	const repeat_array = (num, times) => R.repeat(num, times);
 
+	// breeding points(BDP)はUNTのLFPとATKを掛けた値
+	// BDP = LFP * ATK
+	// remain breeding points(RBP)の初期値は0でbreedによって加算される
+	// RBPがBDPを超えたらUNTが誕生する
+	// LFPとATKの合計値がbreed関数によってRBPに加算される
+	// BDP_RateはBDPの調整する。デフォルトは1。多いほどbreedが遅くなる
+
 	// MINEからUNT_DATA_OBJを作成する
 	repeat_array(Repeat_Array_Num, Repeat_Array_Times).forEach((V, I) => {
 		UNT_DATA_OBJ['UNT_NUM_' + (I).toString()] = {
@@ -122,7 +179,12 @@ const make_UNT_DATA_OBJ = ({
 			LFP: V * get_randam_range({Range: LFP_Range_Array}),
 			ATK: V * get_randam_range({Range: ATK_Range_Array}),
 			GLD: get_randam_range({Range: GLD_Range_Array}),
+			BDP: 0,
+			RBP: 0,
 		};
+		UNT_DATA_OBJ['UNT_NUM_' + (I).toString()]['BDP'] = 
+			UNT_DATA_OBJ['UNT_NUM_' + (I).toString()]['LFP'] * 
+			UNT_DATA_OBJ['UNT_NUM_' + (I).toString()]['ATK'] * BDP_Rate;
 	});
 	return UNT_DATA_OBJ;
 };
@@ -566,20 +628,21 @@ const magic_USR_to_UNT = (Magic) => {
 
 
 // クリックした位置の上下左右の配列を取得する関数
-const get_click_position = (Y, X) => {
-	CURRENT_Y_AND_X = [Y, X];
+const get_click_position = (Y, X, When_Click=false) => {
+	// CURRENT_Y_AND_X = [Y, X];
 	const click_position = [
 		[X, X-1],
 		[X, X+1],
 		[X-1, X],
 		[X+1, X],
 	];
-	ADJACENT_Y_AND_X = click_position;
-	console.log(
-		CURRENT_Y_AND_X[0],
-		CURRENT_Y_AND_X[1],
-		ADJACENT_Y_AND_X,
-	);
+	if(When_Click){
+		console.log(
+			Y,
+			X,
+			click_position,
+		);
+	}
 	return click_position;
 };
 
@@ -876,6 +939,32 @@ const UNT_ATTACK_OR_MOVE = (NAME) => {
 		attack_UNT_to_USR(UNT_NUM);
 		return;
 	}
+
+	const UNT_ADJACENT_Y_AND_X = get_click_position(unt_position[0], unt_position[1], false);
+	// 隣接しているマスにUNTがいたらbreedする
+	if(
+		// 上下左右にUNTがいる場合はbreedする
+		// true
+		// window.app.$capture_state().COLLECT_VALUE2[0][3][2]['TYPE']
+		UNT_ADJACENT_Y_AND_X.some(V=>COLLECT_VALUE2[V[0]][V[1]][2]['TYPE'] === 'UNT')
+	){
+		
+		// get_click_position();
+		// console.log(unt_position);
+		// console.log('in breed');
+		const target_unit_num_ary = UNT_ADJACENT_Y_AND_X
+			.filter(V=>COLLECT_VALUE2[V[0]][V[1]][2]['TYPE'] === 'UNT')
+			.map(V=>COLLECT_VALUE2[V[0]][V[1]][2]['NAME'].replaceAll('UNT_', ''))
+			.map(V=>Number(V));
+			// .sort((a, b) => a - b)[0];
+		breed(UNT_NUM, target_unit_num_ary);
+		// console.log(Number(target_unit_num_ary));
+		// console.log(UNT_NUM);
+		// breed(UNT_NUM);
+		// return;
+	}
+
+
 	// 隣接しているマスにUSRがいない場合はランダムに1マス移動する
 	// NONのマスには移動できる。BLCのマスには移動できない。GOLのマスには移動できない。
 
@@ -1009,23 +1098,23 @@ USR_DATA_ARRAY[0]['ATK'] = RETRY_USR_DATA_ARRAY[0]['ATK'];
 		GOLD = USR_DATA_ARRAY[0]['GOLD'];
 	};
 	UNT_DATA_OBJ = {
-		UNT_NUM_0: {TYPE: 'UNT', NAME: 'UNT_0', LFP: 3, ATK: 1},
-		UNT_NUM_1: {TYPE: 'UNT', NAME: 'UNT_1', LFP: 2, ATK: 2},
-		UNT_NUM_2: {TYPE: 'UNT', NAME: 'UNT_2', LFP: 2, ATK: 3},
-		UNT_NUM_3: {TYPE: 'UNT', NAME: 'UNT_3', LFP: 2, ATK: 4},
-		UNT_NUM_4: {TYPE: 'UNT', NAME: 'UNT_4', LFP: 4, ATK: 1},
-		UNT_NUM_5: {TYPE: 'UNT', NAME: 'UNT_5', LFP: 4, ATK: 2},
-		UNT_NUM_6: {TYPE: 'UNT', NAME: 'UNT_6', LFP: 5, ATK: 1},
-		UNT_NUM_7: {TYPE: 'UNT', NAME: 'UNT_7', LFP: 5, ATK: 2},
-		UNT_NUM_8: {TYPE: 'UNT', NAME: 'UNT_8', LFP: 5, ATK: 3},
-		UNT_NUM_9: {TYPE: 'UNT', NAME: 'UNT_9', LFP: 5, ATK: 4},
-		UNT_NUM_10: {TYPE: 'UNT', NAME: 'UNT_10', LFP: 6, ATK: 1},
-		UNT_NUM_11: {TYPE: 'UNT', NAME: 'UNT_11', LFP: 6, ATK: 2},
-		UNT_NUM_12: {TYPE: 'UNT', NAME: 'UNT_12', LFP: 6, ATK: 3},
-		UNT_NUM_13: {TYPE: 'UNT', NAME: 'UNT_13', LFP: 6, ATK: 4},
-		UNT_NUM_14: {TYPE: 'UNT', NAME: 'UNT_14', LFP: 1, ATK: 1},
-		UNT_NUM_15: {TYPE: 'UNT', NAME: 'UNT_15', LFP: 1, ATK: 2},
-		UNT_NUM_16: {TYPE: 'UNT', NAME: 'UNT_16', LFP: 1, ATK: 3},
+		UNT_NUM_0: {TYPE: 'UNT', NAME: 'UNT_0', LFP: 3, ATK: 1, BDP: 0, RBP: 0},
+		UNT_NUM_1: {TYPE: 'UNT', NAME: 'UNT_1', LFP: 2, ATK: 2, BDP: 0, RBP: 0},
+		UNT_NUM_2: {TYPE: 'UNT', NAME: 'UNT_2', LFP: 2, ATK: 3, BDP: 0, RBP: 0},
+		UNT_NUM_3: {TYPE: 'UNT', NAME: 'UNT_3', LFP: 2, ATK: 4, BDP: 0, RBP: 0},
+		UNT_NUM_4: {TYPE: 'UNT', NAME: 'UNT_4', LFP: 4, ATK: 1, BDP: 0, RBP: 0},
+		UNT_NUM_5: {TYPE: 'UNT', NAME: 'UNT_5', LFP: 4, ATK: 2, BDP: 0, RBP: 0},
+		UNT_NUM_6: {TYPE: 'UNT', NAME: 'UNT_6', LFP: 5, ATK: 1, BDP: 0, RBP: 0},
+		UNT_NUM_7: {TYPE: 'UNT', NAME: 'UNT_7', LFP: 5, ATK: 2, BDP: 0, RBP: 0},
+		UNT_NUM_8: {TYPE: 'UNT', NAME: 'UNT_8', LFP: 5, ATK: 3, BDP: 0, RBP: 0},
+		UNT_NUM_9: {TYPE: 'UNT', NAME: 'UNT_9', LFP: 5, ATK: 4, BDP: 0, RBP: 0},
+		UNT_NUM_10: {TYPE: 'UNT', NAME: 'UNT_10', LFP: 6, ATK: 1, BDP: 0, RBP: 0},
+		UNT_NUM_11: {TYPE: 'UNT', NAME: 'UNT_11', LFP: 6, ATK: 2, BDP: 0, RBP: 0},
+		UNT_NUM_12: {TYPE: 'UNT', NAME: 'UNT_12', LFP: 6, ATK: 3, BDP: 0, RBP: 0},
+		UNT_NUM_13: {TYPE: 'UNT', NAME: 'UNT_13', LFP: 6, ATK: 4, BDP: 0, RBP: 0},
+		UNT_NUM_14: {TYPE: 'UNT', NAME: 'UNT_14', LFP: 1, ATK: 1, BDP: 0, RBP: 0},
+		UNT_NUM_15: {TYPE: 'UNT', NAME: 'UNT_15', LFP: 1, ATK: 2, BDP: 0, RBP: 0},
+		UNT_NUM_16: {TYPE: 'UNT', NAME: 'UNT_16', LFP: 1, ATK: 3, BDP: 0, RBP: 0},
 	};
 	UNT_DATA_OBJ = {};
 	let UNT_DATA_CONF = {};
@@ -1155,7 +1244,7 @@ onMount(async () => {
 								{#each COLLECT_VALUE2 as item, Y}
 									<li class="CELL">
 										{#each item as item2, X}
-											<span style={item2[3]} on:keydown={()=>get_click_position(Y, X)} on:click={()=>get_click_position(Y, X)}>□</span>
+											<span style={item2[3]} on:keydown={()=>get_click_position(Y, X, true)} on:click={()=>get_click_position(Y, X, true)}>□</span>
 										{/each}
 									</li>
 								{/each}
@@ -1215,7 +1304,14 @@ onMount(async () => {
 
 								<div>
 								{#each Object.keys(UNT_DATA_OBJ) as key, IDX}
-									<div id={UNT_DATA_OBJ[key].NAME} style='background-color: #FFFFFF'  class='UNT_BACK'>{UNT_DATA_OBJ[key].NAME} LFP: {UNT_DATA_OBJ[key].LFP} ATK: {UNT_DATA_OBJ[key].ATK} GLD: {UNT_DATA_OBJ[key].GLD}</div>
+									<div id={UNT_DATA_OBJ[key].NAME} style='background-color: #FFFFFF'  class='UNT_BACK'>
+									{UNT_DATA_OBJ[key].NAME}
+									LFP: {UNT_DATA_OBJ[key].LFP}
+									ATK: {UNT_DATA_OBJ[key].ATK}
+									GLD: {UNT_DATA_OBJ[key].GLD}
+									BDP: {UNT_DATA_OBJ[key].BDP}
+									RBP: {UNT_DATA_OBJ[key].RBP}
+									</div>
 								{/each}
 								</div>
 							</div>
