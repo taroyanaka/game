@@ -13,7 +13,7 @@ const spawn = (UNT_NUM, Target_UNT_NUM) => {
 	const get_NON_position = (UNT_NUM) => {
 		const unt_position = get_UNT_position(UNT_NUM);
 		const UNT_ADJACENT_Y_AND_X = get_click_position(unt_position[0], unt_position[1], false);
-		const NON_POSITION = UNT_ADJACENT_Y_AND_X.filter(V=>COLLECT_VALUE2[V[0]][V[1]] === 0);
+		const NON_POSITION = UNT_ADJACENT_Y_AND_X.filter(V=>COLLECT_VALUE2[V[0]][V[1]][2] === 'NON');
 		return NON_POSITION;
 	};
 
@@ -32,9 +32,19 @@ const spawn = (UNT_NUM, Target_UNT_NUM) => {
 
 	// NONの位置を取得する
 	const NON_POSITION = get_NON_position(UNT_NUM);
+
+	console.log(unt_position,
+UNT_ADJACENT_Y_AND_X,
+Target_UNT_position,
+Target_UNT_ADJACENT_Y_AND_X,
+new_UNT,
+NON_POSITION,
+);
+
 	// NONの中から一つをランダムで選択する
 	const random_NON_POSITION = shuffle(NON_POSITION)[0];
-	
+	// console.log(UNT_NUM, Target_UNT_NUM, NON_POSITION, random_NON_POSITION);
+
 
 
 
@@ -57,7 +67,8 @@ const breed = (UNT_NUM, Target_UNT_NUM_Ary) => {
 		// UNT_NUMのLFPとATKの合計値をTarget_UNT_NUMのRBPに加算する
 		UNT_DATA_OBJ[Target_UNT_NUM_NAME]['RBP'] += UNT_DATA_OBJ[UNIT_NAME]['ATK']
 		if(UNT_DATA_OBJ[Target_UNT_NUM_NAME]['RBP'] >= UNT_DATA_OBJ[Target_UNT_NUM_NAME]['BDP']){
-			console.log('BREED!!', UNT_NUM, Target_UNT_NUM_NAME);
+			// console.log('BREED!!', UNT_NUM, Target_UNT_NUM_NAME);
+			spawn(UNT_NUM, Target_UNT_NUM);
 			// RBPがBDPを超えたらUNTが誕生する
 			// RBPを0にする
 			UNT_DATA_OBJ[Target_UNT_NUM_NAME]['RBP'] = 0;
@@ -648,10 +659,10 @@ const magic_USR_to_UNT = (Magic) => {
 const get_click_position = (Y, X, When_Click=false) => {
 	// CURRENT_Y_AND_X = [Y, X];
 	const click_position = [
-		[X, X-1],
-		[X, X+1],
-		[X-1, X],
-		[X+1, X],
+		[Y, X-1],
+		[Y, X+1],
+		[Y-1, X],
+		[Y+1, X],
 	];
 	if(When_Click){
 		console.log(
