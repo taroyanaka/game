@@ -1,10 +1,10 @@
 <script>
-// spawn関数を宣言
 // spawn関数はUNTを誕生させる関数
 // Target_UNT_NUMに隣接するNONにUNTを誕生させる
 // Target_UNT_NUMに隣接するNONが無い場合、UNT_NUMに隣接するNONにUNTを誕生させる
 // Target_UNT_NUMとUNT_NUMどちらにも隣接するNONが無い場合spawnは実行されない
 const spawn = (UNT_NUM, Target_UNT_NUM) => {
+try {
 	const unt_position = get_UNT_position(UNT_NUM);
 	const UNT_ADJACENT_Y_AND_X = get_click_position(unt_position[0], unt_position[1], false);
 	const Target_UNT_position = get_UNT_position(Target_UNT_NUM);
@@ -13,15 +13,37 @@ const spawn = (UNT_NUM, Target_UNT_NUM) => {
 	const get_NON_position = (UNT_NUM) => {
 		const unt_position = get_UNT_position(UNT_NUM);
 		const UNT_ADJACENT_Y_AND_X = get_click_position(unt_position[0], unt_position[1], false);
-		const NON_POSITION = UNT_ADJACENT_Y_AND_X.filter(V=>COLLECT_VALUE2[V[0]][V[1]][2] === 'NON');
-		return NON_POSITION;
+		const NEAR_NON_POSITION = UNT_ADJACENT_Y_AND_X.filter(V=>COLLECT_VALUE2[V[0]][V[1]][2] === 'NON');
+		// near_non_positionが空の場合、COLLECT_VALUE2の中のNONの位置をランダムに一つ選択する
+		if(NEAR_NON_POSITION.length === 0){
+			const NOT_NEAR_NON_POSITION = [];
+			COLLECT_VALUE2.forEach((V, I)=>{
+				V.forEach((v, i)=>{
+					if(v[2] === 'NON'){
+						NOT_NEAR_NON_POSITION.push([I, i]);
+					}
+				});
+			});
+			// シャッフルして返す
+			return shuffle(NOT_NEAR_NON_POSITION);
+		}
+		return NEAR_NON_POSITION;
 	};
+
+
+	// UNT_DATA_OBJのNAMEの最大値+1を取得する関数
+	const get_new_UNT_NUM = () => {
+		const UNT_NUM_ARY = Object.keys(UNT_DATA_OBJ).map(V=>Number(V.split('_')[2]));
+		const max_UNT_NUM = Math.max(...UNT_NUM_ARY);
+		const new_UNT_NUM = max_UNT_NUM + 1;
+		return new_UNT_NUM;
+	}
 
 	// 誕生するUNTのプロパティを設定する。
 	// UNTのLFPとATKはUNT_NUMとTarget_UNT_NUMのLFPとATKの合計値
 	const new_UNT = {
 		TYPE: 'UNT',
-		NAME: 'UNT_' + (UNT_NUM).toString() + '_' + (Target_UNT_NUM).toString(),
+		NAME: 'UNT_' + (get_new_UNT_NUM()).toString(),
 		LFP: UNT_DATA_OBJ['UNT_NUM_' + (UNT_NUM).toString()]['LFP'] + UNT_DATA_OBJ['UNT_NUM_' + (Target_UNT_NUM).toString()]['LFP'],
 		ATK: UNT_DATA_OBJ['UNT_NUM_' + (UNT_NUM).toString()]['ATK'] + UNT_DATA_OBJ['UNT_NUM_' + (Target_UNT_NUM).toString()]['ATK'],
 		GLD: UNT_DATA_OBJ['UNT_NUM_' + (UNT_NUM).toString()]['GLD'] + UNT_DATA_OBJ['UNT_NUM_' + (Target_UNT_NUM).toString()]['GLD'],
@@ -32,24 +54,31 @@ const spawn = (UNT_NUM, Target_UNT_NUM) => {
 
 	// NONの位置を取得する
 	const NON_POSITION = get_NON_position(UNT_NUM);
-
-	console.log(unt_position,
-UNT_ADJACENT_Y_AND_X,
-Target_UNT_position,
-Target_UNT_ADJACENT_Y_AND_X,
-new_UNT,
-NON_POSITION,
-);
-
 	// NONの中から一つをランダムで選択する
 	const random_NON_POSITION = shuffle(NON_POSITION)[0];
-	// console.log(UNT_NUM, Target_UNT_NUM, NON_POSITION, random_NON_POSITION);
 
+	// new_UNTをUNT_DATA_OBJに追加する
+	// random_NON_POSITIONにnew_UNTを追加する
+	// back_groundの色を変更する
+	if(
+		random_NON_POSITION !== undefined &&
+		COLLECT_VALUE2[random_NON_POSITION[0]][random_NON_POSITION[1]][2] === 'NON'
+	){
+		UNT_DATA_OBJ['UNT_NUM_' + (get_new_UNT_NUM()).toString()] = new_UNT;
+		COLLECT_VALUE2[random_NON_POSITION[0]][random_NON_POSITION[1]][2] = new_UNT;
+		COLLECT_VALUE2[random_NON_POSITION[0]][random_NON_POSITION[1]][3] = 'background-color: #00FF00;';
+		console.log('UNT is born!!');
+	}
 
-
-
-	
-
+} catch (error) {
+	console.log(error);
+	// errorがあった場合、UNT_DATA_OBJからnew_UNTを削除する
+	UNT_DATA_OBJ = R.omit(['UNT_NUM_' + (get_new_UNT_NUM()).toString()], UNT_DATA_OBJ);
+	// errorがあった場合、COLLECT_VALUE2からnew_UNTを削除し、NONに戻す
+	COLLECT_VALUE2[random_NON_POSITION[0]][random_NON_POSITION[1]][2] = 'NON';
+	// errorがあった場合、COLLECT_VALUE2からnew_UNTの背景色を削除する
+	COLLECT_VALUE2[random_NON_POSITION[0]][random_NON_POSITION[1]][3] = 'background-color: #FFFFFF;';
+}
 };
 
 
@@ -178,7 +207,8 @@ const make_UNT_DATA_OBJ = ({
 		LFP_Range_Array=[2, 10],
 		ATK_Range_Array=[1, 3],
 		GLD_Range_Array=[1, 2],
-		BDP_Rate=1,
+		// BDP_Rate=1,
+		BDP_Rate=1.5,
 	}) => {
 	const UNT_DATA_OBJ = {};
 	// 特定の範囲の配列からランダムで1つ選択する関数
@@ -923,6 +953,8 @@ const get_USR_position = () => {
 		[0][0];
 	return USR_Y_AND_X;
 };
+
+let tmp = null;
 // 指定したUNTの位置を取得する関数
 const get_UNT_position = (UNT_NUM=0) => {
 	try {
@@ -936,7 +968,7 @@ const get_UNT_position = (UNT_NUM=0) => {
 			[V2[2]['NAME'].replaceAll('UNT_',''),[I1, I2]] :
 			null;
 	})).flat().filter(V=>V!==null);
-
+tmp = NUMBER_STR_AND_YX;
 
 	const res1 = NUMBER_STR_AND_YX.filter(V=>V[0]===UNT_NUM_STR)[0][1];
 	const [Y, X] = res1;
@@ -1344,7 +1376,7 @@ onMount(async () => {
 								</div>
 							</div>
 
-							<div>Ver 0.0.2.2</div>
+							<div>Ver 0.0.2.4</div>
 							<a href="https://github.com/taroyanaka/game/">GitHub</a>
 
 </div>
