@@ -144,7 +144,7 @@ $: MINE && what_sort_by_any({What: MINE, Any: 'RARITY', Asc_Desc: 'DESC'});
 $: rootElement && rootElement.style.setProperty('--field-none', field_none);
 $: rootElement && rootElement.style.setProperty('--gacha-none', gacha_none);
 
-// $: MINE && 	USR_DATA_ARRAY[0]['EQP'].map(V=>V['MAGIC'][0]['MAGIC_COUNT']=1);
+// $: MINE && 	get_USR_DATA_ARRAY(0)['EQP'].map(V=>V['MAGIC'][0]['MAGIC_COUNT']=1);
 
 const switch_field_gacha = () => {
 	field_none = field_none === 'none' ? 'block' : 'none';
@@ -153,21 +153,21 @@ const switch_field_gacha = () => {
 
 const UN_EQP = (Eqp_Index) => {
 	// MINEに指定したUSR_DATA_ARRAYのEqpを追加する
-	MINE = R.append(USR_DATA_ARRAY[0]['EQP'][Eqp_Index], MINE);
-	// USR_DATA_ARRAY[0].EQPオブジェクトから指定したUSR_DATA_ARRAYのEqpを削除する
-	USR_DATA_ARRAY[0]['EQP'] = R.remove(Eqp_Index, 1, USR_DATA_ARRAY[0]['EQP']);
+	MINE = R.append(get_USR_DATA_ARRAY(0)['EQP'][Eqp_Index], MINE);
+	// get_USR_DATA_ARRAY(0).EQPオブジェクトから指定したUSR_DATA_ARRAYのEqpを削除する
+	get_USR_DATA_ARRAY(0)['EQP'] = R.remove(Eqp_Index, 1, get_USR_DATA_ARRAY(0)['EQP']);
 }
 
 
-// const recharge_magic_count = () => USR_DATA_ARRAY[0]['EQP'].map(V=>V['MAGIC'][0]['MAGIC_COUNT']=1);
-const recharge_magic_count = () => {
-	USR_DATA_ARRAY[0]['EQP'].map((V, Eqp_Index) => {
+// const recharge_magic_count = () => get_USR_DATA_ARRAY(0)['EQP'].map(V=>V['MAGIC'][0]['MAGIC_COUNT']=1);
+const recharge_magic_count = (Usr_Id=0) => {
+	get_USR_DATA_ARRAY(Usr_Id)['EQP'].map((V, Eqp_Index) => {
 			if(V['MAGIC'][0]['MAGIC_COUNT'] !== null){
 				V['MAGIC'][0]['MAGIC_COUNT'] = 1;
 				// return V['MAGIC'][0]['MAGIC_COUNT'];
 			}
 		})
-	// USR_DATA_ARRAY[0]['EQP'].map(V=>V['MAGIC'][0]['MAGIC_COUNT']=1);
+	// get_USR_DATA_ARRAY(0)['EQP'].map(V=>V['MAGIC'][0]['MAGIC_COUNT']=1);
 }
 
 
@@ -208,7 +208,7 @@ const make_UNT_DATA_OBJ = ({
 		ATK_Range_Array=[1, 3],
 		GLD_Range_Array=[1, 2],
 		// BDP_Rate=1,
-		BDP_Rate=1.5,
+		BDP_Rate=4,
 	}) => {
 	const UNT_DATA_OBJ = {};
 	// 特定の範囲の配列からランダムで1つ選択する関数
@@ -254,7 +254,8 @@ let SHOW_DAMAGE = 'OFF';
 let USR_DATA_ARRAY = [];
 
 
-const INIT_USR_DATA_ARRAY = [{
+const INIT_USR_DATA_ARRAY_0 = [{
+	ID: 0,
 	NAME: 'USR',
 	LFP: 100,
 	ATK: 10,
@@ -296,6 +297,48 @@ const INIT_USR_DATA_ARRAY = [{
 	GOLD: 1,
 }];
 
+const INIT_USR_DATA_ARRAY_1 = [{
+	ID: 1,
+	NAME: 'USR',
+	LFP: 100,
+	ATK: 10,
+	EQP: [
+		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, 
+			MAGIC: 
+				[
+					{MAGIC_COUNT: null},
+					[
+						[0,  0,  0],
+						[0, 'U', 0],
+						[0,  0,  0],
+					]
+				]
+		},
+		{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+			[
+				{MAGIC_COUNT: 1},
+				[
+					[0,  1,  0],
+					[1, 'U', 1],
+					[0,  1,  0],
+				]
+			]
+		},
+		{RARITY: 4, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+			[
+				{MAGIC_COUNT: 1},
+				[
+					[1, 1,  1,  1, 1],
+					[1, 0,  0,  0, 1],
+					[1, 0, 'U', 0, 1],
+					[1, 0,  0,  0, 1],
+					[1, 1,  1,  1, 1],
+				]
+			]
+		},
+	],
+	GOLD: 1,
+}];
 
 const RETRY_USR_DATA_ARRAY = [{
 	NAME: 'USR',
@@ -340,14 +383,20 @@ const RETRY_USR_DATA_ARRAY = [{
 	// GOLD: 100,
 }];
 
-USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY);
+USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY_0);
+const ADDITIONAL_USR_DATA_ARRAY_1 = R.clone(INIT_USR_DATA_ARRAY_1);
+USR_DATA_ARRAY = R.concat(USR_DATA_ARRAY, ADDITIONAL_USR_DATA_ARRAY_1);
 
 
-const decrement_MAGIC_COUNTER = (EqpNum) => {
-	if(USR_DATA_ARRAY[0]['EQP'][EqpNum]['MAGIC'][0]['MAGIC_COUNT'] === null){
+// USR_DATA_ARRAYのIDからUSR_DATA_ARRAYのオブジェクトを取得する関数
+const get_USR_DATA_ARRAY = (Usr_Id) => USR_DATA_ARRAY.filter(V=>V.ID === Usr_Id)[0];
+
+const decrement_MAGIC_COUNTER = (EqpNum, Usr_Id) => {
+	// if(get_USR_DATA_ARRAY(0)['EQP'][EqpNum]['MAGIC'][0]['MAGIC_COUNT'] === null){
+	if(get_USR_DATA_ARRAY(Usr_Id)['EQP'][EqpNum]['MAGIC'][0]['MAGIC_COUNT'] === null){
 		return;
 	}
-	USR_DATA_ARRAY[0]['EQP'][EqpNum]['MAGIC'][0]['MAGIC_COUNT'] -= 1
+	get_USR_DATA_ARRAY(Usr_Id)['EQP'][EqpNum]['MAGIC'][0]['MAGIC_COUNT'] -= 1
 };
 
 const convert = (range) => {
@@ -383,21 +432,20 @@ let DEV_MODE = true;
 
 // const set_EQP = (NAME, EQP, LIMIT, Eqp_Index) =>{
 const set_EQP = ({
-	// Name=USR_DATA_ARRAY[0].NAME,
 	Eqp={'UNT_NUM_0': {ATK: 3,LFP: 4,NAME: "UNT_0",TYPE: "UNT"}},
 	// Eqp_Limit=5,
 	Eqp_Index=0,
+	Usr_Id=0,
 	}) =>{
 
 	// MINEから指定したUSR_DATA_ARRAYのNAMEのEQPを取得する
 	const USR_EQP = Eqp;
 	// USR_EQPの長さがLIMITより大きかったら、USR_EQPをLIMITの数になるまでスライスする
-	// if(USR_DATA_ARRAY[0]['EQP'].length >= Eqp_Limit){
-	if(USR_DATA_ARRAY[0]['EQP'].length >= EQP_LIMIT){
+	if(get_USR_DATA_ARRAY(Usr_Id)['EQP'].length >= EQP_LIMIT){
 		return;
 	}
-	// USR_DATA_ARRAY[0].EQPオブジェクトにEQPをramda.jsで追加する
-	USR_DATA_ARRAY[0]['EQP'] = R.append(Eqp, USR_DATA_ARRAY[0]['EQP']);
+	// get_USR_DATA_ARRAY(Usr_Id).EQPオブジェクトにEQPをramda.jsで追加する
+	get_USR_DATA_ARRAY(Usr_Id)['EQP'] = R.append(Eqp, get_USR_DATA_ARRAY(Usr_Id)['EQP']);
 	// MINEから指定したUSR_DATA_ARRAYのNAMEのEQPをUSR_EQP_SLICE_PUSHに更新する
 
 	// console.log(MINE);
@@ -613,7 +661,7 @@ const slot_exe_once = ({Rate_Param=1}) =>{
 
 
 
-const magic_USR_to_UNT = (Magic) => {
+const magic_USR_to_UNT = (Magic, Usr_Id) => {
 	try {
 	const magic_attack = convert_for_magic(Magic);
 	magic_attack.forEach(MAGI=>{
@@ -634,10 +682,10 @@ const magic_USR_to_UNT = (Magic) => {
 
 		const UNT_NUM = Number(COLLECT_VALUE2[magic_to_Y][magic_to_X][2]['NAME'].replaceAll('UNT_', ''));
 		const UNT_NUM_N = 'UNT_NUM_' + (UNT_NUM).toString();
-		const USR_ATK_BUFF = USR_DATA_ARRAY[0]['EQP'].reduce((accumulator, currentValue) => {
+		const USR_ATK_BUFF = get_USR_DATA_ARRAY(Usr_Id)['EQP'].reduce((accumulator, currentValue) => {
 			return accumulator + currentValue['ATK_BUFF'];
 		}, 0) || 0;
-		const USR_ATK = USR_DATA_ARRAY[0].ATK;
+		const USR_ATK = get_USR_DATA_ARRAY(Usr_Id).ATK;
 		const USR_ATK_WITH_BUFF = USR_ATK + USR_ATK_BUFF;
 		UNT_DATA_OBJ[UNT_NUM_N]['LFP'] -= USR_ATK_WITH_BUFF;
 
@@ -722,7 +770,7 @@ const change_BLC_to_NON = (Y, X) => {
 
 // USRがUNTにアタックする関数(UNTのLFPをUSRのATK分減らす)(引数にはUNT_DATA_ARRAYのUNT_NUMを指定する)
 // const attack_USR_to_UNT = (UNT_NUM, Go_to_Y, Go_to_X) => {
-const attack_USR_to_UNT = (Go_to_Y, Go_to_X) => {
+const attack_USR_to_UNT = (Go_to_Y, Go_to_X, Usr_Id=0) => {
 	// Go_to_YとGo_to_XにUNTが存在しない場合はreturnする
 	if (COLLECT_VALUE2[Go_to_Y][Go_to_X][2] !== 'object'){
 		if (COLLECT_VALUE2[Go_to_Y][Go_to_X][2]['TYPE'] !== 'UNT') {
@@ -734,12 +782,12 @@ const attack_USR_to_UNT = (Go_to_Y, Go_to_X) => {
 	// Go_to_YとGo_to_XからUNT_NUMを取得する
 	const UNT_NUM = Number(COLLECT_VALUE2[Go_to_Y][Go_to_X][2]['NAME'].replaceAll('UNT_',''));
 	const UNT_NUM_N = 'UNT_NUM_' + (UNT_NUM).toString();
-	// USR_DATA_ARRAY[0]の['EQP']の中から['ATK_BUFF']を累計してUSR_ATK_BUFFに代入すr
-	const USR_ATK_BUFF = USR_DATA_ARRAY[0]['EQP'].reduce((accumulator, currentValue) => {
+	// get_USR_DATA_ARRAY(Usr_Id)の['EQP']の中から['ATK_BUFF']を累計してUSR_ATK_BUFFに代入すr
+	const USR_ATK_BUFF = get_USR_DATA_ARRAY(Usr_Id)['EQP'].reduce((accumulator, currentValue) => {
 		return accumulator + currentValue['ATK_BUFF'];
 	}, 0) || 0;
 	// USRのATKを取得する
-	const USR_ATK = USR_DATA_ARRAY[0].ATK;
+	const USR_ATK = get_USR_DATA_ARRAY(Usr_Id).ATK;
 	const USR_ATK_WITH_BUFF = USR_ATK + USR_ATK_BUFF;
 	// 指定したUNTのLFPをUSRのATK分減らす
 	damage_alert({
@@ -781,7 +829,7 @@ const attack_USR_to_UNT = (Go_to_Y, Go_to_X) => {
 };
 
 // UNTがUSRにアタックする関数(USRのLFPをUNTのATK分減らす)(引数にはUNT_DATA_ARRAYのUNT_NUMを指定する)
-const attack_UNT_to_USR = (UNT_NUM) => {
+const attack_UNT_to_USR = (UNT_NUM, Usr_Id=0) => {
 	damage_effect({Y_X_Ary: [get_USR_position()[0], get_USR_position()[1]],
 		ms: 200,
 		Original_Color: '#0000FF',
@@ -791,14 +839,14 @@ const attack_UNT_to_USR = (UNT_NUM) => {
 	const UNT_NUM_N = 'UNT_NUM_' + (UNT_NUM).toString();
 	const UNT_ATK = UNT_DATA_OBJ[UNT_NUM_N].ATK;
 	damage_alert({
-		Before_LFP: USR_DATA_ARRAY[0].LFP,
-		After_LFP: USR_DATA_ARRAY[0].LFP - UNT_ATK,
+		Before_LFP: get_USR_DATA_ARRAY(Usr_Id).LFP,
+		After_LFP: get_USR_DATA_ARRAY(Usr_Id).LFP - UNT_ATK,
 		Damage: UNT_ATK,
 	});
 	// 指定したUNTのATKをUSRのLFP分減らす
-	USR_DATA_ARRAY[0]['LFP'] -= UNT_ATK;
+	get_USR_DATA_ARRAY(Usr_Id)['LFP'] -= UNT_ATK;
 	// USRのLFPが0以下になったら、ゲームオーバーにする
-	if (USR_DATA_ARRAY[0].LFP <= 0) {
+	if (get_USR_DATA_ARRAY(Usr_Id).LFP <= 0) {
 		
 		// ゲームオーバーにする
 		DIED = 'YOU DIED, GAME OVER';
@@ -886,8 +934,8 @@ function keypress_event(e) {
 // // Magic引数がある場合はmagic_attackとUNT_ATTACK_OR_MOVEを実行し、
 // usr_moveとattack_USR_to_UNTを実行せず、早期リターンする
 if(e.Magic){
-	decrement_MAGIC_COUNTER(e.Eqp_I);
-	magic_USR_to_UNT(e.Magic[1]);
+	decrement_MAGIC_COUNTER(e.Eqp_I, e.Usr_Id);
+	magic_USR_to_UNT(e.Magic[1], e.Usr_Id);
 	Object.entries(UNT_DATA_OBJ)
 		.map((V,I)=>{
 			UNT_ATTACK_OR_MOVE(V[1]['NAME']);
@@ -1123,6 +1171,7 @@ const change_UNT_to_NON = () => {
 	set_UNT();
 };
 
+const get_all_USR_ID = () => USR_DATA_ARRAY.map((V, I) => V['ID']);
 // マップを初期化してやり直す関数
 // 起動時にも実行する
 const reset_or_init_map = ({when_mounted_time=true, go_up=false, when_died=false}) => {
@@ -1142,20 +1191,23 @@ const reset_or_init_map = ({when_mounted_time=true, go_up=false, when_died=false
 	COLLECT_VALUE2[9][0][2] = 'USR'; COLLECT_VALUE2[9][0][3] = 'background-color: #0000FF';
 	// USRのスポーン位置にUSR_DATA_ARRAYを反映する
 
+// 全てのUSRのIDを取得する関数
+
+
 	DIED = '';
 	if(when_mounted_time === false, go_up === false, when_died === true){
-		recharge_magic_count();
-		// console.log('when_died');
-		// console.log(
-		// 	RETRY_USR_DATA_ARRAY['NAME'],RETRY_USR_DATA_ARRAY['LFP'],RETRY_USR_DATA_ARRAY['ATK'],
-		// );
-		// USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY);
-USR_DATA_ARRAY[0]['NAME'] = RETRY_USR_DATA_ARRAY[0]['NAME'];
-USR_DATA_ARRAY[0]['LFP'] = RETRY_USR_DATA_ARRAY[0]['LFP'];
-USR_DATA_ARRAY[0]['ATK'] = RETRY_USR_DATA_ARRAY[0]['ATK'];
-		// USR_DATA_ARRAY = RETRY_USR_DATA_ARRAY
-		// console.log('when_died2');
-		GOLD = USR_DATA_ARRAY[0]['GOLD'];
+
+		get_all_USR_ID().forEach(Usr_Id=> recharge_magic_count(Usr_Id));
+// get_USR_DATA_ARRAY(0)['NAME'] = USR_DATA_ARRAY[0]['NAME'];
+// get_USR_DATA_ARRAY(0)['LFP'] = USR_DATA_ARRAY[0]['LFP'];
+// get_USR_DATA_ARRAY(0)['ATK'] = USR_DATA_ARRAY[0]['ATK'];
+
+USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY_0);
+const ADDITIONAL_USR_DATA_ARRAY_1 = R.clone(INIT_USR_DATA_ARRAY_1);
+USR_DATA_ARRAY = R.concat(USR_DATA_ARRAY, ADDITIONAL_USR_DATA_ARRAY_1);
+GOLD = get_USR_DATA_ARRAY(0)['GOLD'];
+
+
 	};
 	UNT_DATA_OBJ = {
 		UNT_NUM_0: {TYPE: 'UNT', NAME: 'UNT_0', LFP: 3, ATK: 1, BDP: 0, RBP: 0},
@@ -1179,9 +1231,10 @@ USR_DATA_ARRAY[0]['ATK'] = RETRY_USR_DATA_ARRAY[0]['ATK'];
 	UNT_DATA_OBJ = {};
 	let UNT_DATA_CONF = {};
 	if(go_up===true){
-		recharge_magic_count();
+		get_all_USR_ID().forEach(Usr_Id=> recharge_magic_count(Usr_Id));
 		switch_field_gacha();
-		USR_DATA_ARRAY[0]['LFP'] += LFP_RECHARGE_NUM;
+		get_all_USR_ID().forEach(Usr_Id=> get_USR_DATA_ARRAY(Usr_Id)['LFP'] += LFP_RECHARGE_NUM );
+		
 		FLOOR += 1;
 		const FLOOR_plus_one = () => FLOOR + 1;
 		const Table_Id = 0;
@@ -1313,17 +1366,17 @@ onMount(async () => {
 							<!-- 上下左右のボタン(WASDに対応する) -->
 							<div>
 								<button class='WASD_NULL'>◾️</button>
-								<button on:click={() => keypress_event({key: 'w'})} class='WASD'>W</button>
+								<button on:click={() => keypress_event({key: 'w', Usr_Id: 0})} class='WASD'>W</button>
 								<button class='WASD_NULL'>◾️</button>
 							</div>
 							<div>
-								<button on:click={() => keypress_event({key: 'a'})} class='WASD'>A</button>
+								<button on:click={() => keypress_event({key: 'a', Usr_Id: 0})} class='WASD'>A</button>
 								<button class='WASD_NULL'>◾️</button>
-								<button on:click={() => keypress_event({key: 'd'})} class='WASD'>D</button>
+								<button on:click={() => keypress_event({key: 'd', Usr_Id: 0})} class='WASD'>D</button>
 							</div>
 							<div>
 								<button class='WASD_NULL'>◾️</button>
-								<button on:click={() => keypress_event({key: 's'})} class='WASD'>S</button>
+								<button on:click={() => keypress_event({key: 's', Usr_Id: 0})} class='WASD'>S</button>
 								<button class='WASD_NULL'>◾️</button>
 							</div>
 
@@ -1332,10 +1385,10 @@ onMount(async () => {
 
 							<div>
 								<div>
-									{USR_DATA_ARRAY[0].NAME}
-									LFP: {USR_DATA_ARRAY[0].LFP}
-									ATK: {USR_DATA_ARRAY[0].ATK}
-									{#each USR_DATA_ARRAY[0].EQP as EQP, EQP_I}
+									{get_USR_DATA_ARRAY(0).NAME}
+									LFP: {get_USR_DATA_ARRAY(0).LFP}
+									ATK: {get_USR_DATA_ARRAY(0).ATK}
+									{#each get_USR_DATA_ARRAY(0).EQP as EQP, EQP_I}
 										{#if EQP}
 										<div>
 											<!-- {EQP_I} -->
@@ -1376,7 +1429,7 @@ onMount(async () => {
 								</div>
 							</div>
 
-							<div>Ver 0.0.2.4</div>
+							<div>Ver 0.0.2.5</div>
 							<a href="https://github.com/taroyanaka/game/">GitHub</a>
 
 </div>
@@ -1389,10 +1442,10 @@ onMount(async () => {
 <!-- gachagachagachagachagachagacha -->
 <div class="gacha">					
 		<div>
-			{USR_DATA_ARRAY[0].NAME}
-			LFP: {USR_DATA_ARRAY[0].LFP}
-			ATK: {USR_DATA_ARRAY[0].ATK}
-			{#each USR_DATA_ARRAY[0].EQP as EQP, EQP_I}
+			{get_USR_DATA_ARRAY(0).NAME}
+			LFP: {get_USR_DATA_ARRAY(0).LFP}
+			ATK: {get_USR_DATA_ARRAY(0).ATK}
+			{#each get_USR_DATA_ARRAY(0).EQP as EQP, EQP_I}
 				{#if EQP}
 				<div>
 					<!-- {EQP_I} -->
