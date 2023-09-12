@@ -4,6 +4,14 @@ let field_none = 'block';
 let gacha_none = 'none';
 // let gacha_none = 'block';
 
+// USR_DATA_ARRAYのデータをCOLLECT_VALUE2に反映させるための関数
+const reflect_USR_DATA = () =>{
+	// USR_DATA_ARRAYのNAMEとTYPEをobject形式でmap関数でreflect_DATAに追加する
+	let reflect_DATA = USR_DATA_ARRAY.map(V=>{
+		return {NAME: V['NAME'], TYPE: V['TYPE'], BACK_COLOR: 'background-color: #0000FF'};
+	});
+	return reflect_DATA;
+}
 
 // spawn関数はUNTを誕生させる関数
 // Target_UNT_NUMに隣接するNONにUNTを誕生させる
@@ -255,7 +263,8 @@ let USR_DATA_ARRAY = [];
 
 const INIT_USR_DATA_ARRAY_0 = [{
 	ID: 0,
-	NAME: 'USR',
+	TYPE: 'USR',
+	NAME: 'USR_0',
 	LFP: 100,
 	ATK: 10,
 	EQP: [
@@ -298,7 +307,8 @@ const INIT_USR_DATA_ARRAY_0 = [{
 
 const INIT_USR_DATA_ARRAY_1 = [{
 	ID: 1,
-	NAME: 'USR',
+	TYPE: 'USR',
+	NAME: 'USR_1',
 	LFP: 100,
 	ATK: 10,
 	EQP: [
@@ -339,52 +349,12 @@ const INIT_USR_DATA_ARRAY_1 = [{
 	GOLD: 3,
 }];
 
-const RETRY_USR_DATA_ARRAY = [{
-	NAME: 'USR',
-	LFP: 100,
-	ATK: 1,
-	// EQPとGOLDは死亡時の状態を持ち越す
-	// EQP: [
-	// 	{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, 
-	// 		MAGIC: 
-	// 			[
-	// 				{MAGIC_COUNT: 0},
-	// 				[
-	// 					[0,  0,  0],
-	// 					[0, 'U', 0],
-	// 					[0,  0,  0],
-	// 				]
-	// 			]
-	// 	},
-	// 	{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
-	// 		[
-	// 			{MAGIC_COUNT: 1},
-	// 			[
-	// 				[0,  1,  0],
-	// 				[1, 'U', 1],
-	// 				[0,  1,  0],
-	// 			]
-	// 		]
-	// 	},
-	// 	{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
-	// 		[
-	// 			{MAGIC_COUNT: 1},
-	// 			[
-	// 				[1, 1,  1,  1, 1],
-	// 				[1, 0,  0,  0, 1],
-	// 				[1, 0, 'U', 0, 1],
-	// 				[1, 0,  0,  0, 1],
-	// 				[1, 1,  1,  1, 1],
-	// 			]
-	// 		]
-	// 	},
-	// ],
-	// GOLD: 100,
-}];
-
-USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY_0);
-const ADDITIONAL_USR_DATA_ARRAY_1 = R.clone(INIT_USR_DATA_ARRAY_1);
-USR_DATA_ARRAY = R.concat(USR_DATA_ARRAY, ADDITIONAL_USR_DATA_ARRAY_1);
+const retry_data_setup = () =>{
+	USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY_0);
+	const ADDITIONAL_USR_DATA_ARRAY_1 = R.clone(INIT_USR_DATA_ARRAY_1);
+	USR_DATA_ARRAY = R.concat(USR_DATA_ARRAY, ADDITIONAL_USR_DATA_ARRAY_1);
+};
+retry_data_setup();
 
 
 const decrement_MAGIC_COUNTER = (EqpNum, Usr_Id=0) => {
@@ -526,7 +496,7 @@ let SLOT = ORIGINAL_SLOT;
 // $: if(true) console.log('hello');
 
 let ERROR_MESSAGE = true;
-let CURRENT_Y_AND_X = [9, 0];
+let CURRENT_Y_AND_X = [[9, 0], [0, 0]];
 let PICKEL = 0;
 let GOAL = false;
 let DIED = '';
@@ -663,8 +633,8 @@ const magic_USR_to_UNT = (Magic, Usr_Id) => {
 	try {
 	const magic_attack = convert_for_magic(Magic);
 	magic_attack.forEach(MAGI=>{
-		const magic_to_Y = CURRENT_Y_AND_X[0] + MAGI[0];
-		const magic_to_X = CURRENT_Y_AND_X[1] + MAGI[1];
+		const magic_to_Y = CURRENT_Y_AND_X[Usr_Id][0] + MAGI[0];
+		const magic_to_X = CURRENT_Y_AND_X[Usr_Id][1] + MAGI[1];
 		if(
 			(typeof COLLECT_VALUE2[magic_to_Y]) === 'undefined' ||
 			(typeof COLLECT_VALUE2[magic_to_Y][magic_to_X]) === 'undefined'
@@ -943,8 +913,8 @@ if(e.Magic){
 
 	// Y,Xを更新する
 	const go_to_y_x = [
-		CURRENT_Y_AND_X[0] + keypress_position[e.key][0],
-		CURRENT_Y_AND_X[1] + keypress_position[e.key][1],
+		CURRENT_Y_AND_X[e.Usr_Id][0] + keypress_position[e.key][0],
+		CURRENT_Y_AND_X[e.Usr_Id][1] + keypress_position[e.key][1],
 	];
 	// go_to_y_xがBLCの場合はPICKELを1増やして、BLCをNONに変更する
 	if (COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][2] === 'BLC') {
@@ -975,11 +945,11 @@ if(!e.Magic){
 		// go_to_y_xがNONの場合は更新する
 		if (COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][2] === 'NON') {
 			COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][2] = 'USR';
-			COLLECT_VALUE2[CURRENT_Y_AND_X[0]][CURRENT_Y_AND_X[1]][2] = 'NON';
+			COLLECT_VALUE2[CURRENT_Y_AND_X[e.Usr_Id][0]][CURRENT_Y_AND_X[e.Usr_Id][1]][2] = 'NON';
 			// 色も更新する
 			COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][3] = 'background-color: #0000FF';
-			COLLECT_VALUE2[CURRENT_Y_AND_X[0]][CURRENT_Y_AND_X[1]][3] = 'background-color: #FFFFFF';
-			CURRENT_Y_AND_X = go_to_y_x;
+			COLLECT_VALUE2[CURRENT_Y_AND_X[e.Usr_Id][0]][CURRENT_Y_AND_X[e.Usr_Id][1]][3] = 'background-color: #FFFFFF';
+			CURRENT_Y_AND_X[e.Usr_Id] = go_to_y_x;
 		}
 	}
 	usr_move();
@@ -1189,17 +1159,12 @@ const reset_or_init_map = ({when_mounted_time=true, go_up=false, when_died=false
 	COLLECT_VALUE2[9][0][2] = 'USR'; COLLECT_VALUE2[9][0][3] = 'background-color: #0000FF';
 	// USRのスポーン位置にUSR_DATA_ARRAYを反映する
 
-// 全てのUSRのIDを取得する関数
-
-
 	DIED = '';
 	if(when_mounted_time === false, go_up === false, when_died === true){
 
 		get_all_USR_ID().forEach(Usr_Id=> recharge_magic_count(Usr_Id));
 
-USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY_0);
-const ADDITIONAL_USR_DATA_ARRAY_1 = R.clone(INIT_USR_DATA_ARRAY_1);
-USR_DATA_ARRAY = R.concat(USR_DATA_ARRAY, ADDITIONAL_USR_DATA_ARRAY_1);
+retry_data_setup();
 GOLD = USR_DATA_ARRAY[0]['GOLD'];
 
 
@@ -1258,7 +1223,7 @@ GOLD = USR_DATA_ARRAY[0]['GOLD'];
 	ADJACENT_Y_AND_X = [];
 	// CURRENT_Y_AND_Xを初期化する
 	// COLLECT_VALUE2[9][0][2] = 'NON'; COLLECT_VALUE2[9][0][3] = 'background-color: #FFFFFF';
-	CURRENT_Y_AND_X = [9, 0];
+	CURRENT_Y_AND_X = [[9, 0], [0, 0]];
 	// BLCを30%をNONに変更する
 	change_percent_BLC_to_NON();
 
@@ -1451,11 +1416,6 @@ onMount(async () => {
 					<!-- ATK_DEBUFF: {EQP.ATK_DEBUFF} -->
 						<!-- EQP.MAGIC[0]['MAGIC_COUNT']が0以下の場合下記ブロックを非表示にする -->
 						<div>
-							<!-- {#if EQP.MAGIC[0]['MAGIC_COUNT'] >= 1}
-								<button  on:click={() => keypress_event({key: 'm', Magic: EQP.MAGIC, Eqp_I: EQP_I})}>MAGIC</button>
-							{/if} -->
-<!-- <button on:click={UN_EQP}>UN_EQP</button> -->
-<!-- <button on:click={UN_EQP(EQP_I)}>UN_EQP</button> -->
 <button on:click={() => UN_EQP(EQP_I, 0)}>UN_EQP</button>
 							MAGIC_COUNT: {EQP.MAGIC[0]['MAGIC_COUNT']}
 							{#each EQP.MAGIC[1] as MAGIC_1, MAGIC_1_I}
