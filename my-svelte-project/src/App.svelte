@@ -4,13 +4,29 @@ let field_none = 'block';
 let gacha_none = 'none';
 // let gacha_none = 'block';
 
+let CURRENT_USER_ID = 1;
+const change_CURRENT_USER_ID = () => {
+	// USR_DATA_ARRAYの最大のIDを取得する関数
+	const get_max_ID = () => {
+		const ID_ARY = USR_DATA_ARRAY.map(V=>V['ID']);
+		const max_ID = Math.max(...ID_ARY);
+		return max_ID;
+	}
+	// CURRENT_USER_IDを1増やす。max_IDを超えたら0に戻す
+	CURRENT_USER_ID = CURRENT_USER_ID + 1 > get_max_ID() ? 0 : CURRENT_USER_ID + 1;
+}
+
 // USR_DATA_ARRAYのデータをCOLLECT_VALUE2に反映させるための関数
 const reflect_USR_DATA = () =>{
 	// USR_DATA_ARRAYのNAMEとTYPEをobject形式でmap関数でreflect_DATAに追加する
 	let reflect_DATA = USR_DATA_ARRAY.map(V=>{
 		return {NAME: V['NAME'], TYPE: V['TYPE'], BACK_COLOR: 'background-color: #0000FF'};
 	});
-	return reflect_DATA;
+	// return reflect_DATA;
+	reflect_DATA.forEach((V,I)=>{
+		COLLECT_VALUE2[CURRENT_Y_AND_X[I][0]][CURRENT_Y_AND_X[I][1]][2] = V.TYPE;
+		COLLECT_VALUE2[CURRENT_Y_AND_X[I][0]][CURRENT_Y_AND_X[I][1]][3] = V.BACK_COLOR;
+	})
 }
 
 // spawn関数はUNTを誕生させる関数
@@ -616,14 +632,6 @@ const slot_exe_once = ({Rate_Param=1}) =>{
 
 
 
-// function keypress_event_for_slot(e) {
-// 	const keypress_position = {
-// 		'g': slot_exe_once(),
-// 	};
-// 	keypress_position[e.key];
-// };
-
-// document.addEventListener('keypress', keypress_event_for_slot);
 
 
 
@@ -639,6 +647,8 @@ const magic_USR_to_UNT = (Magic, Usr_Id) => {
 			(typeof COLLECT_VALUE2[magic_to_Y]) === 'undefined' ||
 			(typeof COLLECT_VALUE2[magic_to_Y][magic_to_X]) === 'undefined'
 		){return};
+		reflect_USR_DATA();
+		console.log(COLLECT_VALUE2[magic_to_Y][magic_to_X][2]);
 		if(
 			COLLECT_VALUE2[magic_to_Y][magic_to_X][2] === 'GOL' ||
 			COLLECT_VALUE2[magic_to_Y][magic_to_X][2] === 'BLC' ||
@@ -886,36 +896,62 @@ const damage_effect = (
 // 移動先にUSRがいたらアタックする
 // 移動先がBLCもしくは他のUNTだったら移動しない
 // 移動先にGOLがいたら移動しない
-// const ANY_MOVE_FN = () => 'WIP';
-function keypress_event(e) {
+function click_or_keypress_event(
+	event,
+	Alt_Param={
+	Key: null,
+	Usr_Id: null,
+	Magic: null,
+	Eqp_I: null,
+	}) {
+
+	// キーボードで操作した場合はevent.keyが有る
+	// 　　Alt_Paramは初期値の全てのプロパティがnullのオブジェクト
+	// <button>で操作した場合はevent.keyが無い
+	// 　　HTML側のclickの中でAlt_Paramの各プロパティがセットされる
+
+	const key = event ? event.key : Alt_Param['Key'];
+	const usr_id = Alt_Param['Usr_Id'] ? Alt_Param['Usr_Id'] : 0;
+	const magic = Alt_Param['Magic'];
+	const eqp_i = Alt_Param['eqp_i'];
+
+console.log(
+	usr_id,
+	Alt_Param['Usr_Id'],
+)
+
 	KILL_STREAK = 0;
-	// キーボードの上下左右をwasdで操作する
-	// wは上、aは左、sは下、dは右
-	const keypress_position = {
-		'w': [-1, 0],
-		'a': [0, -1],
-		's': [1, 0],
-		'd': [0, 1],
-		'm': null, // Magic of m
-	};
 
-// // Magic引数がある場合はmagic_attackとUNT_ATTACK_OR_MOVEを実行し、
-// usr_moveとattack_USR_to_UNTを実行せず、早期リターンする
-if(e.Magic){
-	decrement_MAGIC_COUNTER(e.Eqp_I, e.Usr_Id);
-	magic_USR_to_UNT(e.Magic[1], e.Usr_Id);
-	Object.entries(UNT_DATA_OBJ)
-		.map((V,I)=>{
-			UNT_ATTACK_OR_MOVE(V[1]['NAME']);
-		})
-	return;
-}
+	// // Magic引数がある場合はmagic_attackとUNT_ATTACK_OR_MOVEを実行し、
+	// usr_moveとattack_USR_to_UNTを実行せず、早期リターンする
+	if(magic){
+		decrement_MAGIC_COUNTER(eqp_i, usr_id);
+		magic_USR_to_UNT(magic[1], usr_id);
+		Object.entries(UNT_DATA_OBJ)
+			.map((V,I)=>{
+				UNT_ATTACK_OR_MOVE(V[1]['NAME']);
+			})
+		return;
+	}
 
-	// Y,Xを更新する
-	const go_to_y_x = [
-		CURRENT_Y_AND_X[e.Usr_Id][0] + keypress_position[e.key][0],
-		CURRENT_Y_AND_X[e.Usr_Id][1] + keypress_position[e.key][1],
-	];
+	const go_to_y_x_setup = (Key, Usr_Id) => {
+		const keypress_position = {
+			'w': [-1, 0],
+			'a': [0, -1],
+			's': [1, 0],
+			'd': [0, 1],
+			'm': null, // Magic of m
+		};
+		const offset_y = keypress_position[Key][0];
+		const offset_x = keypress_position[Key][1];
+		const result_go_to_y_x = [
+			CURRENT_Y_AND_X[Usr_Id][0] + offset_y,
+			CURRENT_Y_AND_X[Usr_Id][1] + offset_x,
+		];
+		return result_go_to_y_x;
+	}
+	const go_to_y_x = go_to_y_x_setup(key, usr_id);
+	reflect_USR_DATA();
 	// go_to_y_xがBLCの場合はPICKELを1増やして、BLCをNONに変更する
 	if (COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][2] === 'BLC') {
 		PICKEL += 1;
@@ -929,33 +965,36 @@ if(e.Magic){
 	if (COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][2] === 'GOL') {
 		GOAL = true;
 		MINE = [];
-		// ゴール直後に連打できないようにするために
-		// (連打するとagainが何回も表示されてしまうため)、
-		// keypressを解除する
-		document.removeEventListener('keypress', keypress_event);
 
-		// 1秒後にreset_mapを実行する
-		setTimeout(() => {
-			reset_or_init_map({when_mounted_time: false, go_up: true, when_died: false});
-		}, 1000);
+		// GOAL後の硬直を無くしてみる(setTimeoutがバグの温床になる気配があるから削除していく方針)
+			// 別の方法でGOALしたことをプレイヤーに伝える
+		// document.removeEventListener('keypress', click_or_keypress_event);
+								// 1秒後にreset_mapを実行する
+								// setTimeout(() => {
+		reset_or_init_map({when_mounted_time: false, go_up: true, when_died: false});
+								// }, 1000);
 	}
 
-if(!e.Magic){
-	const usr_move = () => {
-		// go_to_y_xがNONの場合は更新する
-		if (COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][2] === 'NON') {
-			COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][2] = 'USR';
-			COLLECT_VALUE2[CURRENT_Y_AND_X[e.Usr_Id][0]][CURRENT_Y_AND_X[e.Usr_Id][1]][2] = 'NON';
-			// 色も更新する
-			COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][3] = 'background-color: #0000FF';
-			COLLECT_VALUE2[CURRENT_Y_AND_X[e.Usr_Id][0]][CURRENT_Y_AND_X[e.Usr_Id][1]][3] = 'background-color: #FFFFFF';
-			CURRENT_Y_AND_X[e.Usr_Id] = go_to_y_x;
+	if(!magic){
+		const usr_move = () => {
+			reflect_USR_DATA();
+			// go_to_y_xがNONの場合は更新する
+			if (COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][2] === 'NON') {
+				COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][2] = 'USR';
+				COLLECT_VALUE2[CURRENT_Y_AND_X[usr_id][0]][CURRENT_Y_AND_X[usr_id][1]][2] = 'NON';
+				// 色も更新する
+				COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][3] = 'background-color: #0000FF';
+				COLLECT_VALUE2[CURRENT_Y_AND_X[usr_id][0]][CURRENT_Y_AND_X[usr_id][1]][3] = 'background-color: #FFFFFF';
+				CURRENT_Y_AND_X[usr_id] = go_to_y_x;
+			}
+			reflect_USR_DATA();
 		}
+		usr_move();
+		// USRがUNTにアタックする。引数はUNT_DATA_ARRAYのUNT_NUMの指定と攻撃対象のUNTのIDの指定。
+		attack_USR_to_UNT(go_to_y_x[0], go_to_y_x[1]);
 	}
-	usr_move();
-	// USRがUNTにアタックする。引数はUNT_DATA_ARRAYのUNT_NUMの指定と攻撃対象のUNTのIDの指定。
-	attack_USR_to_UNT(go_to_y_x[0], go_to_y_x[1]);
-}
+
+	// 各UNTの行動を実行する
 	Object.entries(UNT_DATA_OBJ).map((V,I)=>{UNT_ATTACK_OR_MOVE(V[1]['NAME'])});
 };
 
@@ -963,6 +1002,7 @@ if(!e.Magic){
 // 現在のUSRの位置を取得する関数
 const get_USR_position = () => {
 	// UNTの位置を取得する
+	reflect_USR_DATA();
 	const USR_Y_AND_X = COLLECT_VALUE2
 		.map(V=>V.filter(V2=>V2[2] === 'USR' ))
 		.filter(V=>V.length>0)
@@ -1100,6 +1140,7 @@ const change_percent_BLC_to_NON = (Percent=80) => {
 	// BLCの半数をNONに変更する
 	for (let i = 0; i < BLC_count_percent; i++) {
 		const random_Y_AND_X = random_BLC_Y_AND_X();
+		reflect_USR_DATA();
 		// USRがある位置はNONに変更せずスキップする
 		if (COLLECT_VALUE2[random_Y_AND_X[0]][random_Y_AND_X[1]][2] === 'USR') {
 			continue;
@@ -1240,7 +1281,15 @@ GOLD = USR_DATA_ARRAY[0]['GOLD'];
 
 	change_UNT_to_NON();
 	
-	document.addEventListener('keypress', keypress_event);
+document.addEventListener('keypress', ()=>click_or_keypress_event(
+	event,
+	{
+		Key: null,
+		Usr_Id: CURRENT_USER_ID,
+		Magic: null,
+		Eqp_I: null,
+	}
+));
 };
 
 onMount(async () => {
@@ -1326,17 +1375,45 @@ onMount(async () => {
 							<!-- 上下左右のボタン(WASDに対応する) -->
 							<div>
 								<button class='WASD_NULL'>◾️</button>
-								<button on:click={() => keypress_event({key: 'w', Usr_Id: 0})} class='WASD'>W</button>
+<button on:click={() => click_or_keypress_event(null, 
+	{
+	Key: 'w',
+	Usr_Id: CURRENT_USER_ID,
+	Magic: null,
+	Eqp_I: null,
+	}
+)} class='WASD'>W</button>
 								<button class='WASD_NULL'>◾️</button>
 							</div>
 							<div>
-								<button on:click={() => keypress_event({key: 'a', Usr_Id: 0})} class='WASD'>A</button>
+<button on:click={() => click_or_keypress_event(null,
+	{
+	Key: 'a',
+	Usr_Id: CURRENT_USER_ID,
+	Magic: null,
+	Eqp_I: null,
+	}
+)} class='WASD'>A</button>
 								<button class='WASD_NULL'>◾️</button>
-								<button on:click={() => keypress_event({key: 'd', Usr_Id: 0})} class='WASD'>D</button>
+<button on:click={() => click_or_keypress_event(null,
+	{
+	Key: 'd',
+	Usr_Id: CURRENT_USER_ID,
+	Magic: null,
+	Eqp_I: null,
+	}
+)} class='WASD'>D</button>
 							</div>
 							<div>
 								<button class='WASD_NULL'>◾️</button>
-								<button on:click={() => keypress_event({key: 's', Usr_Id: 0})} class='WASD'>S</button>
+<button on:click={() => click_or_keypress_event(null,
+	{
+	Key: 's',
+	Usr_Id: CURRENT_USER_ID,
+	Magic: null,
+	Eqp_I: null,
+	}
+)} class='WASD'>S</button>
 								<button class='WASD_NULL'>◾️</button>
 							</div>
 
@@ -1360,7 +1437,16 @@ onMount(async () => {
 												<!-- EQP.MAGIC[0]['MAGIC_COUNT']が0以下の場合下記ブロックを非表示にする -->
 												<div>
 													{#if EQP.MAGIC[0]['MAGIC_COUNT'] >= 1}
-															<button  on:click={() => keypress_event({key: 'm', Magic: EQP.MAGIC, Eqp_I: EQP_I, Usr_Id: 0})}>MAGIC</button>
+<button  on:click={() => click_or_keypress_event(
+	null,
+	{
+		Magic: EQP.MAGIC,
+		Eqp_I: EQP_I,
+		Usr_Id: CURRENT_USER_ID,
+	},
+)}>
+MAGIC
+</button>
 														MAGIC_COUNT: {EQP.MAGIC[0]['MAGIC_COUNT']}
 														<!-- MAGIC_RANGE: {EQP.MAGIC[1]} -->
 														{#each EQP.MAGIC[1] as MAGIC_1, MAGIC_1_I}
@@ -1389,7 +1475,7 @@ onMount(async () => {
 								</div>
 							</div>
 
-							<div>Ver 0.0.2.6</div>
+							<div>Ver 0.0.2.7</div>
 							<a href="https://github.com/taroyanaka/game/">GitHub</a>
 
 </div>
@@ -1464,7 +1550,8 @@ onMount(async () => {
 						Eqp: EQP,
 						// Eqp_Limit: 5,
 						Eqp_Index: EQP_I,
-						Usr_Id: 0,
+						// Usr_Id: 0,
+						Usr_Id: CURRENT_USER_ID,
 					})}>set_EQP</button>
 				{/if}
 			</li>
