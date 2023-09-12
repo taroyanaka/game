@@ -5,6 +5,8 @@ let gacha_none = 'none';
 // let gacha_none = 'block';
 
 let CURRENT_USER_ID = 1;
+
+// CURRENT_USER_IDを1増やし、USR_DATA_ARRAYの最大のIDを超えたら0に戻す関数
 const change_CURRENT_USER_ID = () => {
 	// USR_DATA_ARRAYの最大のIDを取得する関数
 	const get_max_ID = () => {
@@ -915,11 +917,6 @@ function click_or_keypress_event(
 	const magic = Alt_Param['Magic'];
 	const eqp_i = Alt_Param['eqp_i'];
 
-console.log(
-	usr_id,
-	Alt_Param['Usr_Id'],
-)
-
 	KILL_STREAK = 0;
 
 	// // Magic引数がある場合はmagic_attackとUNT_ATTACK_OR_MOVEを実行し、
@@ -948,10 +945,10 @@ console.log(
 			CURRENT_Y_AND_X[Usr_Id][0] + offset_y,
 			CURRENT_Y_AND_X[Usr_Id][1] + offset_x,
 		];
+		reflect_USR_DATA();
 		return result_go_to_y_x;
 	}
 	const go_to_y_x = go_to_y_x_setup(key, usr_id);
-	reflect_USR_DATA();
 	// go_to_y_xがBLCの場合はPICKELを1増やして、BLCをNONに変更する
 	if (COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][2] === 'BLC') {
 		PICKEL += 1;
