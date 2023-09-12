@@ -1,2 +1,2 @@
 # game
-anyway look almost code is at https://github.com/taroyanaka/game/blob/main/my-svelte-project/src/App.svelte and hosting on https://taroyanaka.github.io/game/index.html play this, how to deploy? read https://github.com/taroyanaka/svelte#readme
+anyway look almost code is at https://github.com/taroyanaka/game/blob/main/my-svelte-project/src/App.svelte https://github.com/taroyanaka/game/blob/main/my-svelte-project/public/index.html hosting on https://taroyanaka.github.io/game/index.html play this, how to deploy? read https://github.com/taroyanaka/svelte#readme
