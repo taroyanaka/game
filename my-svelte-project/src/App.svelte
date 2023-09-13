@@ -4,20 +4,184 @@ let field_none = 'block';
 let gacha_none = 'none';
 // let gacha_none = 'block';
 
-let CURRENT_USER_ID = 1;
+const INIT_USR_DATA_ARRAY_0 = [{
+	ID: 0,
+	TYPE: 'USR',
+	SPAWN_Y_X: [9, 0],
+	NAME: 'USR_0',
+	LFP: 100,
+	ATK: 10,
+	EQP: [
+		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, 
+			MAGIC: 
+				[
+					{MAGIC_COUNT: null},
+					[
+						[0,  0,  0],
+						[0, 'U', 0],
+						[0,  0,  0],
+					]
+				]
+		},
+		{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+			[
+				{MAGIC_COUNT: 1},
+				[
+					[0,  1,  0],
+					[1, 'U', 1],
+					[0,  1,  0],
+				]
+			]
+		},
+		{RARITY: 4, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+			[
+				{MAGIC_COUNT: 1},
+				[
+					[1, 1,  1,  1, 1],
+					[1, 0,  0,  0, 1],
+					[1, 0, 'U', 0, 1],
+					[1, 0,  0,  0, 1],
+					[1, 1,  1,  1, 1],
+				]
+			]
+		},
+	],
+	GOLD: 3,
+}];
+
+const INIT_USR_DATA_ARRAY_1 = [{
+	ID: 1,
+	TYPE: 'USR',
+	SPAWN_Y_X: [0, 0],
+	NAME: 'USR_1',
+	LFP: 100,
+	ATK: 10,
+	EQP: [
+		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, 
+			MAGIC: 
+				[
+					{MAGIC_COUNT: null},
+					[
+						[0,  0,  0],
+						[0, 'U', 0],
+						[0,  0,  0],
+					]
+				]
+		},
+		{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+			[
+				{MAGIC_COUNT: 1},
+				[
+					[0,  1,  0],
+					[1, 'U', 1],
+					[0,  1,  0],
+				]
+			]
+		},
+		{RARITY: 4, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+			[
+				{MAGIC_COUNT: 1},
+				[
+					[1, 1,  1,  1, 1],
+					[1, 0,  0,  0, 1],
+					[1, 0, 'U', 0, 1],
+					[1, 0,  0,  0, 1],
+					[1, 1,  1,  1, 1],
+				]
+			]
+		},
+	],
+	GOLD: 3,
+}];
+const INIT_USR_DATA_ARRAY_2 = [{
+	ID: 2,
+	TYPE: 'USR',
+	SPAWN_Y_X: [9, 9],
+	NAME: 'USR_2',
+	LFP: 100,
+	ATK: 10,
+	EQP: [
+		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, 
+			MAGIC: 
+				[
+					{MAGIC_COUNT: null},
+					[
+						[0,  0,  0],
+						[0, 'U', 0],
+						[0,  0,  0],
+					]
+				]
+		},
+		{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+			[
+				{MAGIC_COUNT: 1},
+				[
+					[0,  1,  0],
+					[1, 'U', 1],
+					[0,  1,  0],
+				]
+			]
+		},
+		{RARITY: 4, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
+			[
+				{MAGIC_COUNT: 1},
+				[
+					[1, 1,  1,  1, 1],
+					[1, 0,  0,  0, 1],
+					[1, 0, 'U', 0, 1],
+					[1, 0,  0,  0, 1],
+					[1, 1,  1,  1, 1],
+				]
+			]
+		},
+	],
+	GOLD: 3,
+}];
+
+let START_CURRENT_Y_AND_X_ARRAY = [];
+const set_USR_to_init_position = () => {	
+	const all_INIT_USR_DATA_ARRAY = [INIT_USR_DATA_ARRAY_0, INIT_USR_DATA_ARRAY_1, INIT_USR_DATA_ARRAY_2];
+
+	START_CURRENT_Y_AND_X_ARRAY = all_INIT_USR_DATA_ARRAY
+		.map(V=>V.map(v=>v['SPAWN_Y_X']))
+			.flat();
+	// USRを初期位置に設定
+		// COLLECT_VALUE2[9][0][2] = 'USR'; COLLECT_VALUE2[9][0][3] = 'background-color: #0000FF';
+	START_CURRENT_Y_AND_X_ARRAY.forEach((V, I) => {
+		COLLECT_VALUE2[V[0]][V[1]][2] = 'USR';
+		COLLECT_VALUE2[V[0]][V[1]][3] = 'background-color: #0000FF';
+	});
+};
+const clone_START_CURRENT_Y_AND_X_ARRAY = () => R.clone(START_CURRENT_Y_AND_X_ARRAY);
+
+let CURRENT_Y_AND_X = clone_START_CURRENT_Y_AND_X_ARRAY();
+let CURRENT_USER_ID = 0;
+let UNIT_TURN = false;
 
 // CURRENT_USER_IDを1増やし、USR_DATA_ARRAYの最大のIDを超えたら0に戻す関数
-const change_CURRENT_USER_ID = () => {
+const change_CURRENT_USR_ID = () => {
+	// USRが行動中はUNIT_TURNはfalseで、USRが行動を終えたらUNIT_TURNはtrueになる
+	UNIT_TURN = false;
+
 	// USR_DATA_ARRAYの最大のIDを取得する関数
 	const get_max_ID = () => {
 		const ID_ARY = USR_DATA_ARRAY.map(V=>V['ID']);
 		const max_ID = Math.max(...ID_ARY);
 		return max_ID;
 	}
-	// CURRENT_USER_IDを1増やす。max_IDを超えたら0に戻す
-	CURRENT_USER_ID = CURRENT_USER_ID + 1 > get_max_ID() ? 0 : CURRENT_USER_ID + 1;
-}
+	const to_be_unit_turn = () => UNIT_TURN = true;
+	const return_zero_for_CURRENT_USER_ID_reset = () => 0;
+	const to_be_unit_turn_and_return_zero_for_CURRENT_USER_ID_reset = () => {
+		to_be_unit_turn();
+		return return_zero_for_CURRENT_USER_ID_reset();
+	}
 
+	// CURRENT_USER_IDを1増やす。max_IDを超えたら0に戻す
+	CURRENT_USER_ID = CURRENT_USER_ID + 1 > get_max_ID() ?
+		to_be_unit_turn_and_return_zero_for_CURRENT_USER_ID_reset() :
+		CURRENT_USER_ID + 1;
+}
+	
 // USR_DATA_ARRAYのデータをCOLLECT_VALUE2に反映させるための関数
 const reflect_USR_DATA = () =>{
 	// USR_DATA_ARRAYのNAMEとTYPEをobject形式でmap関数でreflect_DATAに追加する
@@ -279,103 +443,27 @@ let SHOW_DAMAGE = 'OFF';
 let USR_DATA_ARRAY = [];
 
 
-const INIT_USR_DATA_ARRAY_0 = [{
-	ID: 0,
-	TYPE: 'USR',
-	NAME: 'USR_0',
-	LFP: 100,
-	ATK: 10,
-	EQP: [
-		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, 
-			MAGIC: 
-				[
-					{MAGIC_COUNT: null},
-					[
-						[0,  0,  0],
-						[0, 'U', 0],
-						[0,  0,  0],
-					]
-				]
-		},
-		{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
-			[
-				{MAGIC_COUNT: 1},
-				[
-					[0,  1,  0],
-					[1, 'U', 1],
-					[0,  1,  0],
-				]
-			]
-		},
-		{RARITY: 4, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
-			[
-				{MAGIC_COUNT: 1},
-				[
-					[1, 1,  1,  1, 1],
-					[1, 0,  0,  0, 1],
-					[1, 0, 'U', 0, 1],
-					[1, 0,  0,  0, 1],
-					[1, 1,  1,  1, 1],
-				]
-			]
-		},
-	],
-	GOLD: 3,
-}];
-
-const INIT_USR_DATA_ARRAY_1 = [{
-	ID: 1,
-	TYPE: 'USR',
-	NAME: 'USR_1',
-	LFP: 100,
-	ATK: 10,
-	EQP: [
-		{RARITY: 3, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 4, ATK_DEBUFF: 0, 
-			MAGIC: 
-				[
-					{MAGIC_COUNT: null},
-					[
-						[0,  0,  0],
-						[0, 'U', 0],
-						[0,  0,  0],
-					]
-				]
-		},
-		{RARITY: 2, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
-			[
-				{MAGIC_COUNT: 1},
-				[
-					[0,  1,  0],
-					[1, 'U', 1],
-					[0,  1,  0],
-				]
-			]
-		},
-		{RARITY: 4, LFP_BUFF: 0, LFP_DEBUFF: 0, ATK_BUFF: 0, ATK_DEBUFF: 0, MAGIC: 
-			[
-				{MAGIC_COUNT: 1},
-				[
-					[1, 1,  1,  1, 1],
-					[1, 0,  0,  0, 1],
-					[1, 0, 'U', 0, 1],
-					[1, 0,  0,  0, 1],
-					[1, 1,  1,  1, 1],
-				]
-			]
-		},
-	],
-	GOLD: 3,
-}];
 
 const retry_data_setup = () =>{
 	USR_DATA_ARRAY = R.clone(INIT_USR_DATA_ARRAY_0);
 	const ADDITIONAL_USR_DATA_ARRAY_1 = R.clone(INIT_USR_DATA_ARRAY_1);
+	const ADDITIONAL_USR_DATA_ARRAY_2 = R.clone(INIT_USR_DATA_ARRAY_2);
 	USR_DATA_ARRAY = R.concat(USR_DATA_ARRAY, ADDITIONAL_USR_DATA_ARRAY_1);
+	USR_DATA_ARRAY = R.concat(USR_DATA_ARRAY, ADDITIONAL_USR_DATA_ARRAY_2);
 };
 retry_data_setup();
 
 
 const decrement_MAGIC_COUNTER = (EqpNum, Usr_Id=0) => {
+	console.log(
+		Usr_Id,
+// USR_DATA_ARRAY[Usr_Id],
+// USR_DATA_ARRAY[Usr_Id]['EQP'],
+// USR_DATA_ARRAY[Usr_Id]['EQP'][EqpNum],
+// USR_DATA_ARRAY[Usr_Id]['EQP'][EqpNum]['MAGIC'],
+// USR_DATA_ARRAY[Usr_Id]['EQP'][EqpNum]['MAGIC'][0],
+// USR_DATA_ARRAY[Usr_Id]['EQP'][EqpNum]['MAGIC'][0]['MAGIC_COUNT'],
+	);
 	if(USR_DATA_ARRAY[Usr_Id]['EQP'][EqpNum]['MAGIC'][0]['MAGIC_COUNT'] === null){
 		return;
 	}
@@ -514,7 +602,7 @@ let SLOT = ORIGINAL_SLOT;
 // $: if(true) console.log('hello');
 
 let ERROR_MESSAGE = true;
-let CURRENT_Y_AND_X = [[9, 0], [0, 0]];
+
 let PICKEL = 0;
 let GOAL = false;
 let DIED = '';
@@ -915,7 +1003,14 @@ function click_or_keypress_event(
 	const key = event ? event.key : Alt_Param['Key'];
 	const usr_id = Alt_Param['Usr_Id'] ? Alt_Param['Usr_Id'] : 0;
 	const magic = Alt_Param['Magic'];
-	const eqp_i = Alt_Param['eqp_i'];
+	const eqp_i = Alt_Param['Eqp_I'];
+
+
+	console.log(
+'usr_id', usr_id,
+'magic', magic,
+'eqp_i', eqp_i,
+	);
 
 	KILL_STREAK = 0;
 
@@ -923,11 +1018,14 @@ function click_or_keypress_event(
 	// usr_moveとattack_USR_to_UNTを実行せず、早期リターンする
 	if(magic){
 		decrement_MAGIC_COUNTER(eqp_i, usr_id);
-		magic_USR_to_UNT(magic[1], usr_id);
-		Object.entries(UNT_DATA_OBJ)
-			.map((V,I)=>{
-				UNT_ATTACK_OR_MOVE(V[1]['NAME']);
-			})
+		magic_USR_to_UNT(magic[1], usr_id);		
+		change_CURRENT_USR_ID();
+		//  Object.entries(UNT_DATA_OBJ).map((V,I)=>{UNT_ATTACK_OR_MOVE(V[1]['NAME'])});
+		// UNIT_TURNがtrueなら各UNTの行動を実行する
+		if(UNIT_TURN === true){
+			Object.entries(UNT_DATA_OBJ).map((V,I)=>{UNT_ATTACK_OR_MOVE(V[1]['NAME'])});
+			UNIT_TURN = false;
+		};
 		return;
 	}
 
@@ -989,10 +1087,17 @@ function click_or_keypress_event(
 		usr_move();
 		// USRがUNTにアタックする。引数はUNT_DATA_ARRAYのUNT_NUMの指定と攻撃対象のUNTのIDの指定。
 		attack_USR_to_UNT(go_to_y_x[0], go_to_y_x[1]);
+		change_CURRENT_USR_ID();
 	}
 
-	// 各UNTの行動を実行する
-	Object.entries(UNT_DATA_OBJ).map((V,I)=>{UNT_ATTACK_OR_MOVE(V[1]['NAME'])});
+
+	//  Object.entries(UNT_DATA_OBJ).map((V,I)=>{UNT_ATTACK_OR_MOVE(V[1]['NAME'])});
+	// UNIT_TURNがtrueなら各UNTの行動を実行する
+	if(UNIT_TURN === true){
+		Object.entries(UNT_DATA_OBJ).map((V,I)=>{UNT_ATTACK_OR_MOVE(V[1]['NAME'])});
+		UNIT_TURN = false;
+	};
+
 };
 
 
@@ -1193,9 +1298,10 @@ const reset_or_init_map = ({when_mounted_time=true, go_up=false, when_died=false
 		.map(V=>V.concat(['background-color: #808080']));
 	COLLECT_VALUE2 = R.splitEvery(10, COLLECT_VALUE2);
 
-	// USRを初期位置に戻す
-	COLLECT_VALUE2[9][0][2] = 'USR'; COLLECT_VALUE2[9][0][3] = 'background-color: #0000FF';
+	set_USR_to_init_position();
+
 	// USRのスポーン位置にUSR_DATA_ARRAYを反映する
+	// reflection_USR_DATA_ARRAY();
 
 	DIED = '';
 	if(when_mounted_time === false, go_up === false, when_died === true){
@@ -1260,8 +1366,7 @@ GOLD = USR_DATA_ARRAY[0]['GOLD'];
 	// ADJACENT_Y_AND_Xを初期化する
 	ADJACENT_Y_AND_X = [];
 	// CURRENT_Y_AND_Xを初期化する
-	// COLLECT_VALUE2[9][0][2] = 'NON'; COLLECT_VALUE2[9][0][3] = 'background-color: #FFFFFF';
-	CURRENT_Y_AND_X = [[9, 0], [0, 0]];
+	CURRENT_Y_AND_X = clone_START_CURRENT_Y_AND_X_ARRAY();
 	// BLCを30%をNONに変更する
 	change_percent_BLC_to_NON();
 
@@ -1278,15 +1383,15 @@ GOLD = USR_DATA_ARRAY[0]['GOLD'];
 
 	change_UNT_to_NON();
 	
-document.addEventListener('keypress', ()=>click_or_keypress_event(
-	event,
-	{
-		Key: null,
-		Usr_Id: CURRENT_USER_ID,
-		Magic: null,
-		Eqp_I: null,
-	}
-));
+	document.addEventListener('keypress', ()=>click_or_keypress_event(
+		event,
+		{
+			Key: null,
+			Usr_Id: CURRENT_USER_ID,
+			Magic: null,
+			Eqp_I: null,
+		}
+	));
 };
 
 onMount(async () => {
@@ -1416,49 +1521,54 @@ onMount(async () => {
 
 							<!-- switch_field_gachaボタン -->
 							<!-- <button on:click={switch_field_gacha}>switch_field_gacha</button> -->
+{#each USR_DATA_ARRAY as USR_DATA, EQP_I}
+{USR_DATA.NAME}
+LFP: {USR_DATA.LFP}
+ATK: {USR_DATA.ATK}
+{#each USR_DATA.EQP as EQP, EQP_I}
+<div>
+	RARITY: {EQP.RARITY}
+	LFP_BUFF: {EQP.LFP_BUFF}
+	ATK_BUFF: {EQP.ATK_BUFF}
+	{#if EQP}
+	<div>
+		<!-- {EQP_I} -->
+		RARITY: {EQP.RARITY}
+		LFP_BUFF: {EQP.LFP_BUFF}
+		<!-- LFP_DEBUFF: {EQP.LFP_DEBUFF} -->
+		ATK_BUFF: {EQP.ATK_BUFF}
+		<!-- ATK_DEBUFF: {EQP.ATK_DEBUFF} -->
+		<!-- EQP.MAGIC[0]['MAGIC_COUNT']が0以下の場合下記ブロックを非表示にする -->
+		<div>
+			{#if EQP.MAGIC[0]['MAGIC_COUNT'] >= 1}
+			<button  on:click={() => click_or_keypress_event(
+				null,
+				{
+				Magic: EQP.MAGIC,
+				Eqp_I: EQP_I,
+				// Usr_Id: CURRENT_USER_ID,
+				Usr_Id: USR_DATA['ID'],
+				},
+				)}>
+			MAGIC
+			</button>
+			MAGIC_COUNT: {EQP.MAGIC[0]['MAGIC_COUNT']}
+			<!-- MAGIC_RANGE: {EQP.MAGIC[1]} -->
+				{#each EQP.MAGIC[1] as MAGIC_1, MAGIC_1_I}
+				<div>
+					{MAGIC_1}
+				</div>
+				{/each}
+			{/if}
+		</div>
+	</div>
+	{/if}
+</div>
+{/each}
+{/each}
+
 
 							<div>
-								<div>
-									{USR_DATA_ARRAY[0].NAME}
-									LFP: {USR_DATA_ARRAY[0].LFP}
-									ATK: {USR_DATA_ARRAY[0].ATK}
-									{#each USR_DATA_ARRAY[0].EQP as EQP, EQP_I}
-										{#if EQP}
-										<div>
-											<!-- {EQP_I} -->
-											RARITY: {EQP.RARITY}
-											LFP_BUFF: {EQP.LFP_BUFF}
-											<!-- LFP_DEBUFF: {EQP.LFP_DEBUFF} -->
-											ATK_BUFF: {EQP.ATK_BUFF}
-											<!-- ATK_DEBUFF: {EQP.ATK_DEBUFF} -->
-												<!-- EQP.MAGIC[0]['MAGIC_COUNT']が0以下の場合下記ブロックを非表示にする -->
-												<div>
-													{#if EQP.MAGIC[0]['MAGIC_COUNT'] >= 1}
-<button  on:click={() => click_or_keypress_event(
-	null,
-	{
-		Magic: EQP.MAGIC,
-		Eqp_I: EQP_I,
-		Usr_Id: CURRENT_USER_ID,
-	},
-)}>
-MAGIC
-</button>
-														MAGIC_COUNT: {EQP.MAGIC[0]['MAGIC_COUNT']}
-														<!-- MAGIC_RANGE: {EQP.MAGIC[1]} -->
-														{#each EQP.MAGIC[1] as MAGIC_1, MAGIC_1_I}
-															<div>
-																{MAGIC_1}
-															</div>
-														{/each}
-													{/if}
-												</div>
-										</div>
-										{/if}
-									{/each}
-								</div>
-
-								<div>
 								{#each Object.keys(UNT_DATA_OBJ) as key, IDX}
 									<div id={UNT_DATA_OBJ[key].NAME} style='background-color: #FFFFFF'  class='UNT_BACK'>
 									{UNT_DATA_OBJ[key].NAME}
@@ -1469,10 +1579,9 @@ MAGIC
 									RBP: {UNT_DATA_OBJ[key].RBP}
 									</div>
 								{/each}
-								</div>
 							</div>
 
-							<div>Ver 0.0.2.7</div>
+							<div>Ver 0.0.2.9</div>
 							<a href="https://github.com/taroyanaka/game/">GitHub</a>
 
 </div>
