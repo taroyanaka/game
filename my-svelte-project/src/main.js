@@ -33,6 +33,7 @@
 
 import App from './App.svelte';
 
+
 const app = new App({
 	target: document.body,
 	// props: {
@@ -42,3 +43,16 @@ const app = new App({
 
 
 export default app;
+
+
+
+import Iro from './Iro.svelte';
+const iro = new Iro({
+	target: document.body,
+	// props: {
+	// 	name: 'Taro!!'
+	// }
+});
+
+
+export default Iro;
