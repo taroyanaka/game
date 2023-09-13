@@ -30,12 +30,13 @@ function serve() {
 }
 
 export default {
-	input: 'src/main.js',
+	input: 'src/iro.js',
 	output: {
 		sourcemap: true,
 		format: 'iife',
 		name: 'app',
-		file: 'public/build/bundle.js'
+		// file: 'public/bundle.js'
+		file: 'public/build/bundle2.js'
 	},
 	plugins: [
 		svelte({
@@ -46,7 +47,7 @@ export default {
 		}),
 		// we'll extract any component CSS out into
 		// a separate file - better for performance
-		css({ output: 'bundle.css' }),
+		css({ output: 'bundle2.css' }),
 
 		// If you have external dependencies installed from
 		// npm, you'll most likely need these plugins. In

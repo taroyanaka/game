@@ -4,8 +4,18 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "$comment1": "use `npm run dev` to start App.svelte and index.html a development server",
     "build": "rollup -c",
     "dev": "rollup -c -w",
+
+    "$comment2": "use `npm run dev2` to start Iro.svelte and iro.html a development server",
+    "build2": "rollup -c rollup.config2.js",
+    "dev2": "rollup -c rollup.config2.js -w",
+
+    "$comment3": "use `npm run dev3` to start App.svelte(index.html) and Iro.svelte(iro.html) a development server",
+    "build3": "rollup -c rollup.config.js & rollup -c rollup.config2.js",
+    "dev3": "rollup -c rollup.config.js -w & rollup -c rollup.config2.js -w",
+
     "start": "sirv public --no-clear",
     "deploy": "npm run build && gh-pages -d public"
   },
