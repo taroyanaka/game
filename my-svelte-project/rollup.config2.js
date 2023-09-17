@@ -30,7 +30,7 @@ function serve() {
 }
 
 export default {
-	input: 'src/iro.js',
+	input: 'src/placer.js',
 	output: {
 		sourcemap: true,
 		format: 'iife',
