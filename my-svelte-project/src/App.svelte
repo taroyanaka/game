@@ -1773,7 +1773,7 @@ GOLD: {GOLD}
 .WASD, .WASD_NULL{
 	/* padding: 3vh 3vh; */
 	/* WASDとWASD_NULLの幅はflexで画面いっぱいにする */
-	width: 30vw;
+	width: 29vw;
 	height: 20vh;
 
 }
@@ -1797,6 +1797,6 @@ GOLD: {GOLD}
 	/* 透過する */
 	opacity: 0.5;
 	/* INDEX_2の幅はflexで画面いっぱいにする */
-	width: 100vw;
+	width: 90vw;
 }
 </style>
