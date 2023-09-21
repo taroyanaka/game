@@ -1771,7 +1771,11 @@ GOLD: {GOLD}
 	padding: 2vh 2vh;
 }
 .WASD, .WASD_NULL{
-	padding: 6.6vh 6.6vh;
+	/* padding: 3vh 3vh; */
+	/* WASDとWASD_NULLの幅はflexで画面いっぱいにする */
+	width: 30vw;
+	height: 20vh;
+
 }
 .WASD_NULL{
 	/* 白かつ透明 */
@@ -1788,9 +1792,11 @@ GOLD: {GOLD}
 	/* INDEX_2は相対位置で指定 */
 	position: relative;
 	top: 0;
-	/* right: 0; */
-	left: 2rem;
+	right: 0;
+	/* left: 2rem; */
 	/* 透過する */
 	opacity: 0.5;
+	/* INDEX_2の幅はflexで画面いっぱいにする */
+	width: 100vw;
 }
 </style>
