@@ -213,13 +213,9 @@ $: init_data && rotate_num, (() => {
 </script>
 
 <input type="number" name="" id="" bind:value={rotate_num} step="20" min="-1000" max="1000">
-<!-- addX -->
 <button on:click={() => addX({num: 20})}>addX</button>
-<!-- subX -->
 <button on:click={() => subX({num: 20})}>subX</button>
-<!-- addY -->
 <button on:click={() => addY({num: 20})}>addY</button>
-<!-- subY -->
 <button on:click={() => subY({num: 20})}>subY</button>
 
 	<div class="container" bind:this={rootElement}>

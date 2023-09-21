@@ -1408,116 +1408,146 @@ onMount(async () => {
 
 <!-- fieldfieldfieldfieldfieldfield -->
 <div class="field">
-							<!-- ERROR_MESSAGEを表示するdivタグ。クリックしたら非表示になる -->
-							<!-- <div> -->
-								<!-- {#if ERROR_MESSAGE} -->
-									<!-- <button on:click={remove_error_message}>remove_error_message</button> -->
-								<!-- {/if} -->
-							<!-- </div> -->
 
-							<!-- GOALがtrueの場合はGOALと表示する -->
-							{#if GOAL}
-								<div>
-									GOAL
-								</div>
-							{/if}
-							<!-- DIEDがtruthyの場合はDIEDと表示する -->
-							{#if DIED}
-								<div>
-									{DIED}
-								</div>
-							{/if}
+<div class="INDEX_1">
+	<ul class="FLD">
+		<!-- 上記のobjを#eachでレンダリングする -->
+		{#each COLLECT_VALUE2 as item, Y}
+			<li class="CELL1">
+				{#each item as item2, X}
+					<span class="CELL2" style={item2[3]} on:keydown={()=>get_click_position(Y, X, true)} on:click={()=>get_click_position(Y, X, true)}>□</span>
+				{/each}
+			</li>
+		{/each}
+	</ul>
+</div>
 
-							<!-- SHOW_ALERTをON/OFFできるラジオ -->
-							<div>
-								<fieldset>
-								<span>SHOW_DAMAGE:</span>
-								<span>
-									<input type="radio" id="ON" name="SHOW_DAMAGE" value="ON" bind:group={SHOW_DAMAGE} />
-									<label for="ON">ON</label>
-								</span>
-								<span>
-									<input type="radio" id="OFF" name="SHOW_DAMAGE" value="OFF" bind:group={SHOW_DAMAGE} />
-									<label for="OFF">OFF</label>
-								</span>
-								</fieldset>
-							</div>
-
-{#if GOLD}
+<div class="INDEX_2">
+	<!-- 上下左右のボタン(WASDに対応する) -->
 	<div>
-		GOLD: {GOLD}
-	</div>
-{/if}
-
-							<!-- FLOORを表示するdivタグ -->
-							<div>
-								FLOOR: {FLOOR}
-							</div>
-
-							<!-- PICKELを表示するdivタグ -->
-							<div>
-								PICKEL: {PICKEL}
-							</div>
-
-							<div>
-								KILL_STREAK: {KILL_STREAK}
-							</div>
-
-							<ul>
-								<!-- 上記のobjを#eachでレンダリングする -->
-								{#each COLLECT_VALUE2 as item, Y}
-									<li class="CELL">
-										{#each item as item2, X}
-											<span style={item2[3]} on:keydown={()=>get_click_position(Y, X, true)} on:click={()=>get_click_position(Y, X, true)}>□</span>
-										{/each}
-									</li>
-								{/each}
-							</ul>
-
-							<!-- 上下左右のボタン(WASDに対応する) -->
-							<div>
-								<button class='WASD_NULL'>◾️</button>
-<button on:click={() => click_or_keypress_event(null, 
+	<button class='WASD_NULL'>◾️</button>
+	<button on:click={() => click_or_keypress_event(null, 
 	{
 	Key: 'w',
 	Usr_Id: CURRENT_USER_ID,
 	Magic: null,
 	Eqp_I: null,
 	}
-)} class='WASD'>W</button>
-								<button class='WASD_NULL'>◾️</button>
-							</div>
-							<div>
-<button on:click={() => click_or_keypress_event(null,
+	)} class='WASD'>W</button>
+	<button class='WASD_NULL'>◾️</button>
+	</div>
+	<div>
+	<button on:click={() => click_or_keypress_event(null,
 	{
 	Key: 'a',
 	Usr_Id: CURRENT_USER_ID,
 	Magic: null,
 	Eqp_I: null,
 	}
-)} class='WASD'>A</button>
-								<button class='WASD_NULL'>◾️</button>
-<button on:click={() => click_or_keypress_event(null,
+	)} class='WASD'>A</button>
+	<button class='WASD_NULL'>◾️</button>
+	<button on:click={() => click_or_keypress_event(null,
 	{
 	Key: 'd',
 	Usr_Id: CURRENT_USER_ID,
 	Magic: null,
 	Eqp_I: null,
 	}
-)} class='WASD'>D</button>
-							</div>
-							<div>
-								<button class='WASD_NULL'>◾️</button>
-<button on:click={() => click_or_keypress_event(null,
+	)} class='WASD'>D</button>
+	</div>
+	<div>
+	<button class='WASD_NULL'>◾️</button>
+	<button on:click={() => click_or_keypress_event(null,
 	{
 	Key: 's',
 	Usr_Id: CURRENT_USER_ID,
 	Magic: null,
 	Eqp_I: null,
 	}
-)} class='WASD'>S</button>
-								<button class='WASD_NULL'>◾️</button>
-							</div>
+	)} class='WASD'>S</button>
+	<button class='WASD_NULL'>◾️</button>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ERROR_MESSAGEを表示するdivタグ。クリックしたら非表示になる -->
+<!-- <div> -->
+	<!-- {#if ERROR_MESSAGE} -->
+		<!-- <button on:click={remove_error_message}>remove_error_message</button> -->
+	<!-- {/if} -->
+<!-- </div> -->
+
+<!-- GOALがtrueの場合はGOALと表示する -->
+{#if GOAL}
+	<div>
+		GOAL
+	</div>
+{/if}
+<!-- DIEDがtruthyの場合はDIEDと表示する -->
+{#if DIED}
+	<div>
+		{DIED}
+	</div>
+{/if}
+
+<!-- SHOW_ALERTをON/OFFできるラジオ -->
+<div>
+	<fieldset>
+	<span>SHOW_DAMAGE:</span>
+	<span>
+		<input type="radio" id="ON" name="SHOW_DAMAGE" value="ON" bind:group={SHOW_DAMAGE} />
+		<label for="ON">ON</label>
+	</span>
+	<span>
+		<input type="radio" id="OFF" name="SHOW_DAMAGE" value="OFF" bind:group={SHOW_DAMAGE} />
+		<label for="OFF">OFF</label>
+	</span>
+	</fieldset>
+</div>
+
+{#if GOLD}
+<div>
+GOLD: {GOLD}
+</div>
+{/if}
+
+<!-- FLOORを表示するdivタグ -->
+<div>
+	FLOOR: {FLOOR}
+</div>
+
+<!-- PICKELを表示するdivタグ -->
+<div>
+	PICKEL: {PICKEL}
+</div>
+
+<div>
+	KILL_STREAK: {KILL_STREAK}
+</div>
+
+
+
+
+
+
+
+
+
+
+
 
 							<!-- switch_field_gachaボタン -->
 							<!-- <button on:click={switch_field_gacha}>switch_field_gacha</button> -->
@@ -1542,7 +1572,7 @@ onMount(async () => {
 			<!-- EQP.MAGIC[0]['MAGIC_COUNT']が0以下の場合下記ブロックを非表示にする -->
 			<div>
 				{#if EQP.MAGIC[0]['MAGIC_COUNT'] >= 1}
-				<button  on:click={() => click_or_keypress_event(
+				<button on:click={() => click_or_keypress_event(
 					null,
 					{
 					Magic: EQP.MAGIC,
@@ -1729,5 +1759,38 @@ onMount(async () => {
 .USR_DATA_span{
 	display: inline-block;
 	width: 15rem;
+}
+.FLD{
+	/* width: 100vw; */
+	/* height: 50vh; */
+}
+.CELL1{
+	padding: 2vh 2vh;
+}
+.CELL2{
+	padding: 2vh 2vh;
+}
+.WASD, .WASD_NULL{
+	padding: 6.6vh 6.6vh;
+}
+.WASD_NULL{
+	/* 白かつ透明 */
+	background-color: #FFFFFF;
+	opacity: 0;
+}
+/* INDEX_1とINDEX_2をpositionで同じ位置に配置する */
+.INDEX_1{
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.INDEX_2{
+	/* INDEX_2は相対位置で指定 */
+	position: relative;
+	top: 0;
+	/* right: 0; */
+	left: 2rem;
+	/* 透過する */
+	opacity: 0.5;
 }
 </style>
