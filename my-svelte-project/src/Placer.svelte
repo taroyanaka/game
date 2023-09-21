@@ -1,5 +1,50 @@
 <script>
 
+// 全てのXに対して引数の数を足す関数
+const addX = ({num=20}) => {
+	init_data = init_data.map((Image) => {
+		Image['X'] += num;
+		return Image;
+	});
+};
+// 全てのXに対して引数の数を引く関数
+const subX = ({num=20}) => {
+	init_data = init_data.map((Image) => {
+		Image['X'] -= num;
+		return Image;
+	});
+};
+// 全てのYに対して引数の数を足す関数
+const addY = ({num=20}) => {
+	init_data = init_data.map((Image) => {
+		Image['Y'] += num;
+		return Image;
+	});
+};
+// 全てのYに対して引数の数を引く関数
+const subY = ({num=20}) => {
+	init_data = init_data.map((Image) => {
+		Image['Y'] -= num;
+		return Image;
+	});
+};
+
+// init_dataの要素を一つ前の要素と入れ替える関数
+const prev = (INDEX) => {
+	if (INDEX === 0) return;
+	const tmp = init_data[INDEX - 1];
+	init_data[INDEX - 1] = init_data[INDEX];
+	init_data[INDEX] = tmp;
+};
+// init_dataの要素を一つ次の要素と入れ替える関数
+const next = (INDEX) => {
+	if (INDEX === init_data.length - 1) return;
+	const tmp = init_data[INDEX + 1];
+	init_data[INDEX + 1] = init_data[INDEX];
+	init_data[INDEX] = tmp;
+};
+
+// add_image関数で追加する画像の初期値
 const delete_image = (INDEX) => {
 	console.log(init_data);
 	init_data = init_data.filter((_, i) => i !== INDEX);
@@ -23,8 +68,8 @@ let rotate_num = 0;
 let canvas;
 
 const init_img  = {
-		W: 216,  // wdith
-		H: 216,  // height
+		W: 360,  // wdith
+		H: 360,  // height
 		X: 50,  // x
 		Y: 40,  // y
 		URI: 'FE0094.png',  // imageURI
@@ -32,24 +77,24 @@ const init_img  = {
 };
 let init_data = [
 	{
-		W: 216,  // wdith
-		H: 216,  // height
+		W: 360,  // wdith
+		H: 360,  // height
 		X: 10,  // x
 		Y: 20,  // y
 		URI: '30FE00.png',  // imageURI
 		IMAGE: null,
 	},
 	{
-		W: 216,  // wdith
-		H: 216,  // height
+		W: 360,  // wdith
+		H: 360,  // height
 		X: 10,  // x
 		Y: 20,  // y
 		URI: 'FE0094.png',  // imageURI
 		IMAGE: null,
 	},
 	{
-		W: 216,  // wdith
-		H: 216,  // height
+		W: 360,  // wdith
+		H: 360,  // height
 		X: 80,  // x
 		Y: 20,  // y
 		URI: 'FE0094.png',  // imageURI
@@ -167,14 +212,23 @@ $: init_data && rotate_num, (() => {
 })();	
 </script>
 
-<input type="number" name="" id="" bind:value={rotate_num} step="10" min="-1000" max="1000">
+<input type="number" name="" id="" bind:value={rotate_num} step="20" min="-1000" max="1000">
+<!-- addX -->
+<button on:click={() => addX({num: 20})}>addX</button>
+<!-- subX -->
+<button on:click={() => subX({num: 20})}>subX</button>
+<!-- addY -->
+<button on:click={() => addY({num: 20})}>addY</button>
+<!-- subY -->
+<button on:click={() => subY({num: 20})}>subY</button>
+
 	<div class="container" bind:this={rootElement}>
 		{#each init_data as VAL, INDEX}
 		<div>
-		W: <input type="number" name="" id="" bind:value={VAL['W']} step="50" min="-1000" max="1000">
-		H: <input type="number" name="" id="" bind:value={VAL['H']} step="50" min="-1000" max="1000">
-		X: <input type="number" name="" id="" bind:value={VAL['X']} step="10" min="-1000" max="1000">
-		Y: <input type="number" name="" id="" bind:value={VAL['Y']} step="10" min="-1000" max="1000">
+		W: <input type="number" name="" id="" bind:value={VAL['W']} step="20" min="-1000" max="1000">
+		H: <input type="number" name="" id="" bind:value={VAL['H']} step="20" min="-1000" max="1000">
+		X: <input type="number" name="" id="" bind:value={VAL['X']} step="20" min="-1000" max="1000">
+		Y: <input type="number" name="" id="" bind:value={VAL['Y']} step="20" min="-1000" max="1000">
 		URI: <input type="text" name="" id="" bind:value={VAL['URI']}>
 			{#if image_url_list_array[INDEX] !== undefined}
 			<!-- option形式で表示 -->
@@ -187,6 +241,9 @@ $: init_data && rotate_num, (() => {
 
 			<!-- 該当のinit_dataの要素を削除 -->
 			<button on:click={() => delete_image(INDEX)}>delete</button>
+			<!-- swap -->
+			<button on:click={() => prev(INDEX)}>prev</button>
+			<button on:click={() => next(INDEX)}>next</button>
 		</div>
 		{/each}	
 	</div>
