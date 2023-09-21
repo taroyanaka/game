@@ -1,4 +1,24 @@
 <script>
+
+const delete_image = (INDEX) => {
+	console.log(init_data);
+	init_data = init_data.filter((_, i) => i !== INDEX);
+	console.log(init_data);
+};
+
+let image_url_file_url = 'https://raw.githubusercontent.com/taroyanaka/javascript/master/HTML/pwa-builder-test3/png_file_url.txt';
+let image_url_list = '';
+let image_url_list_array = [];
+
+const get_image_url_list_from_url = async () => {
+    if(image_url_file_url === '') return;
+    const response = await fetch(image_url_file_url);
+    const url_list_text = await response.text();
+    image_url_list = await url_list_text;
+	if(image_url_list === '') return;
+	image_url_list_array = image_url_list.split('\n');
+};
+
 let rotate_num = 0;
 let canvas;
 
@@ -156,12 +176,30 @@ $: init_data && rotate_num, (() => {
 		X: <input type="number" name="" id="" bind:value={VAL['X']} step="10" min="-1000" max="1000">
 		Y: <input type="number" name="" id="" bind:value={VAL['Y']} step="10" min="-1000" max="1000">
 		URI: <input type="text" name="" id="" bind:value={VAL['URI']}>
-		<!-- IMAGE: <input type="text" name="" id="" bind:value={VAL['IMAGE']}> -->
+			{#if image_url_list_array[INDEX] !== undefined}
+			<!-- option形式で表示 -->
+				<select name="" id="" bind:value={VAL['URI']}>
+					{#each image_url_list_array as IMAGE_URL, IMAGE_URL_INDEX}
+						<option value={IMAGE_URL}>{IMAGE_URL}</option>
+					{/each}
+				</select>		
+			{/if}
+
+			<!-- 該当のinit_dataの要素を削除 -->
+			<button on:click={() => delete_image(INDEX)}>delete</button>
 		</div>
 		{/each}	
 	</div>
 	<button on:click={add_image}>add_image</button>
 	<button on:click={download_it}>download_it</button>
+
+<button on:click={get_image_url_list_from_url}>get_image_url_list_from_url</button>
+<input type="text" name="image_url_file_url" class="image_url_file_url" bind:value={image_url_file_url}
+	on:input={get_image_url_list_from_url} on:change={get_image_url_list_from_url} placeholder="I am not crazy; my reality is just different from yours.">
+<textarea name="image_url_list" class="image_url_list" cols="100" rows="10" bind:value={image_url_list} ></textarea>
+
+
+
 <style>
 	/* https://svelte.dev/repl/57f03a5268884c8080b286c95e9a7c52?version=4.2.0 */
 	:root {
