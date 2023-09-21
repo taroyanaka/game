@@ -1522,67 +1522,69 @@ onMount(async () => {
 							<!-- switch_field_gachaボタン -->
 							<!-- <button on:click={switch_field_gacha}>switch_field_gacha</button> -->
 {#each USR_DATA_ARRAY as USR_DATA, EQP_I}
-{USR_DATA.NAME}
-LFP: {USR_DATA.LFP}
-ATK: {USR_DATA.ATK}
-{#each USR_DATA.EQP as EQP, EQP_I}
-<div>
-	RARITY: {EQP.RARITY}
-	LFP_BUFF: {EQP.LFP_BUFF}
-	ATK_BUFF: {EQP.ATK_BUFF}
-	{#if EQP}
+<div class="USR_DATA_span">
+	{USR_DATA.NAME}
+	LFP: {USR_DATA.LFP}
+	ATK: {USR_DATA.ATK}
+	{#each USR_DATA.EQP as EQP, EQP_I}
 	<div>
-		<!-- {EQP_I} -->
 		RARITY: {EQP.RARITY}
 		LFP_BUFF: {EQP.LFP_BUFF}
-		<!-- LFP_DEBUFF: {EQP.LFP_DEBUFF} -->
 		ATK_BUFF: {EQP.ATK_BUFF}
-		<!-- ATK_DEBUFF: {EQP.ATK_DEBUFF} -->
-		<!-- EQP.MAGIC[0]['MAGIC_COUNT']が0以下の場合下記ブロックを非表示にする -->
+		{#if EQP}
 		<div>
-			{#if EQP.MAGIC[0]['MAGIC_COUNT'] >= 1}
-			<button  on:click={() => click_or_keypress_event(
-				null,
-				{
-				Magic: EQP.MAGIC,
-				Eqp_I: EQP_I,
-				// Usr_Id: CURRENT_USER_ID,
-				Usr_Id: USR_DATA['ID'],
-				},
-				)}>
-			MAGIC
-			</button>
-			MAGIC_COUNT: {EQP.MAGIC[0]['MAGIC_COUNT']}
-			<!-- MAGIC_RANGE: {EQP.MAGIC[1]} -->
-				{#each EQP.MAGIC[1] as MAGIC_1, MAGIC_1_I}
-				<div>
-					{MAGIC_1}
-				</div>
-				{/each}
-			{/if}
+			<!-- {EQP_I} -->
+			RARITY: {EQP.RARITY}
+			LFP_BUFF: {EQP.LFP_BUFF}
+			<!-- LFP_DEBUFF: {EQP.LFP_DEBUFF} -->
+			ATK_BUFF: {EQP.ATK_BUFF}
+			<!-- ATK_DEBUFF: {EQP.ATK_DEBUFF} -->
+			<!-- EQP.MAGIC[0]['MAGIC_COUNT']が0以下の場合下記ブロックを非表示にする -->
+			<div>
+				{#if EQP.MAGIC[0]['MAGIC_COUNT'] >= 1}
+				<button  on:click={() => click_or_keypress_event(
+					null,
+					{
+					Magic: EQP.MAGIC,
+					Eqp_I: EQP_I,
+					// Usr_Id: CURRENT_USER_ID,
+					Usr_Id: USR_DATA['ID'],
+					},
+					)}>
+				MAGIC
+				</button>
+				MAGIC_COUNT: {EQP.MAGIC[0]['MAGIC_COUNT']}
+				<!-- MAGIC_RANGE: {EQP.MAGIC[1]} -->
+					{#each EQP.MAGIC[1] as MAGIC_1, MAGIC_1_I}
+					<div>
+						{MAGIC_1}
+					</div>
+					{/each}
+				{/if}
+			</div>
 		</div>
+		{/if}
 	</div>
-	{/if}
+	{/each}
 </div>
 {/each}
-{/each}
 
 
-							<div>
-								{#each Object.keys(UNT_DATA_OBJ) as key, IDX}
-									<div id={UNT_DATA_OBJ[key].NAME} style='background-color: #FFFFFF'  class='UNT_BACK'>
-									{UNT_DATA_OBJ[key].NAME}
-									LFP: {UNT_DATA_OBJ[key].LFP}
-									ATK: {UNT_DATA_OBJ[key].ATK}
-									GLD: {UNT_DATA_OBJ[key].GLD}
-									BDP: {UNT_DATA_OBJ[key].BDP}
-									RBP: {UNT_DATA_OBJ[key].RBP}
-									</div>
-								{/each}
-							</div>
+	<div>
+		{#each Object.keys(UNT_DATA_OBJ) as key, IDX}
+			<div id={UNT_DATA_OBJ[key].NAME} style='background-color: #FFFFFF'  class='UNT_BACK'>
+			{UNT_DATA_OBJ[key].NAME}
+			LFP: {UNT_DATA_OBJ[key].LFP}
+			ATK: {UNT_DATA_OBJ[key].ATK}
+			GLD: {UNT_DATA_OBJ[key].GLD}
+			BDP: {UNT_DATA_OBJ[key].BDP}
+			RBP: {UNT_DATA_OBJ[key].RBP}
+			</div>
+		{/each}
+	</div>
 
-							<div>Ver 0.0.2.9</div>
-							<a href="https://github.com/taroyanaka/game/">GitHub</a>
+	<div>Ver 0.0.2.9</div>
+	<a href="https://github.com/taroyanaka/game/">GitHub</a>
 
 </div>
 <!-- fieldfieldfieldfieldfieldfield -->
@@ -1594,10 +1596,12 @@ ATK: {USR_DATA.ATK}
 <!-- gachagachagachagachagachagacha -->
 <div class="gacha">					
 		<div>
-			{USR_DATA_ARRAY[0].NAME}
-			LFP: {USR_DATA_ARRAY[0].LFP}
-			ATK: {USR_DATA_ARRAY[0].ATK}
-			{#each USR_DATA_ARRAY[0].EQP as EQP, EQP_I}
+		{#each USR_DATA_ARRAY as USR_DATA, USR_DATA_I}
+		<div class="USR_DATA_span">
+			{USR_DATA['NAME']}
+			LFP: {USR_DATA['LFP']}
+			ATK: {USR_DATA['ATK']}
+			{#each USR_DATA['EQP'] as EQP, EQP_I}
 				{#if EQP}
 				<div>
 					<!-- {EQP_I} -->
@@ -1608,7 +1612,7 @@ ATK: {USR_DATA.ATK}
 					<!-- ATK_DEBUFF: {EQP.ATK_DEBUFF} -->
 						<!-- EQP.MAGIC[0]['MAGIC_COUNT']が0以下の場合下記ブロックを非表示にする -->
 						<div>
-<button on:click={() => UN_EQP(EQP_I, 0)}>UN_EQP</button>
+							<button on:click={() => UN_EQP(EQP_I, 0)}>UN_EQP</button>
 							MAGIC_COUNT: {EQP.MAGIC[0]['MAGIC_COUNT']}
 							{#each EQP.MAGIC[1] as MAGIC_1, MAGIC_1_I}
 								<div>
@@ -1619,6 +1623,8 @@ ATK: {USR_DATA.ATK}
 				</div>
 				{/if}
 			{/each}
+		</div>
+		{/each}
 		</div>
 
 		<button on:click={() => slot_exe_once({Rate_Param: 1})}>slot_exe_once</button>
@@ -1650,15 +1656,19 @@ ATK: {USR_DATA.ATK}
 
 					<span class="EQP_SPAN">{EQP['MAGIC'][0]['MAGIC_COUNT']}</span>
 					<span class="EQP_SPAN">{EQP['MAGIC'][1]}</span>
-					<!-- set_EQPボタン -->
-					<!-- NAME, EQP, LIMITが引数 -->
-					<button on:click={() => set_EQP({
-						Eqp: EQP,
-						// Eqp_Limit: 5,
-						Eqp_Index: EQP_I,
-						// Usr_Id: 0,
-						Usr_Id: CURRENT_USER_ID,
-					})}>set_EQP</button>
+					
+					{#each USR_DATA_ARRAY as USR_DATA, USR_DATA_I}
+						<!-- set_EQPボタン -->
+						<!-- NAME, EQP, LIMITが引数 -->
+						<button on:click={() => set_EQP({
+							Eqp: EQP,
+							// Eqp_Limit: 5,
+							Eqp_Index: EQP_I,
+							// Usr_Id: 0,
+							// Usr_Id: CURRENT_USER_ID,
+							Usr_Id: USR_DATA_I,
+						})}>set:{USR_DATA_I}</button>
+					{/each}
 				{/if}
 			</li>
 			{/each}
@@ -1687,9 +1697,8 @@ ATK: {USR_DATA.ATK}
 			</li>
 			{/each}
 		</ul>
-</div>
+	</div>
 <!-- gachagachagachagachagachagacha -->
-
 </div>
 <style>
 /* https://svelte.dev/repl/57f03a5268884c8080b286c95e9a7c52?version=4.2.0 */
@@ -1716,5 +1725,9 @@ ATK: {USR_DATA.ATK}
 }
 .gacha{
 	display: var(--gacha-none);
+}
+.USR_DATA_span{
+	display: inline-block;
+	width: 15rem;
 }
 </style>
