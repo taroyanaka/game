@@ -479,20 +479,20 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[27] = list[i];
-    	child_ctx[28] = list;
-    	child_ctx[29] = i;
+    	child_ctx[39] = list[i];
+    	child_ctx[40] = list;
+    	child_ctx[41] = i;
     	return child_ctx;
     }
 
     function get_each_context_1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[30] = list[i];
-    	child_ctx[32] = i;
+    	child_ctx[42] = list[i];
+    	child_ctx[44] = i;
     	return child_ctx;
     }
 
-    // (179:3) {#if image_url_list_array[INDEX] !== undefined}
+    // (233:3) {#if image_url_list_array[INDEX] !== undefined}
     function create_if_block(ctx) {
     	let select;
     	let mounted;
@@ -506,7 +506,7 @@ var app = (function () {
     	}
 
     	function select_change_handler() {
-    		/*select_change_handler*/ ctx[17].call(select, /*each_value*/ ctx[28], /*INDEX*/ ctx[29]);
+    		/*select_change_handler*/ ctx[27].call(select, /*each_value*/ ctx[40], /*INDEX*/ ctx[41]);
     	}
 
     	const block = {
@@ -519,8 +519,8 @@ var app = (function () {
 
     			attr_dev(select, "name", "");
     			attr_dev(select, "id", "");
-    			if (/*VAL*/ ctx[27]['URI'] === void 0) add_render_callback(select_change_handler);
-    			add_location(select, file, 180, 4, 4026);
+    			if (/*VAL*/ ctx[39]['URI'] === void 0) add_render_callback(select_change_handler);
+    			add_location(select, file, 234, 4, 5266);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, select, anchor);
@@ -531,7 +531,7 @@ var app = (function () {
     				}
     			}
 
-    			select_option(select, /*VAL*/ ctx[27]['URI'], true);
+    			select_option(select, /*VAL*/ ctx[39]['URI'], true);
 
     			if (!mounted) {
     				dispose = listen_dev(select, "change", select_change_handler);
@@ -566,7 +566,7 @@ var app = (function () {
     			}
 
     			if (dirty[0] & /*init_data, image_url_list_array*/ 34) {
-    				select_option(select, /*VAL*/ ctx[27]['URI']);
+    				select_option(select, /*VAL*/ ctx[39]['URI']);
     			}
     		},
     		d: function destroy(detaching) {
@@ -581,17 +581,17 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(179:3) {#if image_url_list_array[INDEX] !== undefined}",
+    		source: "(233:3) {#if image_url_list_array[INDEX] !== undefined}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (182:5) {#each image_url_list_array as IMAGE_URL, IMAGE_URL_INDEX}
+    // (236:5) {#each image_url_list_array as IMAGE_URL, IMAGE_URL_INDEX}
     function create_each_block_1(ctx) {
     	let option;
-    	let t_value = /*IMAGE_URL*/ ctx[30] + "";
+    	let t_value = /*IMAGE_URL*/ ctx[42] + "";
     	let t;
     	let option_value_value;
 
@@ -599,18 +599,18 @@ var app = (function () {
     		c: function create() {
     			option = element("option");
     			t = text(t_value);
-    			option.__value = option_value_value = /*IMAGE_URL*/ ctx[30];
+    			option.__value = option_value_value = /*IMAGE_URL*/ ctx[42];
     			option.value = option.__value;
-    			add_location(option, file, 182, 6, 4143);
+    			add_location(option, file, 236, 6, 5383);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, option, anchor);
     			append_dev(option, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty[0] & /*image_url_list_array*/ 32 && t_value !== (t_value = /*IMAGE_URL*/ ctx[30] + "")) set_data_dev(t, t_value);
+    			if (dirty[0] & /*image_url_list_array*/ 32 && t_value !== (t_value = /*IMAGE_URL*/ ctx[42] + "")) set_data_dev(t, t_value);
 
-    			if (dirty[0] & /*image_url_list_array*/ 32 && option_value_value !== (option_value_value = /*IMAGE_URL*/ ctx[30])) {
+    			if (dirty[0] & /*image_url_list_array*/ 32 && option_value_value !== (option_value_value = /*IMAGE_URL*/ ctx[42])) {
     				prop_dev(option, "__value", option_value_value);
     				option.value = option.__value;
     			}
@@ -624,14 +624,14 @@ var app = (function () {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(182:5) {#each image_url_list_array as IMAGE_URL, IMAGE_URL_INDEX}",
+    		source: "(236:5) {#each image_url_list_array as IMAGE_URL, IMAGE_URL_INDEX}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (172:2) {#each init_data as VAL, INDEX}
+    // (226:2) {#each init_data as VAL, INDEX}
     function create_each_block(ctx) {
     	let div;
     	let t0;
@@ -646,35 +646,47 @@ var app = (function () {
     	let input4;
     	let t5;
     	let t6;
-    	let button;
+    	let button0;
     	let t8;
+    	let button1;
+    	let t10;
+    	let button2;
+    	let t12;
     	let mounted;
     	let dispose;
 
     	function input0_input_handler_1() {
-    		/*input0_input_handler_1*/ ctx[12].call(input0, /*each_value*/ ctx[28], /*INDEX*/ ctx[29]);
+    		/*input0_input_handler_1*/ ctx[22].call(input0, /*each_value*/ ctx[40], /*INDEX*/ ctx[41]);
     	}
 
     	function input1_input_handler() {
-    		/*input1_input_handler*/ ctx[13].call(input1, /*each_value*/ ctx[28], /*INDEX*/ ctx[29]);
+    		/*input1_input_handler*/ ctx[23].call(input1, /*each_value*/ ctx[40], /*INDEX*/ ctx[41]);
     	}
 
     	function input2_input_handler() {
-    		/*input2_input_handler*/ ctx[14].call(input2, /*each_value*/ ctx[28], /*INDEX*/ ctx[29]);
+    		/*input2_input_handler*/ ctx[24].call(input2, /*each_value*/ ctx[40], /*INDEX*/ ctx[41]);
     	}
 
     	function input3_input_handler() {
-    		/*input3_input_handler*/ ctx[15].call(input3, /*each_value*/ ctx[28], /*INDEX*/ ctx[29]);
+    		/*input3_input_handler*/ ctx[25].call(input3, /*each_value*/ ctx[40], /*INDEX*/ ctx[41]);
     	}
 
     	function input4_input_handler() {
-    		/*input4_input_handler*/ ctx[16].call(input4, /*each_value*/ ctx[28], /*INDEX*/ ctx[29]);
+    		/*input4_input_handler*/ ctx[26].call(input4, /*each_value*/ ctx[40], /*INDEX*/ ctx[41]);
     	}
 
-    	let if_block = /*image_url_list_array*/ ctx[5][/*INDEX*/ ctx[29]] !== undefined && create_if_block(ctx);
+    	let if_block = /*image_url_list_array*/ ctx[5][/*INDEX*/ ctx[41]] !== undefined && create_if_block(ctx);
 
-    	function click_handler() {
-    		return /*click_handler*/ ctx[18](/*INDEX*/ ctx[29]);
+    	function click_handler_4() {
+    		return /*click_handler_4*/ ctx[28](/*INDEX*/ ctx[41]);
+    	}
+
+    	function click_handler_5() {
+    		return /*click_handler_5*/ ctx[29](/*INDEX*/ ctx[41]);
+    	}
+
+    	function click_handler_6() {
+    		return /*click_handler_6*/ ctx[30](/*INDEX*/ ctx[41]);
     	}
 
     	const block = {
@@ -693,66 +705,78 @@ var app = (function () {
     			t5 = space();
     			if (if_block) if_block.c();
     			t6 = space();
-    			button = element("button");
-    			button.textContent = "delete";
+    			button0 = element("button");
+    			button0.textContent = "delete";
     			t8 = space();
+    			button1 = element("button");
+    			button1.textContent = "prev";
+    			t10 = space();
+    			button2 = element("button");
+    			button2.textContent = "next";
+    			t12 = space();
     			attr_dev(input0, "type", "number");
     			attr_dev(input0, "name", "");
     			attr_dev(input0, "id", "");
-    			attr_dev(input0, "step", "50");
+    			attr_dev(input0, "step", "20");
     			attr_dev(input0, "min", "-1000");
     			attr_dev(input0, "max", "1000");
-    			add_location(input0, file, 173, 5, 3503);
+    			add_location(input0, file, 227, 5, 4743);
     			attr_dev(input1, "type", "number");
     			attr_dev(input1, "name", "");
     			attr_dev(input1, "id", "");
-    			attr_dev(input1, "step", "50");
+    			attr_dev(input1, "step", "20");
     			attr_dev(input1, "min", "-1000");
     			attr_dev(input1, "max", "1000");
-    			add_location(input1, file, 174, 5, 3599);
+    			add_location(input1, file, 228, 5, 4839);
     			attr_dev(input2, "type", "number");
     			attr_dev(input2, "name", "");
     			attr_dev(input2, "id", "");
-    			attr_dev(input2, "step", "10");
+    			attr_dev(input2, "step", "20");
     			attr_dev(input2, "min", "-1000");
     			attr_dev(input2, "max", "1000");
-    			add_location(input2, file, 175, 5, 3695);
+    			add_location(input2, file, 229, 5, 4935);
     			attr_dev(input3, "type", "number");
     			attr_dev(input3, "name", "");
     			attr_dev(input3, "id", "");
-    			attr_dev(input3, "step", "10");
+    			attr_dev(input3, "step", "20");
     			attr_dev(input3, "min", "-1000");
     			attr_dev(input3, "max", "1000");
-    			add_location(input3, file, 176, 5, 3791);
+    			add_location(input3, file, 230, 5, 5031);
     			attr_dev(input4, "type", "text");
     			attr_dev(input4, "name", "");
     			attr_dev(input4, "id", "");
-    			add_location(input4, file, 177, 7, 3889);
-    			add_location(button, file, 188, 3, 4263);
-    			add_location(div, file, 172, 2, 3492);
+    			add_location(input4, file, 231, 7, 5129);
+    			add_location(button0, file, 242, 3, 5503);
+    			add_location(button1, file, 244, 3, 5584);
+    			add_location(button2, file, 245, 3, 5638);
+    			add_location(div, file, 226, 2, 4732);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
     			append_dev(div, t0);
     			append_dev(div, input0);
-    			set_input_value(input0, /*VAL*/ ctx[27]['W']);
+    			set_input_value(input0, /*VAL*/ ctx[39]['W']);
     			append_dev(div, t1);
     			append_dev(div, input1);
-    			set_input_value(input1, /*VAL*/ ctx[27]['H']);
+    			set_input_value(input1, /*VAL*/ ctx[39]['H']);
     			append_dev(div, t2);
     			append_dev(div, input2);
-    			set_input_value(input2, /*VAL*/ ctx[27]['X']);
+    			set_input_value(input2, /*VAL*/ ctx[39]['X']);
     			append_dev(div, t3);
     			append_dev(div, input3);
-    			set_input_value(input3, /*VAL*/ ctx[27]['Y']);
+    			set_input_value(input3, /*VAL*/ ctx[39]['Y']);
     			append_dev(div, t4);
     			append_dev(div, input4);
-    			set_input_value(input4, /*VAL*/ ctx[27]['URI']);
+    			set_input_value(input4, /*VAL*/ ctx[39]['URI']);
     			append_dev(div, t5);
     			if (if_block) if_block.m(div, null);
     			append_dev(div, t6);
-    			append_dev(div, button);
+    			append_dev(div, button0);
     			append_dev(div, t8);
+    			append_dev(div, button1);
+    			append_dev(div, t10);
+    			append_dev(div, button2);
+    			append_dev(div, t12);
 
     			if (!mounted) {
     				dispose = [
@@ -761,7 +785,9 @@ var app = (function () {
     					listen_dev(input2, "input", input2_input_handler),
     					listen_dev(input3, "input", input3_input_handler),
     					listen_dev(input4, "input", input4_input_handler),
-    					listen_dev(button, "click", click_handler, false, false, false, false)
+    					listen_dev(button0, "click", click_handler_4, false, false, false, false),
+    					listen_dev(button1, "click", click_handler_5, false, false, false, false),
+    					listen_dev(button2, "click", click_handler_6, false, false, false, false)
     				];
 
     				mounted = true;
@@ -770,27 +796,27 @@ var app = (function () {
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
 
-    			if (dirty[0] & /*init_data, image_url_list_array*/ 34 && to_number(input0.value) !== /*VAL*/ ctx[27]['W']) {
-    				set_input_value(input0, /*VAL*/ ctx[27]['W']);
+    			if (dirty[0] & /*init_data, image_url_list_array*/ 34 && to_number(input0.value) !== /*VAL*/ ctx[39]['W']) {
+    				set_input_value(input0, /*VAL*/ ctx[39]['W']);
     			}
 
-    			if (dirty[0] & /*init_data, image_url_list_array*/ 34 && to_number(input1.value) !== /*VAL*/ ctx[27]['H']) {
-    				set_input_value(input1, /*VAL*/ ctx[27]['H']);
+    			if (dirty[0] & /*init_data, image_url_list_array*/ 34 && to_number(input1.value) !== /*VAL*/ ctx[39]['H']) {
+    				set_input_value(input1, /*VAL*/ ctx[39]['H']);
     			}
 
-    			if (dirty[0] & /*init_data, image_url_list_array*/ 34 && to_number(input2.value) !== /*VAL*/ ctx[27]['X']) {
-    				set_input_value(input2, /*VAL*/ ctx[27]['X']);
+    			if (dirty[0] & /*init_data, image_url_list_array*/ 34 && to_number(input2.value) !== /*VAL*/ ctx[39]['X']) {
+    				set_input_value(input2, /*VAL*/ ctx[39]['X']);
     			}
 
-    			if (dirty[0] & /*init_data, image_url_list_array*/ 34 && to_number(input3.value) !== /*VAL*/ ctx[27]['Y']) {
-    				set_input_value(input3, /*VAL*/ ctx[27]['Y']);
+    			if (dirty[0] & /*init_data, image_url_list_array*/ 34 && to_number(input3.value) !== /*VAL*/ ctx[39]['Y']) {
+    				set_input_value(input3, /*VAL*/ ctx[39]['Y']);
     			}
 
-    			if (dirty[0] & /*init_data, image_url_list_array*/ 34 && input4.value !== /*VAL*/ ctx[27]['URI']) {
-    				set_input_value(input4, /*VAL*/ ctx[27]['URI']);
+    			if (dirty[0] & /*init_data, image_url_list_array*/ 34 && input4.value !== /*VAL*/ ctx[39]['URI']) {
+    				set_input_value(input4, /*VAL*/ ctx[39]['URI']);
     			}
 
-    			if (/*image_url_list_array*/ ctx[5][/*INDEX*/ ctx[29]] !== undefined) {
+    			if (/*image_url_list_array*/ ctx[5][/*INDEX*/ ctx[41]] !== undefined) {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
@@ -815,7 +841,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(172:2) {#each init_data as VAL, INDEX}",
+    		source: "(226:2) {#each init_data as VAL, INDEX}",
     		ctx
     	});
 
@@ -825,16 +851,24 @@ var app = (function () {
     function create_fragment(ctx) {
     	let input0;
     	let t0;
-    	let div;
-    	let t1;
     	let button0;
-    	let t3;
+    	let t2;
     	let button1;
-    	let t5;
+    	let t4;
     	let button2;
-    	let t7;
-    	let input1;
+    	let t6;
+    	let button3;
     	let t8;
+    	let div;
+    	let t9;
+    	let button4;
+    	let t11;
+    	let button5;
+    	let t13;
+    	let button6;
+    	let t15;
+    	let input1;
+    	let t16;
     	let textarea;
     	let mounted;
     	let dispose;
@@ -850,47 +884,63 @@ var app = (function () {
     		c: function create() {
     			input0 = element("input");
     			t0 = space();
+    			button0 = element("button");
+    			button0.textContent = "addX";
+    			t2 = space();
+    			button1 = element("button");
+    			button1.textContent = "subX";
+    			t4 = space();
+    			button2 = element("button");
+    			button2.textContent = "addY";
+    			t6 = space();
+    			button3 = element("button");
+    			button3.textContent = "subY";
+    			t8 = space();
     			div = element("div");
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
-    			t1 = space();
-    			button0 = element("button");
-    			button0.textContent = "add_image";
-    			t3 = space();
-    			button1 = element("button");
-    			button1.textContent = "download_it";
-    			t5 = space();
-    			button2 = element("button");
-    			button2.textContent = "get_image_url_list_from_url";
-    			t7 = space();
+    			t9 = space();
+    			button4 = element("button");
+    			button4.textContent = "add_image";
+    			t11 = space();
+    			button5 = element("button");
+    			button5.textContent = "download_it";
+    			t13 = space();
+    			button6 = element("button");
+    			button6.textContent = "get_image_url_list_from_url";
+    			t15 = space();
     			input1 = element("input");
-    			t8 = space();
+    			t16 = space();
     			textarea = element("textarea");
     			attr_dev(input0, "type", "number");
     			attr_dev(input0, "name", "");
     			attr_dev(input0, "id", "");
-    			attr_dev(input0, "step", "10");
+    			attr_dev(input0, "step", "20");
     			attr_dev(input0, "min", "-1000");
     			attr_dev(input0, "max", "1000");
-    			add_location(input0, file, 169, 0, 3314);
+    			add_location(input0, file, 214, 0, 4277);
+    			add_location(button0, file, 216, 0, 4384);
+    			add_location(button1, file, 218, 0, 4453);
+    			add_location(button2, file, 220, 0, 4522);
+    			add_location(button3, file, 222, 0, 4591);
     			attr_dev(div, "class", "container");
-    			add_location(div, file, 170, 1, 3408);
-    			add_location(button0, file, 192, 1, 4353);
-    			add_location(button1, file, 193, 1, 4402);
-    			add_location(button2, file, 195, 0, 4455);
+    			add_location(div, file, 224, 1, 4648);
+    			add_location(button4, file, 249, 1, 5718);
+    			add_location(button5, file, 250, 1, 5767);
+    			add_location(button6, file, 252, 0, 5820);
     			attr_dev(input1, "type", "text");
     			attr_dev(input1, "name", "image_url_file_url");
     			attr_dev(input1, "class", "image_url_file_url");
     			attr_dev(input1, "placeholder", "I am not crazy; my reality is just different from yours.");
-    			add_location(input1, file, 196, 0, 4539);
+    			add_location(input1, file, 253, 0, 5904);
     			attr_dev(textarea, "name", "image_url_list");
     			attr_dev(textarea, "class", "image_url_list");
     			attr_dev(textarea, "cols", "100");
     			attr_dev(textarea, "rows", "10");
-    			add_location(textarea, file, 198, 0, 4795);
+    			add_location(textarea, file, 255, 0, 6160);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -899,6 +949,14 @@ var app = (function () {
     			insert_dev(target, input0, anchor);
     			set_input_value(input0, /*rotate_num*/ ctx[0]);
     			insert_dev(target, t0, anchor);
+    			insert_dev(target, button0, anchor);
+    			insert_dev(target, t2, anchor);
+    			insert_dev(target, button1, anchor);
+    			insert_dev(target, t4, anchor);
+    			insert_dev(target, button2, anchor);
+    			insert_dev(target, t6, anchor);
+    			insert_dev(target, button3, anchor);
+    			insert_dev(target, t8, anchor);
     			insert_dev(target, div, anchor);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
@@ -907,26 +965,30 @@ var app = (function () {
     				}
     			}
 
-    			/*div_binding*/ ctx[19](div);
-    			insert_dev(target, t1, anchor);
-    			insert_dev(target, button0, anchor);
-    			insert_dev(target, t3, anchor);
-    			insert_dev(target, button1, anchor);
-    			insert_dev(target, t5, anchor);
-    			insert_dev(target, button2, anchor);
-    			insert_dev(target, t7, anchor);
+    			/*div_binding*/ ctx[31](div);
+    			insert_dev(target, t9, anchor);
+    			insert_dev(target, button4, anchor);
+    			insert_dev(target, t11, anchor);
+    			insert_dev(target, button5, anchor);
+    			insert_dev(target, t13, anchor);
+    			insert_dev(target, button6, anchor);
+    			insert_dev(target, t15, anchor);
     			insert_dev(target, input1, anchor);
     			set_input_value(input1, /*image_url_file_url*/ ctx[3]);
-    			insert_dev(target, t8, anchor);
+    			insert_dev(target, t16, anchor);
     			insert_dev(target, textarea, anchor);
     			set_input_value(textarea, /*image_url_list*/ ctx[4]);
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[11]),
-    					listen_dev(button0, "click", /*add_image*/ ctx[9], false, false, false, false),
+    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[17]),
+    					listen_dev(button0, "click", /*click_handler*/ ctx[18], false, false, false, false),
+    					listen_dev(button1, "click", /*click_handler_1*/ ctx[19], false, false, false, false),
+    					listen_dev(button2, "click", /*click_handler_2*/ ctx[20], false, false, false, false),
+    					listen_dev(button3, "click", /*click_handler_3*/ ctx[21], false, false, false, false),
+    					listen_dev(button4, "click", /*add_image*/ ctx[15], false, false, false, false),
     					listen_dev(
-    						button1,
+    						button5,
     						"click",
     						function () {
     							if (is_function(/*download_it*/ ctx[6])) /*download_it*/ ctx[6].apply(this, arguments);
@@ -936,11 +998,11 @@ var app = (function () {
     						false,
     						false
     					),
-    					listen_dev(button2, "click", /*get_image_url_list_from_url*/ ctx[8], false, false, false, false),
-    					listen_dev(input1, "input", /*input1_input_handler_1*/ ctx[20]),
-    					listen_dev(input1, "input", /*get_image_url_list_from_url*/ ctx[8], false, false, false, false),
-    					listen_dev(input1, "change", /*get_image_url_list_from_url*/ ctx[8], false, false, false, false),
-    					listen_dev(textarea, "input", /*textarea_input_handler*/ ctx[21])
+    					listen_dev(button6, "click", /*get_image_url_list_from_url*/ ctx[14], false, false, false, false),
+    					listen_dev(input1, "input", /*input1_input_handler_1*/ ctx[32]),
+    					listen_dev(input1, "input", /*get_image_url_list_from_url*/ ctx[14], false, false, false, false),
+    					listen_dev(input1, "change", /*get_image_url_list_from_url*/ ctx[14], false, false, false, false),
+    					listen_dev(textarea, "input", /*textarea_input_handler*/ ctx[33])
     				];
 
     				mounted = true;
@@ -953,7 +1015,7 @@ var app = (function () {
     				set_input_value(input0, /*rotate_num*/ ctx[0]);
     			}
 
-    			if (dirty[0] & /*delete_image, init_data, image_url_list_array*/ 162) {
+    			if (dirty[0] & /*next, prev, delete_image, init_data, image_url_list_array*/ 14370) {
     				each_value = /*init_data*/ ctx[1];
     				validate_each_argument(each_value);
     				let i;
@@ -990,18 +1052,26 @@ var app = (function () {
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(input0);
     			if (detaching) detach_dev(t0);
+    			if (detaching) detach_dev(button0);
+    			if (detaching) detach_dev(t2);
+    			if (detaching) detach_dev(button1);
+    			if (detaching) detach_dev(t4);
+    			if (detaching) detach_dev(button2);
+    			if (detaching) detach_dev(t6);
+    			if (detaching) detach_dev(button3);
+    			if (detaching) detach_dev(t8);
     			if (detaching) detach_dev(div);
     			destroy_each(each_blocks, detaching);
-    			/*div_binding*/ ctx[19](null);
-    			if (detaching) detach_dev(t1);
-    			if (detaching) detach_dev(button0);
-    			if (detaching) detach_dev(t3);
-    			if (detaching) detach_dev(button1);
-    			if (detaching) detach_dev(t5);
-    			if (detaching) detach_dev(button2);
-    			if (detaching) detach_dev(t7);
+    			/*div_binding*/ ctx[31](null);
+    			if (detaching) detach_dev(t9);
+    			if (detaching) detach_dev(button4);
+    			if (detaching) detach_dev(t11);
+    			if (detaching) detach_dev(button5);
+    			if (detaching) detach_dev(t13);
+    			if (detaching) detach_dev(button6);
+    			if (detaching) detach_dev(t15);
     			if (detaching) detach_dev(input1);
-    			if (detaching) detach_dev(t8);
+    			if (detaching) detach_dev(t16);
     			if (detaching) detach_dev(textarea);
     			mounted = false;
     			run_all(dispose);
@@ -1023,6 +1093,54 @@ var app = (function () {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Placer', slots, []);
 
+    	const addX = ({ num = 20 }) => {
+    		$$invalidate(1, init_data = init_data.map(Image => {
+    			Image['X'] += num;
+    			return Image;
+    		}));
+    	};
+
+    	// 全てのXに対して引数の数を引く関数
+    	const subX = ({ num = 20 }) => {
+    		$$invalidate(1, init_data = init_data.map(Image => {
+    			Image['X'] -= num;
+    			return Image;
+    		}));
+    	};
+
+    	// 全てのYに対して引数の数を足す関数
+    	const addY = ({ num = 20 }) => {
+    		$$invalidate(1, init_data = init_data.map(Image => {
+    			Image['Y'] += num;
+    			return Image;
+    		}));
+    	};
+
+    	// 全てのYに対して引数の数を引く関数
+    	const subY = ({ num = 20 }) => {
+    		$$invalidate(1, init_data = init_data.map(Image => {
+    			Image['Y'] -= num;
+    			return Image;
+    		}));
+    	};
+
+    	// init_dataの要素を一つ前の要素と入れ替える関数
+    	const prev = INDEX => {
+    		if (INDEX === 0) return;
+    		const tmp = init_data[INDEX - 1];
+    		$$invalidate(1, init_data[INDEX - 1] = init_data[INDEX], init_data);
+    		$$invalidate(1, init_data[INDEX] = tmp, init_data);
+    	};
+
+    	// init_dataの要素を一つ次の要素と入れ替える関数
+    	const next = INDEX => {
+    		if (INDEX === init_data.length - 1) return;
+    		const tmp = init_data[INDEX + 1];
+    		$$invalidate(1, init_data[INDEX + 1] = init_data[INDEX], init_data);
+    		$$invalidate(1, init_data[INDEX] = tmp, init_data);
+    	};
+
+    	// add_image関数で追加する画像の初期値
     	const delete_image = INDEX => {
     		console.log(init_data);
     		$$invalidate(1, init_data = init_data.filter((_, i) => i !== INDEX));
@@ -1046,8 +1164,8 @@ var app = (function () {
     	let canvas;
 
     	const init_img = {
-    		W: 216, // wdith
-    		H: 216, // height
+    		W: 360, // wdith
+    		H: 360, // height
     		X: 50, // x
     		Y: 40, // y
     		URI: 'FE0094.png', // imageURI
@@ -1056,24 +1174,24 @@ var app = (function () {
 
     	let init_data = [
     		{
-    			W: 216, // wdith
-    			H: 216, // height
+    			W: 360, // wdith
+    			H: 360, // height
     			X: 10, // x
     			Y: 20, // y
     			URI: '30FE00.png', // imageURI
     			IMAGE: null
     		},
     		{
-    			W: 216, // wdith
-    			H: 216, // height
+    			W: 360, // wdith
+    			H: 360, // height
     			X: 10, // x
     			Y: 20, // y
     			URI: 'FE0094.png', // imageURI
     			IMAGE: null
     		},
     		{
-    			W: 216, // wdith
-    			H: 216, // height
+    			W: 360, // wdith
+    			H: 360, // height
     			X: 80, // x
     			Y: 20, // y
     			URI: 'FE0094.png', // imageURI
@@ -1157,6 +1275,11 @@ var app = (function () {
     		$$invalidate(0, rotate_num);
     	}
 
+    	const click_handler = () => addX({ num: 20 });
+    	const click_handler_1 = () => subX({ num: 20 });
+    	const click_handler_2 = () => addY({ num: 20 });
+    	const click_handler_3 = () => subY({ num: 20 });
+
     	function input0_input_handler_1(each_value, INDEX) {
     		each_value[INDEX]['W'] = to_number(this.value);
     		$$invalidate(1, init_data);
@@ -1193,7 +1316,9 @@ var app = (function () {
     		$$invalidate(5, image_url_list_array);
     	}
 
-    	const click_handler = INDEX => delete_image(INDEX);
+    	const click_handler_4 = INDEX => delete_image(INDEX);
+    	const click_handler_5 = INDEX => prev(INDEX);
+    	const click_handler_6 = INDEX => next(INDEX);
 
     	function div_binding($$value) {
     		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
@@ -1213,6 +1338,12 @@ var app = (function () {
     	}
 
     	$$self.$capture_state = () => ({
+    		addX,
+    		subX,
+    		addY,
+    		subY,
+    		prev,
+    		next,
     		delete_image,
     		image_url_file_url,
     		image_url_list,
@@ -1238,14 +1369,14 @@ var app = (function () {
     		if ('image_url_list' in $$props) $$invalidate(4, image_url_list = $$props.image_url_list);
     		if ('image_url_list_array' in $$props) $$invalidate(5, image_url_list_array = $$props.image_url_list_array);
     		if ('rotate_num' in $$props) $$invalidate(0, rotate_num = $$props.rotate_num);
-    		if ('canvas' in $$props) $$invalidate(10, canvas = $$props.canvas);
+    		if ('canvas' in $$props) $$invalidate(16, canvas = $$props.canvas);
     		if ('init_data' in $$props) $$invalidate(1, init_data = $$props.init_data);
     		if ('caption' in $$props) caption = $$props.caption;
-    		if ('XYZ' in $$props) $$invalidate(24, XYZ = $$props.XYZ);
-    		if ('ABC' in $$props) $$invalidate(25, ABC = $$props.ABC);
+    		if ('XYZ' in $$props) $$invalidate(36, XYZ = $$props.XYZ);
+    		if ('ABC' in $$props) $$invalidate(37, ABC = $$props.ABC);
     		if ('rootElement' in $$props) $$invalidate(2, rootElement = $$props.rootElement);
     		if ('download_it' in $$props) $$invalidate(6, download_it = $$props.download_it);
-    		if ('sketch' in $$props) $$invalidate(26, sketch = $$props.sketch);
+    		if ('sketch' in $$props) $$invalidate(38, sketch = $$props.sketch);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -1261,14 +1392,14 @@ var app = (function () {
     			rootElement && rootElement.style.setProperty('--ABC', ABC);
     		}
 
-    		if ($$self.$$.dirty[0] & /*init_data, rotate_num, canvas*/ 1027) {
+    		if ($$self.$$.dirty[0] & /*init_data, rotate_num, canvas*/ 65539) {
     			((() => {
     				if (canvas) {
     					canvas.remove();
     				}
 
-    				$$invalidate(10, canvas = null);
-    				$$invalidate(10, canvas = new p5(sketch));
+    				$$invalidate(16, canvas = null);
+    				$$invalidate(16, canvas = new p5(sketch));
     			})());
     		}
     	};
@@ -1281,18 +1412,30 @@ var app = (function () {
     		image_url_list,
     		image_url_list_array,
     		download_it,
+    		addX,
+    		subX,
+    		addY,
+    		subY,
+    		prev,
+    		next,
     		delete_image,
     		get_image_url_list_from_url,
     		add_image,
     		canvas,
     		input0_input_handler,
+    		click_handler,
+    		click_handler_1,
+    		click_handler_2,
+    		click_handler_3,
     		input0_input_handler_1,
     		input1_input_handler,
     		input2_input_handler,
     		input3_input_handler,
     		input4_input_handler,
     		select_change_handler,
-    		click_handler,
+    		click_handler_4,
+    		click_handler_5,
+    		click_handler_6,
     		div_binding,
     		input1_input_handler_1,
     		textarea_input_handler
