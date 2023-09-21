@@ -492,7 +492,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (233:3) {#if image_url_list_array[INDEX] !== undefined}
+    // (229:3) {#if image_url_list_array[INDEX] !== undefined}
     function create_if_block(ctx) {
     	let select;
     	let mounted;
@@ -520,7 +520,7 @@ var app = (function () {
     			attr_dev(select, "name", "");
     			attr_dev(select, "id", "");
     			if (/*VAL*/ ctx[39]['URI'] === void 0) add_render_callback(select_change_handler);
-    			add_location(select, file, 234, 4, 5266);
+    			add_location(select, file, 230, 4, 5210);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, select, anchor);
@@ -581,14 +581,14 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(233:3) {#if image_url_list_array[INDEX] !== undefined}",
+    		source: "(229:3) {#if image_url_list_array[INDEX] !== undefined}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (236:5) {#each image_url_list_array as IMAGE_URL, IMAGE_URL_INDEX}
+    // (232:5) {#each image_url_list_array as IMAGE_URL, IMAGE_URL_INDEX}
     function create_each_block_1(ctx) {
     	let option;
     	let t_value = /*IMAGE_URL*/ ctx[42] + "";
@@ -601,7 +601,7 @@ var app = (function () {
     			t = text(t_value);
     			option.__value = option_value_value = /*IMAGE_URL*/ ctx[42];
     			option.value = option.__value;
-    			add_location(option, file, 236, 6, 5383);
+    			add_location(option, file, 232, 6, 5327);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, option, anchor);
@@ -624,14 +624,14 @@ var app = (function () {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(236:5) {#each image_url_list_array as IMAGE_URL, IMAGE_URL_INDEX}",
+    		source: "(232:5) {#each image_url_list_array as IMAGE_URL, IMAGE_URL_INDEX}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (226:2) {#each init_data as VAL, INDEX}
+    // (222:2) {#each init_data as VAL, INDEX}
     function create_each_block(ctx) {
     	let div;
     	let t0;
@@ -720,36 +720,36 @@ var app = (function () {
     			attr_dev(input0, "step", "20");
     			attr_dev(input0, "min", "-1000");
     			attr_dev(input0, "max", "1000");
-    			add_location(input0, file, 227, 5, 4743);
+    			add_location(input0, file, 223, 5, 4687);
     			attr_dev(input1, "type", "number");
     			attr_dev(input1, "name", "");
     			attr_dev(input1, "id", "");
     			attr_dev(input1, "step", "20");
     			attr_dev(input1, "min", "-1000");
     			attr_dev(input1, "max", "1000");
-    			add_location(input1, file, 228, 5, 4839);
+    			add_location(input1, file, 224, 5, 4783);
     			attr_dev(input2, "type", "number");
     			attr_dev(input2, "name", "");
     			attr_dev(input2, "id", "");
     			attr_dev(input2, "step", "20");
     			attr_dev(input2, "min", "-1000");
     			attr_dev(input2, "max", "1000");
-    			add_location(input2, file, 229, 5, 4935);
+    			add_location(input2, file, 225, 5, 4879);
     			attr_dev(input3, "type", "number");
     			attr_dev(input3, "name", "");
     			attr_dev(input3, "id", "");
     			attr_dev(input3, "step", "20");
     			attr_dev(input3, "min", "-1000");
     			attr_dev(input3, "max", "1000");
-    			add_location(input3, file, 230, 5, 5031);
+    			add_location(input3, file, 226, 5, 4975);
     			attr_dev(input4, "type", "text");
     			attr_dev(input4, "name", "");
     			attr_dev(input4, "id", "");
-    			add_location(input4, file, 231, 7, 5129);
-    			add_location(button0, file, 242, 3, 5503);
-    			add_location(button1, file, 244, 3, 5584);
-    			add_location(button2, file, 245, 3, 5638);
-    			add_location(div, file, 226, 2, 4732);
+    			add_location(input4, file, 227, 7, 5073);
+    			add_location(button0, file, 238, 3, 5447);
+    			add_location(button1, file, 240, 3, 5528);
+    			add_location(button2, file, 241, 3, 5582);
+    			add_location(div, file, 222, 2, 4676);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -841,7 +841,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(226:2) {#each init_data as VAL, INDEX}",
+    		source: "(222:2) {#each init_data as VAL, INDEX}",
     		ctx
     	});
 
@@ -922,25 +922,25 @@ var app = (function () {
     			attr_dev(input0, "min", "-1000");
     			attr_dev(input0, "max", "1000");
     			add_location(input0, file, 214, 0, 4277);
-    			add_location(button0, file, 216, 0, 4384);
-    			add_location(button1, file, 218, 0, 4453);
-    			add_location(button2, file, 220, 0, 4522);
-    			add_location(button3, file, 222, 0, 4591);
+    			add_location(button0, file, 215, 0, 4370);
+    			add_location(button1, file, 216, 0, 4425);
+    			add_location(button2, file, 217, 0, 4480);
+    			add_location(button3, file, 218, 0, 4535);
     			attr_dev(div, "class", "container");
-    			add_location(div, file, 224, 1, 4648);
-    			add_location(button4, file, 249, 1, 5718);
-    			add_location(button5, file, 250, 1, 5767);
-    			add_location(button6, file, 252, 0, 5820);
+    			add_location(div, file, 220, 1, 4592);
+    			add_location(button4, file, 245, 1, 5662);
+    			add_location(button5, file, 246, 1, 5711);
+    			add_location(button6, file, 248, 0, 5764);
     			attr_dev(input1, "type", "text");
     			attr_dev(input1, "name", "image_url_file_url");
     			attr_dev(input1, "class", "image_url_file_url");
     			attr_dev(input1, "placeholder", "I am not crazy; my reality is just different from yours.");
-    			add_location(input1, file, 253, 0, 5904);
+    			add_location(input1, file, 249, 0, 5848);
     			attr_dev(textarea, "name", "image_url_list");
     			attr_dev(textarea, "class", "image_url_list");
     			attr_dev(textarea, "cols", "100");
     			attr_dev(textarea, "rows", "10");
-    			add_location(textarea, file, 255, 0, 6160);
+    			add_location(textarea, file, 251, 0, 6104);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
