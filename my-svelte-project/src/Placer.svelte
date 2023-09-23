@@ -72,6 +72,8 @@ const init_img  = {
 		H: 360,  // height
 		X: 50,  // x
 		Y: 40,  // y
+		SIZE_WIDTH: 0,  // image_wdith
+		SIZE_HEIGHT: 0,  // image_height
 		URI: 'FE0094.png',  // imageURI
 		IMAGE: null,
 };
@@ -81,6 +83,8 @@ let init_data = [
 		H: 360,  // height
 		X: 10,  // x
 		Y: 20,  // y
+		SIZE_WIDTH: 0,  // image_wdith
+		SIZE_HEIGHT: 0,  // image_height
 		URI: '30FE00.png',  // imageURI
 		IMAGE: null,
 	},
@@ -89,6 +93,8 @@ let init_data = [
 		H: 360,  // height
 		X: 10,  // x
 		Y: 20,  // y
+		SIZE_WIDTH: 100,  // image_wdith
+		SIZE_HEIGHT: 100,  // image_height
 		URI: 'FE0094.png',  // imageURI
 		IMAGE: null,
 	},
@@ -97,6 +103,8 @@ let init_data = [
 		H: 360,  // height
 		X: 80,  // x
 		Y: 20,  // y
+		SIZE_WIDTH: 100,  // image_wdith
+		SIZE_HEIGHT: 100,  // image_height
 		URI: 'FE0094.png',  // imageURI
 		IMAGE: null,
 	},
@@ -188,7 +196,11 @@ let sketch = (p) => {
 	// p.imageMode(p.CENTER);
 
 
-		p.image(Image['IMAGE'], Image['X'], Image['Y']);
+		// p.image(Image['IMAGE'], Image['X'], Image['Y']);
+		p.image(Image['IMAGE'], Image['X'], Image['Y'],
+			Image['SIZE_WIDTH'] === 0 ? null : Image['SIZE_WIDTH'],
+			Image['SIZE_HEIGHT'] === 0 ? null : Image['SIZE_HEIGHT'],
+		);
 		// p.rotate(p.PI / 180);
 		// p.imageMode(p.CENTER);
 
@@ -212,11 +224,14 @@ $: init_data && rotate_num, (() => {
 })();	
 </script>
 
-<input type="number" name="" id="" bind:value={rotate_num} step="20" min="-1000" max="1000">
+
+
+<input type="number" name="" id="" bind:value={rotate_num} step="1" min="-1000" max="1000">
 <button on:click={() => addX({num: 20})}>addX</button>
 <button on:click={() => subX({num: 20})}>subX</button>
 <button on:click={() => addY({num: 20})}>addY</button>
 <button on:click={() => subY({num: 20})}>subY</button>
+<span>SIZE_WIDTH 0 & SIZE_HEIGHT 0 is original size</span>
 
 	<div class="container" bind:this={rootElement}>
 		{#each init_data as VAL, INDEX}
@@ -225,6 +240,10 @@ $: init_data && rotate_num, (() => {
 		H: <input type="number" name="" id="" bind:value={VAL['H']} step="20" min="-1000" max="1000">
 		X: <input type="number" name="" id="" bind:value={VAL['X']} step="20" min="-1000" max="1000">
 		Y: <input type="number" name="" id="" bind:value={VAL['Y']} step="20" min="-1000" max="1000">
+
+		SIZE_WIDTH: <input type="number" name="" id="" bind:value={VAL['SIZE_WIDTH']} step="20" min="-1000" max="1000">
+		SIZE_HEIGHT: <input type="number" name="" id="" bind:value={VAL['SIZE_HEIGHT']} step="20" min="-1000" max="1000">
+		
 		URI: <input type="text" name="" id="" bind:value={VAL['URI']}>
 			{#if image_url_list_array[INDEX] !== undefined}
 			<!-- option形式で表示 -->
