@@ -1,4 +1,29 @@
 <script>
+// file naming for download_it
+const get_file_name = () => {
+	const date = new Date();
+	const year = date.getFullYear();
+	const month = date.getMonth() + 1;
+	const day = date.getDate();
+	const hour = date.getHours();
+	const minute = date.getMinutes();
+	const second = date.getSeconds();
+	const millisecond = date.getMilliseconds();
+	const when = `${year}${month}${day}${hour}${minute}${second}${millisecond}`;
+	// each SIZE_WIDTH SIZE_HEIGHT URI concat
+	const get_each_param = () => {
+		return init_data.map((Image) => {
+			const { SIZE_WIDTH, SIZE_HEIGHT, URI } = Image;
+			// .pngや.jpgや.jpegや.gifや.svgや.webpを削除する
+			const new_URI = URI.replaceAll(/(\.png|\.jpg|\.jpeg|\.gif|\.svg|\.webp)/g, '');
+			return `W_${SIZE_WIDTH}_H_${SIZE_HEIGHT}_${new_URI}`;
+		});
+	}
+
+	// return when + "_" + 'R_' + rotate_num + '_' + get_each_param().join('_');
+	return 'R_' + rotate_num + '_' + get_each_param().join('_');
+};
+
 
 // 全てのXに対して引数の数を足す関数
 const addX = ({num=20}) => {
@@ -140,7 +165,8 @@ let sketch = (p) => {
 	}
 
 	function download_it_in_sketch() {
-		p.saveCanvas(caption, 'png');
+		// p.saveCanvas(caption, 'png');
+		p.saveCanvas(get_file_name(), 'png');
 	}
 
 	download_it = download_it_in_sketch;
