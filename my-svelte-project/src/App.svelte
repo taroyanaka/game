@@ -1,4 +1,12 @@
 <script>
+const color1 = '#00FF00'; // ライムグリーン
+const color2 = '#FFFFFF'; // ホワイト
+const color3 = '#FF0000'; // レッド
+const color4 = '#0000FF'; // ブルー
+const color5 = '#FFFF00'; // イエロー
+
+const color6 = '#00FFFF'; // シアン
+
 let field_none = 'block';
 // let field_none = 'none';
 let gacha_none = 'none';
@@ -146,10 +154,10 @@ const set_USR_to_init_position = () => {
 		.map(V=>V.map(v=>v['SPAWN_Y_X']))
 			.flat();
 	// USRを初期位置に設定
-		// COLLECT_VALUE2[9][0][2] = 'USR'; COLLECT_VALUE2[9][0][3] = 'background-color: #0000FF';
+		// COLLECT_VALUE2[9][0][2] = 'USR'; COLLECT_VALUE2[9][0][3] = 'background-color: color4';
 	START_CURRENT_Y_AND_X_ARRAY.forEach((V, I) => {
 		COLLECT_VALUE2[V[0]][V[1]][2] = 'USR';
-		COLLECT_VALUE2[V[0]][V[1]][3] = 'background-color: #0000FF';
+		COLLECT_VALUE2[V[0]][V[1]][3] = 'background-color: ' + color4 +';';
 	});
 };
 const clone_START_CURRENT_Y_AND_X_ARRAY = () => R.clone(START_CURRENT_Y_AND_X_ARRAY);
@@ -186,7 +194,7 @@ const change_CURRENT_USR_ID = () => {
 const reflect_USR_DATA = () =>{
 	// USR_DATA_ARRAYのNAMEとTYPEをobject形式でmap関数でreflect_DATAに追加する
 	let reflect_DATA = USR_DATA_ARRAY.map(V=>{
-		return {NAME: V['NAME'], TYPE: V['TYPE'], BACK_COLOR: 'background-color: #0000FF'};
+		return {NAME: V['NAME'], TYPE: V['TYPE'], BACK_COLOR: ('background-color: ' + color4)};
 	});
 	// return reflect_DATA;
 	reflect_DATA.forEach((V,I)=>{
@@ -262,7 +270,7 @@ try {
 	){
 		UNT_DATA_OBJ['UNT_NUM_' + (get_new_UNT_NUM()).toString()] = new_UNT;
 		COLLECT_VALUE2[random_NON_POSITION[0]][random_NON_POSITION[1]][2] = new_UNT;
-		COLLECT_VALUE2[random_NON_POSITION[0]][random_NON_POSITION[1]][3] = 'background-color: #00FF00;';
+		COLLECT_VALUE2[random_NON_POSITION[0]][random_NON_POSITION[1]][3] = 'background-color: ' + color1 +';';
 		console.log('UNT is born!!');
 	}
 
@@ -273,7 +281,7 @@ try {
 	// errorがあった場合、COLLECT_VALUE2からnew_UNTを削除し、NONに戻す
 	COLLECT_VALUE2[random_NON_POSITION[0]][random_NON_POSITION[1]][2] = 'NON';
 	// errorがあった場合、COLLECT_VALUE2からnew_UNTの背景色を削除する
-	COLLECT_VALUE2[random_NON_POSITION[0]][random_NON_POSITION[1]][3] = 'background-color: #FFFFFF;';
+	COLLECT_VALUE2[random_NON_POSITION[0]][random_NON_POSITION[1]][3] = 'background-color: ' + color2 +';';
 }
 };
 
@@ -759,17 +767,17 @@ const magic_USR_to_UNT = (Magic, Usr_Id) => {
 
 
 		if(
-		COLLECT_VALUE2[magic_to_Y][magic_to_X][3] === 'background-color: #00FF00'
+		COLLECT_VALUE2[magic_to_Y][magic_to_X][3] === 'background-color: ' + color1 +';'
 	){
 			damage_effect({Y_X_Ary: [magic_to_Y, magic_to_X],
 				ms: 200,
-				// Original_Color: '#00FF00',
+				// Original_Color: 'color1',
 				Original_Color: 
 				UNT_DATA_OBJ[UNT_NUM_N]['LFP'] <= 0 ?
-					'#FFFFFF' :
-					'#00FF00',
-				Color_0: '#FF0000',
-				Color_1: '#FFFFFF',
+					color2 :
+					color1,
+				Color_0: color3,
+				Color_1: color2,
 			});
 	}
 
@@ -789,7 +797,8 @@ const magic_USR_to_UNT = (Magic, Usr_Id) => {
 			// UNTの位置をNONに変更する
 			change_BLC_to_NON(UNT_Y_AND_X[0], UNT_Y_AND_X[1]);
 			// 色も更新する
-			COLLECT_VALUE2[UNT_Y_AND_X[0]][UNT_Y_AND_X[1]][3] = 'background-color: #FFFFFF';
+			// COLLECT_VALUE2[UNT_Y_AND_X[0]][UNT_Y_AND_X[1]][3] = 'background-color: ' + color2 +';';
+			COLLECT_VALUE2[UNT_Y_AND_X[0]][UNT_Y_AND_X[1]][3] = 'background-color: ' + color2 +';';
 			// UNT_DATA_OBJからUNT_NUMを指定してUNTを削除する
 			UNT_DATA_OBJ = R.omit([UNT_NUM_N], UNT_DATA_OBJ);
 		}
@@ -824,7 +833,7 @@ const get_click_position = (Y, X, When_Click=false) => {
 const change_BLC_to_GOL = (Y, X) => {
 	COLLECT_VALUE2[Y][X][2] = 'GOL';
 	// 色は黄色にする
-	COLLECT_VALUE2[Y][X][3] = 'background-color: #FFFF00';
+	COLLECT_VALUE2[Y][X][3] = 'background-color: ' + color5 +';';
 };
 
 // USRからGOLまでを隣接して移動できるように適宜BLCをNONに変更する関数
@@ -832,7 +841,7 @@ const change_BLC_to_NON = (Y, X) => {
 	// Y,XをBLCからNONに変更する
 	COLLECT_VALUE2[Y][X][2] = 'NON';
 	// 色は白色にする
-	COLLECT_VALUE2[Y][X][3] = 'background-color: #FFFFFF';
+	COLLECT_VALUE2[Y][X][3] = 'background-color: ' + color2 +';';
 };
 
 
@@ -867,9 +876,9 @@ const attack_USR_to_UNT = (Go_to_Y, Go_to_X, Usr_Id=0) => {
 	// ダメージエフェクト
 	damage_effect({Y_X_Ary: [Go_to_Y, Go_to_X],
 		ms: 200,
-		Original_Color: '#00FF00',
-		Color_0: '#FF0000',
-		Color_1: '#FFFFFF',
+		Original_Color: color1,
+		Color_0: color3,
+		Color_1: color2,
 	});
 
 	// 指定したUNTのLFPが0以下になったら、指定したUNTの位置をNONに変更する
@@ -890,7 +899,7 @@ const attack_USR_to_UNT = (Go_to_Y, Go_to_X, Usr_Id=0) => {
 		// UNTの位置をNONに変更する
 		change_BLC_to_NON(UNT_Y_AND_X[0], UNT_Y_AND_X[1]);
 		// 色も更新する
-		COLLECT_VALUE2[UNT_Y_AND_X[0]][UNT_Y_AND_X[1]][3] = 'background-color: #FFFFFF';
+		COLLECT_VALUE2[UNT_Y_AND_X[0]][UNT_Y_AND_X[1]][3] = 'background-color: ' + color2 +';';
 		// UNT_DATA_OBJからUNT_NUMを指定してUNTを削除する
 		UNT_DATA_OBJ = R.omit([UNT_NUM_N], UNT_DATA_OBJ);
 	}
@@ -900,9 +909,9 @@ const attack_USR_to_UNT = (Go_to_Y, Go_to_X, Usr_Id=0) => {
 const attack_UNT_to_USR = (UNT_NUM, Usr_Id=0) => {
 	damage_effect({Y_X_Ary: [get_USR_position()[0], get_USR_position()[1]],
 		ms: 200,
-		Original_Color: '#0000FF',
-		Color_0: '#FF0000',
-		Color_1: '#FFFFFF',
+		Original_Color: color4,
+		Color_0: color3,
+		Color_1: color2,
 	});
 	const UNT_NUM_N = 'UNT_NUM_' + (UNT_NUM).toString();
 	const UNT_ATK = UNT_DATA_OBJ[UNT_NUM_N].ATK;
@@ -946,9 +955,9 @@ const damage_effect = (
 	{
 		Y_X_Ary=[9, 0],
 		ms=200,
-		Original_Color='#0000FF',
-		Color_0='#0000FF',
-		Color_1='#FFFFFF',
+		Original_Color=color4,
+		Color_0=color4,
+		Color_1=color2,
 	}
 	) =>{
 	const [Y, X] = Y_X_Ary;
@@ -1005,11 +1014,19 @@ function click_or_keypress_event(
 	const magic = Alt_Param['Magic'];
 	const eqp_i = Alt_Param['Eqp_I'];
 
+	// window.app.$capture_state()['COLLECT_VALUE2'][9][0]
+	// COLLECT_VALUE2
+	// [CURRENT_Y_AND_X[usr_id][0]]
+	// [CURRENT_Y_AND_X[usr_id][1]]
+	// [3] = 'background-color: ' + color6 +';';
 
 	console.log(
-'usr_id', usr_id,
-'magic', magic,
-'eqp_i', eqp_i,
+// 'usr_id', usr_id,
+// 'magic', magic,
+// 'eqp_i', eqp_i,
+CURRENT_Y_AND_X[usr_id],
+CURRENT_USER_ID,
+COLLECT_VALUE2[CURRENT_Y_AND_X[usr_id][0]][CURRENT_Y_AND_X[usr_id][1]][3],
 	);
 
 	KILL_STREAK = 0;
@@ -1020,6 +1037,7 @@ function click_or_keypress_event(
 		decrement_MAGIC_COUNTER(eqp_i, usr_id);
 		magic_USR_to_UNT(magic[1], usr_id);		
 		change_CURRENT_USR_ID();
+		change_CURRENT_USR_color();
 		//  Object.entries(UNT_DATA_OBJ).map((V,I)=>{UNT_ATTACK_OR_MOVE(V[1]['NAME'])});
 		// UNIT_TURNがtrueなら各UNTの行動を実行する
 		if(UNIT_TURN === true){
@@ -1078,8 +1096,8 @@ function click_or_keypress_event(
 				COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][2] = 'USR';
 				COLLECT_VALUE2[CURRENT_Y_AND_X[usr_id][0]][CURRENT_Y_AND_X[usr_id][1]][2] = 'NON';
 				// 色も更新する
-				COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][3] = 'background-color: #0000FF';
-				COLLECT_VALUE2[CURRENT_Y_AND_X[usr_id][0]][CURRENT_Y_AND_X[usr_id][1]][3] = 'background-color: #FFFFFF';
+				COLLECT_VALUE2[go_to_y_x[0]][go_to_y_x[1]][3] = 'background-color: ' + color4 +';';
+				COLLECT_VALUE2[CURRENT_Y_AND_X[usr_id][0]][CURRENT_Y_AND_X[usr_id][1]][3] = 'background-color: ' + color2 +';';
 				CURRENT_Y_AND_X[usr_id] = go_to_y_x;
 			}
 			reflect_USR_DATA();
@@ -1088,6 +1106,7 @@ function click_or_keypress_event(
 		// USRがUNTにアタックする。引数はUNT_DATA_ARRAYのUNT_NUMの指定と攻撃対象のUNTのIDの指定。
 		attack_USR_to_UNT(go_to_y_x[0], go_to_y_x[1]);
 		change_CURRENT_USR_ID();
+		change_CURRENT_USR_color();
 	}
 
 
@@ -1204,11 +1223,11 @@ const UNT_ATTACK_OR_MOVE = (NAME) => {
 			// UNTの位置をNONに変更する
 			change_BLC_to_NON(unt_position[0], unt_position[1]);
 			// 色も更新する
-			COLLECT_VALUE2[unt_position[0]][unt_position[1]][3] = 'background-color: #FFFFFF';
+			COLLECT_VALUE2[unt_position[0]][unt_position[1]][3] = 'background-color: ' + color2 +';';
 			// UNTの位置を更新する
 			COLLECT_VALUE2[Move_to[0]][Move_to[1]][2] = UNT_DATA_OBJ['UNT_NUM_' + UNT_NUM];
 			// 色も更新する
-			COLLECT_VALUE2[Move_to[0]][Move_to[1]][3] = 'background-color: #00FF00';
+			COLLECT_VALUE2[Move_to[0]][Move_to[1]][3] = 'background-color: ' + color1 +';'
 			// 早期リターンする
 			shuffled_move_position = [];
 		}
@@ -1276,13 +1295,23 @@ const change_UNT_to_NON = () => {
 // random_Y_AND_Xをall_NONから削除する
 	all_NON = all_NON.filter(V=>V!==random_Y_AND_X);
 				COLLECT_VALUE2[random_Y_AND_X[0]][random_Y_AND_X[1]][2] = UNT_DATA_OBJ[UNT_NUM_N];
-				COLLECT_VALUE2[random_Y_AND_X[0]][random_Y_AND_X[1]][3] = 'background-color: #00FF00';
+				COLLECT_VALUE2[random_Y_AND_X[0]][random_Y_AND_X[1]][3] = 'background-color: ' + color1 +';'
 			});
 	}
 	set_UNT();
 };
 
 const get_all_USR_ID = () => USR_DATA_ARRAY.map((V, I) => V['ID']);
+
+
+// アクティブのUSRの色を変更する関数
+const change_CURRENT_USR_color = () => {
+	const plot_x = CURRENT_Y_AND_X[CURRENT_USER_ID][0];
+	const plot_y = CURRENT_Y_AND_X[CURRENT_USER_ID][1];
+	COLLECT_VALUE2
+		[plot_x][plot_y][3]
+			= 'background-color: ' + color6 +';';
+};
 // マップを初期化してやり直す関数
 // 起動時にも実行する
 const reset_or_init_map = ({when_mounted_time=true, go_up=false, when_died=false}) => {
@@ -1371,17 +1400,19 @@ GOLD = USR_DATA_ARRAY[0]['GOLD'];
 	change_percent_BLC_to_NON();
 
 	// バトルシステムの開発のために、初期位置の前後左右をNONに変更する
-	COLLECT_VALUE2[5][4][2] = 'NON'; COLLECT_VALUE2[5][4][3] = 'background-color: #FFFFFF';
-	COLLECT_VALUE2[5][6][2] = 'NON'; COLLECT_VALUE2[5][6][3] = 'background-color: #FFFFFF';
-	COLLECT_VALUE2[4][5][2] = 'NON'; COLLECT_VALUE2[4][5][3] = 'background-color: #FFFFFF';
-	COLLECT_VALUE2[6][5][2] = 'NON'; COLLECT_VALUE2[6][5][3] = 'background-color: #FFFFFF';
+	COLLECT_VALUE2[5][4][2] = 'NON'; COLLECT_VALUE2[5][4][3] = 'background-color: ' + color2 +';';
+	COLLECT_VALUE2[5][6][2] = 'NON'; COLLECT_VALUE2[5][6][3] = 'background-color: ' + color2 +';';
+	COLLECT_VALUE2[4][5][2] = 'NON'; COLLECT_VALUE2[4][5][3] = 'background-color: ' + color2 +';';
+	COLLECT_VALUE2[6][5][2] = 'NON'; COLLECT_VALUE2[6][5][3] = 'background-color: ' + color2 +';';
 
-	COLLECT_VALUE2[5][3][2] = 'NON'; COLLECT_VALUE2[5][3][3] = 'background-color: #FFFFFF';
-	COLLECT_VALUE2[5][7][2] = 'NON'; COLLECT_VALUE2[5][7][3] = 'background-color: #FFFFFF';
-	COLLECT_VALUE2[3][5][2] = 'NON'; COLLECT_VALUE2[3][5][3] = 'background-color: #FFFFFF';
-	COLLECT_VALUE2[7][5][2] = 'NON'; COLLECT_VALUE2[7][5][3] = 'background-color: #FFFFFF';
+	COLLECT_VALUE2[5][3][2] = 'NON'; COLLECT_VALUE2[5][3][3] = 'background-color: ' + color2 +';';
+	COLLECT_VALUE2[5][7][2] = 'NON'; COLLECT_VALUE2[5][7][3] = 'background-color: ' + color2 +';';
+	COLLECT_VALUE2[3][5][2] = 'NON'; COLLECT_VALUE2[3][5][3] = 'background-color: ' + color2 +';';
+	COLLECT_VALUE2[7][5][2] = 'NON'; COLLECT_VALUE2[7][5][3] = 'background-color: ' + color2 +';';
 
 	change_UNT_to_NON();
+
+	change_CURRENT_USR_color();
 	
 	document.addEventListener('keypress', ()=>click_or_keypress_event(
 		event,
@@ -1602,7 +1633,7 @@ GOLD: {GOLD}
 
 	<div>
 		{#each Object.keys(UNT_DATA_OBJ) as key, IDX}
-			<div id={UNT_DATA_OBJ[key].NAME} style='background-color: #FFFFFF'  class='UNT_BACK'>
+			<div id={UNT_DATA_OBJ[key].NAME} style={`background-color: ${color2};`} class='UNT_BACK'>
 			{UNT_DATA_OBJ[key].NAME}
 			LFP: {UNT_DATA_OBJ[key].LFP}
 			ATK: {UNT_DATA_OBJ[key].ATK}
@@ -1792,10 +1823,10 @@ GOLD: {GOLD}
 	/* INDEX_2は相対位置で指定 */
 	position: relative;
 	top: 0;
-	right: 0;
-	/* left: 2rem; */
+	/* right: 0; */
+	left: 0;
 	/* 透過する */
-	opacity: 0.5;
+	opacity: 0.3;
 	/* INDEX_2の幅はflexで画面いっぱいにする */
 	width: 90vw;
 }
