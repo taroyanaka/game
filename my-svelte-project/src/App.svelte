@@ -1,4 +1,9 @@
 <script>
+// 次回get_USR_position()とusr_position周りを修正する
+// UNT_ATTACK_OR_MOVEを細分化してtry catchのエラーの範囲を狭める
+// COLLECT_VALUE2[Go_to_Y][Go_to_X][2]['TYPE']がundefinedになるのも修正する
+// その後全体的にリファクタリングする
+
 const color1 = '#00FF00'; // ライムグリーン
 const color2 = '#FFFFFF'; // ホワイト
 const color3 = '#FF0000'; // レッド
@@ -478,6 +483,22 @@ const decrement_MAGIC_COUNTER = (EqpNum, Usr_Id=0) => {
 	USR_DATA_ARRAY[Usr_Id]['EQP'][EqpNum]['MAGIC'][0]['MAGIC_COUNT'] -= 1
 };
 
+// increment_MAGIC_COUNTERはUSR_DATA_ARRAYの指定したUSRの指定したEqpのMAGIC_COUNTを1増やす関数
+const increment_MAGIC_COUNTER = (EqpNum, Usr_Id=0) => {
+	USR_DATA_ARRAY[Usr_Id]['EQP'][EqpNum]['MAGIC'][0]['MAGIC_COUNT'] += 1
+};
+// 全てのMAGIC_COUNTを1増やす関数
+const increment_MAGIC_COUNTER_ALL = () => {
+	USR_DATA_ARRAY.forEach((V, Usr_Id) => {
+		V['EQP'].forEach((v, EqpNum) => {
+			if(v['MAGIC'][0]['MAGIC_COUNT'] === null){
+				return;
+			}
+			v['MAGIC'][0]['MAGIC_COUNT'] += 1
+		});
+	});
+};
+
 const convert = (range) => {
 	const result = [];
 	range.forEach((row, y) => {
@@ -907,6 +928,7 @@ const attack_USR_to_UNT = (Go_to_Y, Go_to_X, Usr_Id=0) => {
 
 // UNTがUSRにアタックする関数(USRのLFPをUNTのATK分減らす)(引数にはUNT_DATA_ARRAYのUNT_NUMを指定する)
 const attack_UNT_to_USR = (UNT_NUM, Usr_Id=0) => {
+	increment_MAGIC_COUNTER_ALL();
 	damage_effect({Y_X_Ary: [get_USR_position()[0], get_USR_position()[1]],
 		ms: 200,
 		Original_Color: color4,
@@ -1155,6 +1177,25 @@ tmp = NUMBER_STR_AND_YX;
 	}
 };
 
+// 現在の全てのUSRの位置の配列を取得する関数
+const get_USR_position2 = () => {
+	// reflect_USR_DATA();
+	// UNTの位置を取得する
+	const USR_Y_AND_X_ARY = COLLECT_VALUE2
+		.map(V=>V.filter(V2=>V2[2] === 'USR' ))
+		// 配列をflatして、空の配列を削除する
+		.flat()
+		.filter(V=>V.length>0)
+		.filter(V=>V[2] === 'USR')
+
+
+
+		// .filter(V=>V.length>0)
+		.map(V=>[V[0], V[1]]);
+	return USR_Y_AND_X_ARY;
+};
+
+
 // key_press関数を実行した後に、UNTの行動を実行する関数。
 // 隣接しているUSRがいたらアタックする
 // USRが隣接していない場合はランダムに1マス移動する
@@ -1162,22 +1203,46 @@ tmp = NUMBER_STR_AND_YX;
 const UNT_ATTACK_OR_MOVE = (NAME) => {
 	try {
 	const UNT_NUM = NAME ? Number(NAME.replaceAll('UNT_', '')) : 0;
-	const usr_position = get_USR_position();
 	const unt_position = get_UNT_position(UNT_NUM);
 
 	// 隣接しているマスにUSRがいたらアタックする
+	// if (
+	// 	// 上下左右にUSRがいる場合はアタックする
+	// 	( (unt_position[1] === usr_position[1]) && (unt_position[0] === usr_position[0] - 1) ) ||
+	// 	( (unt_position[1] === usr_position[1]) && (unt_position[0] === usr_position[0] + 1) ) ||
+	// 	( (unt_position[0] === usr_position[0]) && (unt_position[0] === usr_position[1] - 1) ) ||
+	// 	( (unt_position[0] === usr_position[0]) && (unt_position[0] === usr_position[1] + 1) )
+	// ){
+	// 	attack_UNT_to_USR(UNT_NUM);
+	// 	return;
+	// }
+// reflect_USR_DATA();
+		// 隣接しているマスにUSRがいたらアタックする
 	if (
-		// 上下左右にUSRがいる場合はアタックする
-		( (unt_position[1] === usr_position[1]) && (unt_position[0] === usr_position[0] - 1) ) ||
-		( (unt_position[1] === usr_position[1]) && (unt_position[0] === usr_position[0] + 1) ) ||
-		( (unt_position[0] === usr_position[0]) && (unt_position[0] === usr_position[1] - 1) ) ||
-		( (unt_position[0] === usr_position[0]) && (unt_position[0] === usr_position[1] + 1) )
+		get_USR_position2().map(usr_position=>{
+			if(
+			// 上下左右にUSRがいる場合はアタックする
+			( (unt_position[1] === usr_position[1]) && (unt_position[0] === usr_position[0] - 1) ) ||
+			( (unt_position[1] === usr_position[1]) && (unt_position[0] === usr_position[0] + 1) ) ||
+			( (unt_position[0] === usr_position[0]) && (unt_position[0] === usr_position[1] - 1) ) ||
+			( (unt_position[0] === usr_position[0]) && (unt_position[0] === usr_position[1] + 1) )
+			){
+				return 'ENEMY'
+			}
+		}).some(V=>V==='ENEMY')
 	){
+		console.log(NAME);
+		// console.log(unt_position);
+		// console.log(usr_position);
 		attack_UNT_to_USR(UNT_NUM);
 		return;
 	}
 
-	const UNT_ADJACENT_Y_AND_X = get_click_position(unt_position[0], unt_position[1], false);
+	const usr_position = get_USR_position();
+	let UNT_ADJACENT_Y_AND_X = get_click_position(unt_position[0], unt_position[1], false);
+	// UNT_ADJACENT_Y_AND_Xにundefinedが含まれていたら、undefinedが含まれた要素は削除する
+	UNT_ADJACENT_Y_AND_X = UNT_ADJACENT_Y_AND_X.filter(V=>V!==undefined);
+
 	// 隣接しているマスにUNTがいたらbreedする
 	if(
 		// 上下左右にUNTがいる場合はbreedする
@@ -1233,7 +1298,7 @@ const UNT_ATTACK_OR_MOVE = (NAME) => {
 		}
 	}
 	} catch (error) {
-		// console.log(error);
+		console.log(error);
 	}
 };
 
