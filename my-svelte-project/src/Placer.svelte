@@ -1,4 +1,31 @@
-<script>
+<script>    
+let fileInput;
+let imagePreview;
+
+function handleFileInputChange(event) {
+	const file = event.target.files[0];
+	const reader = new FileReader();
+
+	reader.addEventListener('load', (event) => {
+		imagePreview.src = event.target.result;
+	});
+
+	reader.readAsDataURL(file);
+}
+
+// imagePreview.srcをinit_dataに追加する関数
+const add_imagePreview_src_to_init_data = () => {
+	const new_init_data = init_data.concat(init_img);
+	new_init_data[new_init_data.length - 1]['URI'] = imagePreview.src;
+	init_data = new_init_data;
+};
+// imagePreview.srcを空にする関数
+const clear_imagePreview_src = () => imagePreview.src = '';
+
+
+
+
+
 // file naming for download_it
 const get_file_name = () => {
 	const date = new Date();
@@ -250,8 +277,6 @@ $: init_data && rotate_num, (() => {
 })();	
 </script>
 
-
-
 <input type="number" name="" id="" bind:value={rotate_num} step="1" min="-1000" max="1000">
 <button on:click={() => addX({num: 20})}>addX</button>
 <button on:click={() => subX({num: 20})}>subX</button>
@@ -296,7 +321,12 @@ $: init_data && rotate_num, (() => {
 	on:input={get_image_url_list_from_url} on:change={get_image_url_list_from_url} placeholder="I am not crazy; my reality is just different from yours.">
 <textarea name="image_url_list" class="image_url_list" cols="100" rows="10" bind:value={image_url_list} ></textarea>
 
-
+<div>
+	<input type="file" bind:this={fileInput} on:change={handleFileInputChange}>
+	<img bind:this={imagePreview} alt="">
+	<button on:click={add_imagePreview_src_to_init_data}>add_imagePreview_src_to_init_data</button>
+	<button on:click={add_imagePreview_src_to_init_data}>add_imagePreview_src_to_init_data</button>
+</div>
 
 <style>
 	/* https://svelte.dev/repl/57f03a5268884c8080b286c95e9a7c52?version=4.2.0 */
