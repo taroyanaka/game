@@ -12,9 +12,13 @@
     "build2": "rollup -c rollup.config2.js",
     "dev2": "rollup -c rollup.config2.js -w",
 
-    "$comment3": "use `npm run dev3` to start App.svelte(index.html) and Iro.svelte(iro.html) a development server",
-    "build3": "rollup -c rollup.config.js & rollup -c rollup.config2.js",
-    "dev3": "rollup -c rollup.config.js -w & rollup -c rollup.config2.js -w",
+    "$comment3": "use `npm run dev3` to start Iro.svelte and iro.html a development server",
+    "build3": "rollup -c rollup.config3.js",
+    "dev3": "rollup -c rollup.config3.js -w",
+
+    "$comment0": "use `npm run dev0` to start App.svelte(index.html) and Iro.svelte(iro.html) a development server",
+    "build0": "rollup -c rollup.config.js & rollup -c rollup.config2.js & rollup -c rollup.config3.js",
+    "dev0": "rollup -c rollup.config.js -w & rollup -c rollup.config2.js -w & rollup -c rollup.config3.js -w",
 
     "start": "sirv public --no-clear",
     "deploy": "npm run build && gh-pages -d public"

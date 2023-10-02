@@ -1,4 +1,5 @@
-<script>    
+<script>
+let result_gif_url = '';
 let fileInput;
 let imagePreview;
 
@@ -15,8 +16,8 @@ function handleFileInputChange(event) {
 
 // imagePreview.srcをinit_dataに追加する関数
 const add_imagePreview_src_to_init_data = () => {
-	const new_init_data = init_data.concat(init_img);
-	new_init_data[new_init_data.length - 1]['URI'] = imagePreview.src;
+	const new_init_data = init_data.concat(R.clone(init_img));
+	new_init_data[new_init_data.length - 1]['URI'] = R.clone(imagePreview.src);
 	init_data = new_init_data;
 };
 // imagePreview.srcを空にする関数
@@ -229,10 +230,10 @@ let sketch = (p) => {
 	let rad = 90;
 	p.setup = () => {
 		p.createCanvas(
-				// getMaxWH(init_data)['maxW'],
-				// getMaxWH(init_data)['maxH'],
-				300,
-				300,
+				getMaxWH(init_data)['maxW'],
+				getMaxWH(init_data)['maxH'],
+				// 300,
+				// 300,
 		);
 		// const tmp_w = R.clone(p.width);
 		// const tmp_h = R.clone(p.height);
@@ -274,10 +275,77 @@ $: init_data && rotate_num, (() => {
 	}
 	canvas = null;
 	canvas = new p5(sketch);
-})();	
+})();
+
+
+
+let lastBlobUrl;
+const exe_make_gif = () => {
+	var gif = new GIF({
+		repeat:	0, //	repeat count, -1 = no repeat, 0 = forever
+		quality:	10, //	pixel sample interval, lower is better
+		workers:	2, //	number of web workers to spawn
+		workerScript:	gif, //.worker.js	url to load worker script from
+		//background:	'#fff', //	background color where source image is transparent
+		width:	null, //	output image width
+		height:	null, //	output image height
+		transparent:	null, //	transparent hex color, 0x00FF00 = green
+		// transparent:	'#00FF00', //	transparent hex color, 0x00FF00 = green
+		dither:	false, //	dithering method, e.g. FloydSteinberg-serpentine
+		debug:	false, //	whether to print debug information to console
+	});
+	// gif.setOptions({repeat:	-0});
+
+	// add an image element
+	gif.addFrame(document.querySelector('.original1'));
+	gif.addFrame(document.querySelector('.original2'));
+
+	// or a canvas element
+	// gif.addFrame(document.querySelector('target_canvas')
+	// 	, {delay: 200});
+
+	const ctx = document.querySelector('.target_canvas').getContext('2d');
+
+	// or copy the pixels from a canvas context
+	gif.addFrame(ctx, {copy: true});
+
+	// gif.on('finished', function(blob) {
+	// window.open(URL.createObjectURL(blob));
+	// });
+
+	gif.on('finished', function(blob) {
+		  // You have to call this when you no longer need that URL.
+		if (lastBlobUrl) {
+				URL.revokeObjectURL(lastBlobUrl)
+			}
+		lastBlobUrl = window.open(URL.createObjectURL(blob));
+		result_gif_url = R.clone(lastBlobUrl);
+	});
+
+	gif.render();
+
+}
+
+
 </script>
 
-<input type="number" name="" id="" bind:value={rotate_num} step="1" min="-1000" max="1000">
+
+<img src="{result_gif_url}" alt="">
+
+<canvas class="target_canvas"></canvas>
+
+<div class="demo">
+    <!-- <div class="images"> -->
+      <!-- <img class="render"> -->
+      <img class="original1" src="30FE00.png" alt="">
+      <img class="original2" src="FE0094.png" alt="">
+    <!-- </div> -->
+</div>
+<button on:click={exe_make_gif}>exe_make_gif</button>
+
+
+
+<input type="number" name="" id="" bind:value={rotate_num} step="1" min="-10000" max="10000">
 <button on:click={() => addX({num: 20})}>addX</button>
 <button on:click={() => subX({num: 20})}>subX</button>
 <button on:click={() => addY({num: 20})}>addY</button>
@@ -287,13 +355,13 @@ $: init_data && rotate_num, (() => {
 	<div class="container" bind:this={rootElement}>
 		{#each init_data as VAL, INDEX}
 		<div>
-		W: <input type="number" name="" id="" bind:value={VAL['W']} step="20" min="-1000" max="1000">
-		H: <input type="number" name="" id="" bind:value={VAL['H']} step="20" min="-1000" max="1000">
-		X: <input type="number" name="" id="" bind:value={VAL['X']} step="20" min="-1000" max="1000">
-		Y: <input type="number" name="" id="" bind:value={VAL['Y']} step="20" min="-1000" max="1000">
+		W: <input type="number" name="" id="" bind:value={VAL['W']} step="20" min="-10000" max="10000">
+		H: <input type="number" name="" id="" bind:value={VAL['H']} step="20" min="-10000" max="10000">
+		X: <input type="number" name="" id="" bind:value={VAL['X']} step="20" min="-10000" max="10000">
+		Y: <input type="number" name="" id="" bind:value={VAL['Y']} step="20" min="-10000" max="10000">
 
-		SIZE_WIDTH: <input type="number" name="" id="" bind:value={VAL['SIZE_WIDTH']} step="20" min="-1000" max="1000">
-		SIZE_HEIGHT: <input type="number" name="" id="" bind:value={VAL['SIZE_HEIGHT']} step="20" min="-1000" max="1000">
+		SIZE_WIDTH: <input type="number" name="" id="" bind:value={VAL['SIZE_WIDTH']} step="20" min="-10000" max="10000">
+		SIZE_HEIGHT: <input type="number" name="" id="" bind:value={VAL['SIZE_HEIGHT']} step="20" min="-10000" max="10000">
 		
 		URI: <input type="text" name="" id="" bind:value={VAL['URI']}>
 			{#if image_url_list_array[INDEX] !== undefined}
@@ -325,7 +393,7 @@ $: init_data && rotate_num, (() => {
 	<input type="file" bind:this={fileInput} on:change={handleFileInputChange}>
 	<img bind:this={imagePreview} alt="">
 	<button on:click={add_imagePreview_src_to_init_data}>add_imagePreview_src_to_init_data</button>
-	<button on:click={add_imagePreview_src_to_init_data}>add_imagePreview_src_to_init_data</button>
+	<button on:click={clear_imagePreview_src}>clear_imagePreview_src</button>
 </div>
 
 <style>
