@@ -4,15 +4,17 @@ let fileNames = [];
 let result_gif_url = '';
 let sort_by_ASC = true;
 let delay_num = 200;
+let repeat_bool = true;
+let img = null;
 
-// all_clear関数 files = []; fileNames = []; result_gif_url = ''; sort_by_ASC = true; 以上の初期化を行う
-const all_clear = () => {
-	files = [];
-	fileNames = [];
-	result_gif_url = '';
-	sort_by_ASC = true;
+const handleRepeatOrNorepeat = (event) => {
+	console.log(event.target.value);
+	if(event.target.value === 'repeat'){
+		repeat_bool = true;
+	}else if(event.target.value === 'no_repeat'){
+		repeat_bool = false;
+	}
 }
-
 
 const handleSortByChange = (event) => {
 	console.log(event.target.value);
@@ -21,7 +23,6 @@ const handleSortByChange = (event) => {
 	}else if(event.target.value === 'desc'){
 		sort_by_ASC = false;
 	}
-
 }
 const handleFileInput = (event) => {
 	// event.target.filesにpngかjpgかjpeg以外のファイルが入っていたら取り除く
@@ -79,7 +80,7 @@ $: files, (() => {
 let lastBlobUrl;
 const exe_make_gif = () => {
 	var gif = new GIF({
-		repeat:	0, //	repeat count, -1 = no repeat, 0 = forever
+		repeat:	repeat_bool ? 0 : -1, //	repeat count, -1 = no repeat, 0 = forever
 		quality:	1, //	pixel sample interval, lower is better
 		workers:	2, //	number of web workers to spawn
 		workerScript:	gif, //.worker.js	url to load worker script from
@@ -108,10 +109,10 @@ const exe_make_gif = () => {
 	// gif.addFrame(document.querySelector('target_canvas')
 	// 	, {delay: 200});
 
-	const ctx = document.querySelector('.target_canvas').getContext('2d');
+	// const ctx = document.querySelector('.target_canvas').getContext('2d');
 
 	// or copy the pixels from a canvas context
-	gif.addFrame(ctx, {copy: true});
+	// gif.addFrame(ctx, {copy: true});
 
 	// gif.on('finished', function(blob) {
 	// window.open(URL.createObjectURL(blob));
@@ -126,14 +127,14 @@ const exe_make_gif = () => {
 
 		// blobをimgタグに対応したファイル形式に変換してresult_gif_urlに入れる
 		const blob_to_img = (blob) => {
-			const img = document.createElement('img');
-			img.src = URL.createObjectURL(blob);
-			img.classList.add('result_gif');
+			const result_img = document.createElement('img');
+			result_img.src = URL.createObjectURL(blob);
+			result_img.classList.add('result_gif');
 			// alt属性にファイル名を入れる
-			img.alt = 'result_gif';
-			return img;
+			result_img.alt = 'result_gif';
+			return result_img;
 		}
-		const img = blob_to_img(blob);
+		img = blob_to_img(blob);
 		result_gif_url = img.src;
 
 	});
@@ -150,6 +151,17 @@ const exe_make_gif = () => {
 <button on:click={exe_make_gif}>exe_make_gif</button>  
 <!-- input number delay_num -->
 delay_num: <input type="number" bind:value={delay_num} min="0" max="1000" step="10" />
+<fieldset>
+	<label>
+	  <input checked={repeat_bool===true} type="radio" name="repeat_type" value="repeat" on:change={handleRepeatOrNorepeat} />
+	  repeat
+	</label>
+	<label>
+	  <input checked={repeat_bool===false} type="radio" name="repeat_type" value="no_repeat" on:change={handleRepeatOrNorepeat} />
+	  no_repeat
+	</label>
+</fieldset>
+  
 
 <fieldset>
   <label>
@@ -162,8 +174,6 @@ delay_num: <input type="number" bind:value={delay_num} min="0" max="1000" step="
   </label>
 </fieldset>
 
-<!-- all_clearボタン -->
-<button on:click={all_clear}>all_clear</button>
 
 <img src="{result_gif_url}" alt="" class="result_gif">
 
