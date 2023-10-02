@@ -1,4 +1,6 @@
 <script>
+// https://github.com/jnordberg/gif.js
+
 let files = [];
 let fileNames = [];
 let result_gif_url = '';
@@ -82,41 +84,23 @@ const exe_make_gif = () => {
 	var gif = new GIF({
 		repeat:	repeat_bool ? 0 : -1, //	repeat count, -1 = no repeat, 0 = forever
 		quality:	1, //	pixel sample interval, lower is better
-		workers:	2, //	number of web workers to spawn
-		workerScript:	gif, //.worker.js	url to load worker script from
+		workers:	10, //	number of web workers to spawn
+		// workerScript:	gif, //.worker.js	url to load worker script from
 		// background:	'#fff', //	background color where source image is transparent
 		width:	null, //	output image width
 		height:	null, //	output image height
 		transparent:	null, //	transparent hex color, 0x00FF00 = green
 		// transparent:	'#00FF00', //	transparent hex color, 0x00FF00 = green
-		dither:	false, //	dithering method, e.g. FloydSteinberg-serpentine
+		// dither:	false, //	dithering method, e.g. FloydSteinberg-serpentine
 		debug:	false, //	whether to print debug information to console
 	});
-	// gif.setOptions({repeat:	-0});
 
-
-	// add an image element
 	document.querySelectorAll('.original_files').forEach((element) => {
 		gif.addFrame(
 			element,
 			{delay: delay_num}
 		);
 	});
-	// gif.addFrame(document.querySelector('.original1'));
-	// gif.addFrame(document.querySelector('.original2'));
-
-	// or a canvas element
-	// gif.addFrame(document.querySelector('target_canvas')
-	// 	, {delay: 200});
-
-	// const ctx = document.querySelector('.target_canvas').getContext('2d');
-
-	// or copy the pixels from a canvas context
-	// gif.addFrame(ctx, {copy: true});
-
-	// gif.on('finished', function(blob) {
-	// window.open(URL.createObjectURL(blob));
-	// });
 
 	gif.on('finished', function(blob) {
 		  // You have to call this when you no longer need that URL.
@@ -124,7 +108,6 @@ const exe_make_gif = () => {
 				URL.revokeObjectURL(lastBlobUrl)
 			}
 		lastBlobUrl = window.open(URL.createObjectURL(blob));
-
 		// blobをimgタグに対応したファイル形式に変換してresult_gif_urlに入れる
 		const blob_to_img = (blob) => {
 			const result_img = document.createElement('img');
@@ -136,20 +119,16 @@ const exe_make_gif = () => {
 		}
 		img = blob_to_img(blob);
 		result_gif_url = img.src;
-
 	});
-
 	gif.render();
-
 }
 
 </script>
 
 
 
-<input type="file" on:change={handleFileInput} multiple webkitdirectory>
+also directory: <input type="file" on:change={handleFileInput} multiple webkitdirectory>
 <button on:click={exe_make_gif}>exe_make_gif</button>  
-<!-- input number delay_num -->
 delay_num: <input type="number" bind:value={delay_num} min="0" max="1000" step="10" />
 <fieldset>
 	<label>
@@ -161,8 +140,6 @@ delay_num: <input type="number" bind:value={delay_num} min="0" max="1000" step="
 	  no_repeat
 	</label>
 </fieldset>
-  
-
 <fieldset>
   <label>
 	<input checked={sort_by_ASC===true} type="radio" name="sort_type" value="asc" on:change={handleSortByChange} />
@@ -174,24 +151,6 @@ delay_num: <input type="number" bind:value={delay_num} min="0" max="1000" step="
   </label>
 </fieldset>
 
-
-<img src="{result_gif_url}" alt="" class="result_gif">
-
-<canvas class="target_canvas"></canvas>
-
-<!-- <div class="demo"> -->
-    <!-- <div class="images"> -->
-      <!-- <img class="render"> -->
-      <!-- <img class="original1" src="30FE00.png" alt="">
-      <img class="original2" src="FE0094.png" alt=""> -->
-    <!-- </div> -->
-<!-- </div> -->
-
-<div class="target_img_tags"></div>
-
-
-
-
 {#if fileNames.length > 0}
 <ul>
   {#each fileNames as fileName}
@@ -199,6 +158,11 @@ delay_num: <input type="number" bind:value={delay_num} min="0" max="1000" step="
   {/each}
 </ul>
 {/if}
+
+<img src="{result_gif_url}" alt="" class="result_gif">
+<canvas class="target_canvas"></canvas>
+<div class="target_img_tags"></div>
+
 
 
 <style>
