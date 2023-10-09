@@ -1,4 +1,5 @@
 <script>
+// get_USR_position()とusr_position周りを修正する
 // UNT_ATTACK_OR_MOVEを細分化してtry catchのエラーの範囲を狭める
 // COLLECT_VALUE2[Go_to_Y][Go_to_X][2]['TYPE']がundefinedになるのも修正する
 // その後全体的にリファクタリングする
@@ -204,7 +205,6 @@ const reflect_USR_DATA = () =>{
 	reflect_DATA.forEach((V,I)=>{
 		COLLECT_VALUE2[CURRENT_Y_AND_X[I][0]][CURRENT_Y_AND_X[I][1]][2] = V.TYPE;
 		COLLECT_VALUE2[CURRENT_Y_AND_X[I][0]][CURRENT_Y_AND_X[I][1]][3] = V.BACK_COLOR;
-		COLLECT_VALUE2[CURRENT_Y_AND_X[I][0]][CURRENT_Y_AND_X[I][1]][4] = Number(V.NAME.replaceAll('USR_', ''));
 	})
 }
 
@@ -927,10 +927,7 @@ const attack_USR_to_UNT = (Go_to_Y, Go_to_X, Usr_Id=0) => {
 };
 
 // UNTがUSRにアタックする関数(USRのLFPをUNTのATK分減らす)(引数にはUNT_DATA_ARRAYのUNT_NUMを指定する)
-const attack_UNT_to_USR = (UNT_NUM, Usr_Id=1) => {
-	// console.log('attack_UNT_to_USR');
-	// console.log(UNT_NUM);
-	// console.log(Usr_Id);
+const attack_UNT_to_USR = (UNT_NUM, Usr_Id=0) => {
 	increment_MAGIC_COUNTER_ALL();
 	damage_effect({Y_X_Ary: [get_USR_position()[0], get_USR_position()[1]],
 		ms: 200,
@@ -985,27 +982,27 @@ const damage_effect = (
 		Color_1=color2,
 	}
 	) =>{
-	// const [Y, X] = Y_X_Ary;
-	// const function1 = () => {COLLECT_VALUE2[Y][X][3] = `background-color: ${Color_0}`};
-	// const function2 = () => {COLLECT_VALUE2[Y][X][3] = `background-color: ${Color_1}`};
-	// const function3 = () => {COLLECT_VALUE2[Y][X][3] = `background-color: ${Original_Color}`};
-	// const color_blink = (ms, Color_0, Color_1) =>{
-	// 	const limitSeconds = ms / 1000;
-	// 	const startTime = new Date().getTime();
-	// 	let count = 0;
-	// 	const intervalId = setInterval(() => {
-	// 		const currentTime = new Date().getTime();
-	// 		const elapsedTime = (currentTime - startTime) / 1000;
+	const [Y, X] = Y_X_Ary;
+	const function1 = () => {COLLECT_VALUE2[Y][X][3] = `background-color: ${Color_0}`};
+	const function2 = () => {COLLECT_VALUE2[Y][X][3] = `background-color: ${Color_1}`};
+	const function3 = () => {COLLECT_VALUE2[Y][X][3] = `background-color: ${Original_Color}`};
+	const color_blink = (ms, Color_0, Color_1) =>{
+		const limitSeconds = ms / 1000;
+		const startTime = new Date().getTime();
+		let count = 0;
+		const intervalId = setInterval(() => {
+			const currentTime = new Date().getTime();
+			const elapsedTime = (currentTime - startTime) / 1000;
 
-	// 		elapsedTime >= limitSeconds ? clearInterval(intervalId) :
-	// 			count++ % 2 === 0 ? function1() : function2();
-	// 	}, 10);
-	// };
-	// color_blink(ms, Color_0, Color_1);
-	// // タイマーをクリアして元の色に戻す
-	// setTimeout(() => {
-	// 	function3();
-	// }, ms);
+			elapsedTime >= limitSeconds ? clearInterval(intervalId) :
+				count++ % 2 === 0 ? function1() : function2();
+		}, 10);
+	};
+	color_blink(ms, Color_0, Color_1);
+	// タイマーをクリアして元の色に戻す
+	setTimeout(() => {
+		function3();
+	}, ms);
 };
 
 
@@ -1147,14 +1144,14 @@ function click_or_keypress_event(
 
 // 現在のUSRの位置を取得する関数
 const get_USR_position = () => {
-	// console.log('get_USR_position');
+	console.log('get_USR_position');
 	// UNTの位置を取得する
 	reflect_USR_DATA();
 	const USR_Y_AND_X = COLLECT_VALUE2
 		.map(V=>V.filter(V2=>V2[2] === 'USR' ))
-		.filter(V=>V.length>0);
-		// [0][0];
-	// console.log(USR_Y_AND_X);
+		.filter(V=>V.length>0)
+		[0][0];
+	console.log(USR_Y_AND_X);
 	return USR_Y_AND_X;
 };
 
@@ -1178,125 +1175,133 @@ tmp = NUMBER_STR_AND_YX;
 	const [Y, X] = res1;
 	return [Y, X];
 	} catch (error) {
-		console.log('error in get_UNT_position');
 		console.log(error);
 	}
 };
 
+// 現在の全てのUSRの位置の配列を取得する関数
+const get_USR_position2 = () => {
+	// reflect_USR_DATA();
+	// UNTの位置を取得する
+	const USR_Y_AND_X_ARY = COLLECT_VALUE2
+		.map(V=>V.filter(V2=>V2[2] === 'USR' ))
+		// 配列をflatして、空の配列を削除する
+		.flat()
+		.filter(V=>V.length>0)
+		.filter(V=>V[2] === 'USR')
 
 
-// const attack_if_adjacent = (Unt_Num, Unt_Position, Usr_Position) => {
-const attack_if_adjacent = (Unt_Num, Unt_Position) => {
-try{
-	let result_array = [];
-		const res = get_USR_position()
-			.map(Usr_Position => {
-				const New_Usr_Position = [Usr_Position[0][0], Usr_Position[0][1], Usr_Position[0][4]];
-				// console.log(
-				// 	Unt_Position[0],
-				// 	Unt_Position[1],
-				// 	New_Usr_Position[0],
-				// 	New_Usr_Position[1],
-				// )
-				if (
-					// 上下左右にUSRがいる場合はアタックする
-					(Unt_Position[1] === New_Usr_Position[1] && Unt_Position[0] === New_Usr_Position[0] - 1) ||
-					(Unt_Position[1] === New_Usr_Position[1] && Unt_Position[0] === New_Usr_Position[0] + 1) ||
-					(Unt_Position[0] === New_Usr_Position[0] && Unt_Position[1] === New_Usr_Position[1] - 1) ||
-					(Unt_Position[0] === New_Usr_Position[0] && Unt_Position[1] === New_Usr_Position[1] + 1)
-				) {
-					return ['ENEMY', New_Usr_Position[2]];
-				}
-			})
-		.filter(Boolean);
-		result_array = result_array.concat(res);
-		result_array.filter(result => result[0] === 'ENEMY')
-					.forEach(result => attack_UNT_to_USR(Unt_Num, result[1]));
-} catch (error) {
-	console.log('error in attack_if_adjacent');
-	console.log(error);
-}
 
+		// .filter(V=>V.length>0)
+		.map(V=>[V[0], V[1]]);
+	return USR_Y_AND_X_ARY;
 };
-const breed_if_adjacent = (Unt_Num, Unt_Adjacent_Y_And_X) => {
-	// console.log(Unt_Adjacent_Y_And_X);
-	// Unt_Adjacent_Y_And_X.map(V=>V[0]);
-	// Unt_Adjacent_Y_And_X.map(V=>V[1]);
 
-	// Unt_Adjacent_Y_And_Xに0以下か10以上が含まれていたら、その要素は削除する。例として
-	// [[9, 3],[9, 5],[8, 4],[10, 4],]は[[9, 3],[9, 5],[8, 4],]となる
-	// COLLECT_VALUE2は[0,0]から[9,9]までのため
-	Unt_Adjacent_Y_And_X = Unt_Adjacent_Y_And_X.filter(V=>V[0]>=0 && V[0]<=9 && V[1]>=0 && V[1]<=9);
+
+// key_press関数を実行した後に、UNTの行動を実行する関数。
+// 隣接しているUSRがいたらアタックする
+// USRが隣接していない場合はランダムに1マス移動する
+// UNTの移動順はATKの値が高いUNTから順番に行動する。ATKが同値の場合はUNT_NUMが小さい方から行動する。
+const UNT_ATTACK_OR_MOVE = (NAME) => {
+	try {
+	const UNT_NUM = NAME ? Number(NAME.replaceAll('UNT_', '')) : 0;
+	const unt_position = get_UNT_position(UNT_NUM);
+
+	// 隣接しているマスにUSRがいたらアタックする
+	// if (
+	// 	// 上下左右にUSRがいる場合はアタックする
+	// 	( (unt_position[1] === usr_position[1]) && (unt_position[0] === usr_position[0] - 1) ) ||
+	// 	( (unt_position[1] === usr_position[1]) && (unt_position[0] === usr_position[0] + 1) ) ||
+	// 	( (unt_position[0] === usr_position[0]) && (unt_position[0] === usr_position[1] - 1) ) ||
+	// 	( (unt_position[0] === usr_position[0]) && (unt_position[0] === usr_position[1] + 1) )
+	// ){
+	// 	attack_UNT_to_USR(UNT_NUM);
+	// 	return;
+	// }
+// reflect_USR_DATA();
+		// 隣接しているマスにUSRがいたらアタックする
+	if (
+		get_USR_position2().map(usr_position=>{
+			if(
+			// 上下左右にUSRがいる場合はアタックする
+			( (unt_position[1] === usr_position[1]) && (unt_position[0] === usr_position[0] - 1) ) ||
+			( (unt_position[1] === usr_position[1]) && (unt_position[0] === usr_position[0] + 1) ) ||
+			( (unt_position[0] === usr_position[0]) && (unt_position[0] === usr_position[1] - 1) ) ||
+			( (unt_position[0] === usr_position[0]) && (unt_position[0] === usr_position[1] + 1) )
+			){
+				return 'ENEMY'
+			}
+		}).some(V=>V==='ENEMY')
+	){
+		// console.log(NAME);
+		// console.log(unt_position);
+		// console.log(usr_position);
+		attack_UNT_to_USR(UNT_NUM);
+		return;
+	}
+
+	const usr_position = get_USR_position();
+	let UNT_ADJACENT_Y_AND_X = get_click_position(unt_position[0], unt_position[1], false);
+	// UNT_ADJACENT_Y_AND_Xにundefinedが含まれていたら、undefinedが含まれた要素は削除する
+	UNT_ADJACENT_Y_AND_X = UNT_ADJACENT_Y_AND_X.filter(V=>V!==undefined);
+
 	// 隣接しているマスにUNTがいたらbreedする
 	if(
 		// 上下左右にUNTがいる場合はbreedする
-		Unt_Adjacent_Y_And_X.some(V=>COLLECT_VALUE2[V[0]][V[1]][2]['TYPE'] === 'UNT')
+		// true
+		// window.app.$capture_state().COLLECT_VALUE2[0][3][2]['TYPE']
+		UNT_ADJACENT_Y_AND_X.some(V=>COLLECT_VALUE2[V[0]][V[1]][2]['TYPE'] === 'UNT')
 	){
 		
-const a = Unt_Adjacent_Y_And_X.filter(V=>COLLECT_VALUE2[V[0]][V[1]][2]['TYPE'] === 'UNT');
-// console.log('a', a);
-const b = a.map(V=>COLLECT_VALUE2[V[0]][V[1]][2]['NAME'].replaceAll('UNT_', ''));
-// console.log('b', b);
-const target_unit_num_ary = b.map(V=>Number(V));
-// console.log('target_unit_num_ary', target_unit_num_ary);
-
-		// breed(UNT_NUM, target_unit_num_ary);
-		breed(Unt_Num, target_unit_num_ary);
+		// get_click_position();
+		// console.log(unt_position);
+		// console.log('in breed');
+		const target_unit_num_ary = UNT_ADJACENT_Y_AND_X
+			.filter(V=>COLLECT_VALUE2[V[0]][V[1]][2]['TYPE'] === 'UNT')
+			.map(V=>COLLECT_VALUE2[V[0]][V[1]][2]['NAME'].replaceAll('UNT_', ''))
+			.map(V=>Number(V));
+			// .sort((a, b) => a - b)[0];
+		breed(UNT_NUM, target_unit_num_ary);
+		// console.log(Number(target_unit_num_ary));
+		// console.log(UNT_NUM);
+		// breed(UNT_NUM);
+		// return;
 	}
-};
-const make_move_position = (Unt_Position) => {
-	return [
-		[Unt_Position[0], Unt_Position[1] - 1],
-		[Unt_Position[0], Unt_Position[1] + 1],
-		[Unt_Position[0] - 1, Unt_Position[1]],
-		[Unt_Position[0] + 1, Unt_Position[1]],
+
+
+	// 隣接しているマスにUSRがいない場合はランダムに1マス移動する
+	// NONのマスには移動できる。BLCのマスには移動できない。GOLのマスには移動できない。
+
+	// 移動先のマスをランダムに選択する
+	const random_move = Math.floor(Math.random() * 4);
+	// 移動先のマスを決定する
+	const move_position = [
+		[unt_position[0], unt_position[1] - 1],
+		[unt_position[0], unt_position[1] + 1],
+		[unt_position[0] - 1, unt_position[1]],
+		[unt_position[0] + 1, unt_position[1]],
 	];
-};
-const move_if_NON = (Unt_Num, Unt_Position, Move_Position) => {
-	// Move_Positionに0以下か10以上が含まれていたら、その要素は削除する。例として
-	// [[-1, 4],[0, 3],[0, 5],[1, 4],]は[[0, 3],[0, 5],[1, 4],]となる
-	// COLLECT_VALUE2は[0,0]から[9,9]までのため
-	Move_Position = Move_Position.filter(V=>V[0]>=0 && V[0]<=9 && V[1]>=0 && V[1]<=9);
 	// 移動先のマスがNONの場合は移動する
-	let shuffled_move_position = shuffle(Move_Position);
+	let shuffled_move_position = shuffle(move_position);
 	for(let i=0; i<shuffled_move_position.length; i++){
 		let Move_to = shuffled_move_position[i];
 		// Move_toがNONの場合は移動し、早期リターンする
 		if (COLLECT_VALUE2[Move_to[0]][Move_to[1]][2] === 'NON') {
 			// UNTの位置をNONに変更する
-			change_BLC_to_NON(Unt_Position[0], Unt_Position[1]);
+			change_BLC_to_NON(unt_position[0], unt_position[1]);
 			// 色も更新する
-			COLLECT_VALUE2[Unt_Position[0]][Unt_Position[1]][3] = 'background-color: ' + color2 +';';
+			COLLECT_VALUE2[unt_position[0]][unt_position[1]][3] = 'background-color: ' + color2 +';';
 			// UNTの位置を更新する
-			COLLECT_VALUE2[Move_to[0]][Move_to[1]][2] = UNT_DATA_OBJ['UNT_NUM_' + Unt_Num];
+			COLLECT_VALUE2[Move_to[0]][Move_to[1]][2] = UNT_DATA_OBJ['UNT_NUM_' + UNT_NUM];
 			// 色も更新する
 			COLLECT_VALUE2[Move_to[0]][Move_to[1]][3] = 'background-color: ' + color1 +';'
 			// 早期リターンする
 			shuffled_move_position = [];
 		}
 	}
-};
-// key_press関数を実行した後に、UNTの行動を実行する関数。
-// 隣接しているUSRがいたらアタックする
-// USRが隣接していない場合はランダムに1マス移動する
-// UNTの移動順はATKの値が高いUNTから順番に行動する。ATKが同値の場合はUNT_NUMが小さい方から行動する。
-const UNT_ATTACK_OR_MOVE = (NAME) => {
-try {
-	const UNT_NUM = NAME ? Number(NAME.replaceAll('UNT_', '')) : 0;
-	const unt_position = get_UNT_position(UNT_NUM);
-	attack_if_adjacent(UNT_NUM, unt_position);//, usr_position_array);
-	let UNT_ADJACENT_Y_AND_X = get_click_position(unt_position[0], unt_position[1], false);
-	// UNT_ADJACENT_Y_AND_Xにundefinedが含まれていたら、undefinedが含まれた要素は削除する
-	UNT_ADJACENT_Y_AND_X = UNT_ADJACENT_Y_AND_X.filter(V=>V!==undefined);
-	breed_if_adjacent(UNT_NUM, UNT_ADJACENT_Y_AND_X);
-	// 隣接しているマスにUSRがいない場合はランダムに1マス移動する
-	// NONのマスには移動できる。BLCのマスには移動できない。GOLのマスには移動できない。
-	// 移動先のマスを決定する
-	const move_position = make_move_position(unt_position);
-	move_if_NON(UNT_NUM, unt_position, move_position);
-} catch (error) {
-	console.log(error);
-}
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 
