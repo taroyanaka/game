@@ -7,19 +7,15 @@
     "$comment1": "use `npm run dev` to start App.svelte and index.html a development server",
     "build": "rollup -c",
     "dev": "rollup -c -w",
-
     "$comment2": "use `npm run dev2` to start Iro.svelte and iro.html a development server",
     "build2": "rollup -c rollup.config2.js",
     "dev2": "rollup -c rollup.config2.js -w",
-
     "$comment3": "use `npm run dev3` to start Iro.svelte and iro.html a development server",
     "build3": "rollup -c rollup.config3.js",
     "dev3": "rollup -c rollup.config3.js -w",
-
     "$comment0": "use `npm run dev0` to start App.svelte(index.html) and Iro.svelte(iro.html) a development server",
     "build0": "rollup -c rollup.config.js & rollup -c rollup.config2.js & rollup -c rollup.config3.js",
     "dev0": "rollup -c rollup.config.js -w & rollup -c rollup.config2.js -w & rollup -c rollup.config3.js -w",
-
     "start": "sirv public --no-clear",
     "deploy": "npm run build && gh-pages -d public"
   },
@@ -39,6 +35,7 @@
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "p5": "^1.8.0",
     "ramda": "^0.29.0",
     "sirv-cli": "^2.0.2",
     "validator": "^13.9.0"
