@@ -266,7 +266,6 @@ let sketch = (p) => {
 
 	};
 
-
 };
 		
 $: init_data && rotate_num, (() => {
@@ -329,71 +328,66 @@ const exe_make_gif = () => {
 
 </script>
 
-
-<img src="{result_gif_url}" alt="">
-
-<canvas class="target_canvas"></canvas>
-
-<div class="demo">
-    <!-- <div class="images"> -->
-      <!-- <img class="render"> -->
-      <img class="original1" src="30FE00.png" alt="">
-      <img class="original2" src="FE0094.png" alt="">
-    <!-- </div> -->
-</div>
-<button on:click={exe_make_gif}>exe_make_gif</button>
-
-
-
-<input type="number" name="" id="" bind:value={rotate_num} step="1" min="-10000" max="10000">
-<button on:click={() => addX({num: 20})}>addX</button>
-<button on:click={() => subX({num: 20})}>subX</button>
-<button on:click={() => addY({num: 20})}>addY</button>
-<button on:click={() => subY({num: 20})}>subY</button>
-<span>SIZE_WIDTH 0 & SIZE_HEIGHT 0 is original size</span>
-
-	<div class="container" bind:this={rootElement}>
-		{#each init_data as VAL, INDEX}
-		<div>
-		W: <input type="number" name="" id="" bind:value={VAL['W']} step="20" min="-10000" max="10000">
-		H: <input type="number" name="" id="" bind:value={VAL['H']} step="20" min="-10000" max="10000">
-		X: <input type="number" name="" id="" bind:value={VAL['X']} step="20" min="-10000" max="10000">
-		Y: <input type="number" name="" id="" bind:value={VAL['Y']} step="20" min="-10000" max="10000">
-
-		SIZE_WIDTH: <input type="number" name="" id="" bind:value={VAL['SIZE_WIDTH']} step="20" min="-10000" max="10000">
-		SIZE_HEIGHT: <input type="number" name="" id="" bind:value={VAL['SIZE_HEIGHT']} step="20" min="-10000" max="10000">
-		
-		URI: <input type="text" name="" id="" bind:value={VAL['URI']}>
-			{#if image_url_list_array[INDEX] !== undefined}
-			<!-- option形式で表示 -->
-				<select name="" id="" bind:value={VAL['URI']}>
-					{#each image_url_list_array as IMAGE_URL, IMAGE_URL_INDEX}
-						<option value={IMAGE_URL}>{IMAGE_URL}</option>
-					{/each}
-				</select>		
-			{/if}
-
-			<!-- 該当のinit_dataの要素を削除 -->
-			<button on:click={() => delete_image(INDEX)}>delete</button>
-			<!-- swap -->
-			<button on:click={() => prev(INDEX)}>prev</button>
-			<button on:click={() => next(INDEX)}>next</button>
-		</div>
-		{/each}	
+<div class="app">
+	<!-- <img src="{result_gif_url}" alt=""> -->
+	<!-- <canvas class="target_canvas"></canvas> -->
+	<div class="demo">
+		<!-- <div class="images"> -->
+		<!-- <img class="render"> -->
+		<img class="original1" src="30FE00.png" alt="" style="width: 100px; height: 100px;">
+		<img class="original2" src="FE0094.png" alt="" style="width: 100px; height: 100px;">
+		<!-- </div> -->
 	</div>
-	<button on:click={add_image}>add_image</button>
-	<button on:click={download_it}>download_it</button>
+	<button on:click={exe_make_gif}>exe_make_gif</button>
 
-<button on:click={get_image_url_list_from_url}>get_image_url_list_from_url</button>
-<input type="text" name="image_url_file_url" class="image_url_file_url" bind:value={image_url_file_url}
-	on:input={get_image_url_list_from_url} on:change={get_image_url_list_from_url} placeholder="I am not crazy; my reality is just different from yours.">
-<textarea name="image_url_list" class="image_url_list" cols="100" rows="10" bind:value={image_url_list} ></textarea>
+	<input type="number" name="" id="" bind:value={rotate_num} step="1" min="-10000" max="10000">
+	<button on:click={() => addX({num: 20})}>addX</button>
+	<button on:click={() => subX({num: 20})}>subX</button>
+	<button on:click={() => addY({num: 20})}>addY</button>
+	<button on:click={() => subY({num: 20})}>subY</button>
+	<span>SIZE_WIDTH 0 & SIZE_HEIGHT 0 is original size</span>
+		<div class="container" bind:this={rootElement}>
+			{#each init_data as VAL, INDEX}
+			<div>
+			W: <input type="number" name="" id="" bind:value={VAL['W']} step="20" min="-10000" max="10000">
+			H: <input type="number" name="" id="" bind:value={VAL['H']} step="20" min="-10000" max="10000">
+			X: <input type="number" name="" id="" bind:value={VAL['X']} step="20" min="-10000" max="10000">
+			Y: <input type="number" name="" id="" bind:value={VAL['Y']} step="20" min="-10000" max="10000">
 
-<div>
-	<input type="file" bind:this={fileInput} on:change={handleFileInputChange}>
-	<img bind:this={imagePreview} alt="">
-	<button on:click={add_imagePreview_src_to_init_data}>add_imagePreview_src_to_init_data</button>
-	<button on:click={clear_imagePreview_src}>clear_imagePreview_src</button>
+			SIZE_WIDTH: <input type="number" name="" id="" bind:value={VAL['SIZE_WIDTH']} step="20" min="-10000" max="10000">
+			SIZE_HEIGHT: <input type="number" name="" id="" bind:value={VAL['SIZE_HEIGHT']} step="20" min="-10000" max="10000">
+			
+			URI: <input type="text" name="" id="" bind:value={VAL['URI']}>
+				{#if image_url_list_array[INDEX] !== undefined}
+				<!-- option形式で表示 -->
+					<select name="" id="" bind:value={VAL['URI']}>
+						{#each image_url_list_array as IMAGE_URL, IMAGE_URL_INDEX}
+							<option value={IMAGE_URL}>{IMAGE_URL}</option>
+						{/each}
+					</select>		
+				{/if}
+				<!-- 該当のinit_dataの要素を削除 -->
+				<button on:click={() => delete_image(INDEX)}>delete</button>
+				<!-- swap -->
+				<button on:click={() => prev(INDEX)}>prev</button>
+				<button on:click={() => next(INDEX)}>next</button>
+			</div>
+			{/each}	
+		</div>
+		<button on:click={add_image}>add_image</button>
+		<button on:click={download_it}>download_it</button>
+
+	<button on:click={get_image_url_list_from_url}>get_image_url_list_from_url</button>
+	<input type="text" name="image_url_file_url" class="image_url_file_url" bind:value={image_url_file_url}
+		on:input={get_image_url_list_from_url} on:change={get_image_url_list_from_url} placeholder="I am not crazy; my reality is just different from yours.">
+	<textarea name="image_url_list" class="image_url_list" cols="" rows="" bind:value={image_url_list} ></textarea>
+	<div>
+		<input type="file" bind:this={fileInput} on:change={handleFileInputChange}>
+		<img bind:this={imagePreview} alt="">
+		<button on:click={add_imagePreview_src_to_init_data}>add_imagePreview_src_to_init_data</button>
+		<button on:click={clear_imagePreview_src}>clear_imagePreview_src</button>
+	</div>
+
 </div>
 
 <style>
@@ -402,4 +396,35 @@ const exe_make_gif = () => {
 		--XYZ: 'block';
 		--ABC: 'none';
 	}
+	body {
+		/* .appを左にmainタグを右に */
+  /* display: flex; */
+  /* flex-direction: row; */
+  position: relative;
+
+  /* justify-content: space-between; */
+	}
+	body {
+		/* .appとmainタグの間のスペースを空ける */
+		/* width: 10vw; */
+	}
+	.app, #iro, main {
+		/* width: 30vw; */
+	}
+	img {
+		width: 100px;
+		height: 100px;
+	}
+	main {
+		position: fixed;
+		top: 0;
+		right: 0;
+	}
+	textarea {
+		width: 5rem;
+		height: 5rem;
+	}
+		
+
+
 </style>
