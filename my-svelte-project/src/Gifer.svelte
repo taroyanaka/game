@@ -1,4 +1,22 @@
 <script>
+// 表情一覧
+//     喜
+//     怒
+//     哀
+//     楽
+//     驚
+//     怖
+//     恥
+//     愛
+
+// アニメの動き一覧
+//     歩く
+//     走る
+//     ジャンプ
+//     見回す
+//     しゃがむ
+//     伸びる
+
 // https://github.com/jnordberg/gif.js
 
 let files = [];
@@ -6,6 +24,7 @@ let fileNames = [];
 let result_gif_url = '';
 let sort_by_ASC = true;
 let delay_num = 200;
+delay_num = 30;
 let repeat_bool = true;
 let img = null;
 

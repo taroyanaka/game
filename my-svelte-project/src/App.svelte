@@ -1,8 +1,4 @@
 <script>
-// UNT_ATTACK_OR_MOVEを細分化してtry catchのエラーの範囲を狭める
-// COLLECT_VALUE2[Go_to_Y][Go_to_X][2]['TYPE']がundefinedになるのも修正する
-// その後全体的にリファクタリングする
-
 const color1 = '#00FF00'; // ライムグリーン
 const color2 = '#FFFFFF'; // ホワイト
 const color3 = '#FF0000'; // レッド
@@ -1219,10 +1215,6 @@ try{
 
 };
 const breed_if_adjacent = (Unt_Num, Unt_Adjacent_Y_And_X) => {
-	// console.log(Unt_Adjacent_Y_And_X);
-	// Unt_Adjacent_Y_And_X.map(V=>V[0]);
-	// Unt_Adjacent_Y_And_X.map(V=>V[1]);
-
 	// Unt_Adjacent_Y_And_Xに0以下か10以上が含まれていたら、その要素は削除する。例として
 	// [[9, 3],[9, 5],[8, 4],[10, 4],]は[[9, 3],[9, 5],[8, 4],]となる
 	// COLLECT_VALUE2は[0,0]から[9,9]までのため
@@ -1232,16 +1224,10 @@ const breed_if_adjacent = (Unt_Num, Unt_Adjacent_Y_And_X) => {
 		// 上下左右にUNTがいる場合はbreedする
 		Unt_Adjacent_Y_And_X.some(V=>COLLECT_VALUE2[V[0]][V[1]][2]['TYPE'] === 'UNT')
 	){
-		
-const a = Unt_Adjacent_Y_And_X.filter(V=>COLLECT_VALUE2[V[0]][V[1]][2]['TYPE'] === 'UNT');
-// console.log('a', a);
-const b = a.map(V=>COLLECT_VALUE2[V[0]][V[1]][2]['NAME'].replaceAll('UNT_', ''));
-// console.log('b', b);
-const target_unit_num_ary = b.map(V=>Number(V));
-// console.log('target_unit_num_ary', target_unit_num_ary);
-
-		// breed(UNT_NUM, target_unit_num_ary);
-		breed(Unt_Num, target_unit_num_ary);
+	const a = Unt_Adjacent_Y_And_X.filter(V=>COLLECT_VALUE2[V[0]][V[1]][2]['TYPE'] === 'UNT');
+	const b = a.map(V=>COLLECT_VALUE2[V[0]][V[1]][2]['NAME'].replaceAll('UNT_', ''));
+	const target_unit_num_ary = b.map(V=>Number(V));
+	breed(Unt_Num, target_unit_num_ary);
 	}
 };
 const make_move_position = (Unt_Position) => {
