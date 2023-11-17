@@ -275,57 +275,6 @@ $: init_data && rotate_num, (() => {
 	canvas = null;
 	canvas = new p5(sketch);
 })();
-
-
-
-let lastBlobUrl;
-const exe_make_gif = () => {
-	var gif = new GIF({
-		repeat:	0, //	repeat count, -1 = no repeat, 0 = forever
-		quality:	10, //	pixel sample interval, lower is better
-		workers:	2, //	number of web workers to spawn
-		workerScript:	gif, //.worker.js	url to load worker script from
-		//background:	'#fff', //	background color where source image is transparent
-		width:	null, //	output image width
-		height:	null, //	output image height
-		transparent:	null, //	transparent hex color, 0x00FF00 = green
-		// transparent:	'#00FF00', //	transparent hex color, 0x00FF00 = green
-		dither:	false, //	dithering method, e.g. FloydSteinberg-serpentine
-		debug:	false, //	whether to print debug information to console
-	});
-	// gif.setOptions({repeat:	-0});
-
-	// add an image element
-	gif.addFrame(document.querySelector('.original1'));
-	gif.addFrame(document.querySelector('.original2'));
-
-	// or a canvas element
-	// gif.addFrame(document.querySelector('target_canvas')
-	// 	, {delay: 200});
-
-	const ctx = document.querySelector('.target_canvas').getContext('2d');
-
-	// or copy the pixels from a canvas context
-	gif.addFrame(ctx, {copy: true});
-
-	// gif.on('finished', function(blob) {
-	// window.open(URL.createObjectURL(blob));
-	// });
-
-	gif.on('finished', function(blob) {
-		  // You have to call this when you no longer need that URL.
-		if (lastBlobUrl) {
-				URL.revokeObjectURL(lastBlobUrl)
-			}
-		lastBlobUrl = window.open(URL.createObjectURL(blob));
-		result_gif_url = R.clone(lastBlobUrl);
-	});
-
-	gif.render();
-
-}
-
-
 </script>
 
 <div class="app">
@@ -337,7 +286,7 @@ const exe_make_gif = () => {
 		<!-- <img class="original1" src="30FE00.png" alt="" style="width: 100px; height: 100px;"> -->
 		<!-- <img class="original2" src="FE0094.png" alt="" style="width: 100px; height: 100px;"> -->
 	<!-- </div> -->
-	<button on:click={exe_make_gif}>exe_make_gif</button>
+	<!-- <button on:click={exe_mjake_gif}>exe_make_gif</button> -->
 
 	<input type="number" name="" id="" bind:value={rotate_num} step="1" min="-10000" max="10000">
 	<button on:click={() => addX({num: 20})}>addX</button>
