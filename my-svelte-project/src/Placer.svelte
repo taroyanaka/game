@@ -331,13 +331,12 @@ const exe_make_gif = () => {
 <div class="app">
 	<!-- <img src="{result_gif_url}" alt=""> -->
 	<!-- <canvas class="target_canvas"></canvas> -->
-	<div class="demo">
-		<!-- <div class="images"> -->
-		<!-- <img class="render"> -->
-		<img class="original1" src="30FE00.png" alt="" style="width: 100px; height: 100px;">
-		<img class="original2" src="FE0094.png" alt="" style="width: 100px; height: 100px;">
-		<!-- </div> -->
-	</div>
+
+	
+	<!-- <div class="demo"> -->
+		<!-- <img class="original1" src="30FE00.png" alt="" style="width: 100px; height: 100px;"> -->
+		<!-- <img class="original2" src="FE0094.png" alt="" style="width: 100px; height: 100px;"> -->
+	<!-- </div> -->
 	<button on:click={exe_make_gif}>exe_make_gif</button>
 
 	<input type="number" name="" id="" bind:value={rotate_num} step="1" min="-10000" max="10000">
@@ -396,35 +395,12 @@ const exe_make_gif = () => {
 		--XYZ: 'block';
 		--ABC: 'none';
 	}
-	body {
-		/* .appを左にmainタグを右に */
-  /* display: flex; */
-  /* flex-direction: row; */
-  position: relative;
-
-  /* justify-content: space-between; */
-	}
-	body {
-		/* .appとmainタグの間のスペースを空ける */
-		/* width: 10vw; */
-	}
-	.app, #iro, main {
-		/* width: 30vw; */
-	}
 	img {
 		width: 100px;
 		height: 100px;
-	}
-	main {
-		position: fixed;
-		top: 0;
-		right: 0;
 	}
 	textarea {
 		width: 5rem;
 		height: 5rem;
 	}
-		
-
-
 </style>
